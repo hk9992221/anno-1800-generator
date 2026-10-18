@@ -1,7 +1,8 @@
 import JSZip from 'jszip';
+import { compileAcquisition, acquisitionTexts } from './acquisition.ts';
 import type { Card, ExportPlan, Project } from './types.ts';
 import { cardSnapshot, familyOf } from './types.ts';
-import { effectDef } from './effects.ts';
+import { effectDef, needOutputs } from './effects.ts';
 import {
   at,
   children,
@@ -75,7 +76,9 @@ export function cardFields(card: Card): Record<string, string> {
       case 'output':
         body = el(
           'Item',
-          t('Product', p.product) + t('AdditionalOutputCycle', p.cycles) + t('Amount', p.amount),
+          t('Product', p.product) +
+            t('AdditionalOutputCycle', p.cycles) +
+            t('Amount', p.amount),
         );
         break;
       case 'replace':
@@ -85,7 +88,9 @@ export function cardFields(card: Card): Record<string, string> {
         body = el('Item', t('ProvidedNeed', p.need) + t('AmountInPercent', p.value));
         break;
       case 'need':
-        body = el('Item', t('ProvidedNeed', p.provided) + t('SubstituteNeed', p.substitute));
+        body = needOutputs(p.substitute)
+          .map((y) => el('Item', t('ProvidedNeed', y) + t('SubstituteNeed', p.provided)))
+          .join('');
         break;
     }
     const path = `Values/${d.path}`;
@@ -108,13 +113,17 @@ export function compileAsset(card: Card): string {
   }
   return patchXml(
     '<Asset></Asset>',
-    Object.fromEntries(Object.entries(next).map(([path, body]) => [`Asset/${path}`, body])),
+    Object.fromEntries(
+      Object.entries(next).map(([path, body]) => [`Asset/${path}`, body]),
+    ),
   );
 }
 export function compileChannels(card: Card, p: Project): string {
   if (card.status !== 'active') return '';
   return card.sources
     .map((s) => {
+      if (s.type === 'quest' || s.type === 'expedition')
+        return compileAcquisition(card, s);
       if (s.type === 'gallery') {
         const permit = el(
           'Asset',
@@ -123,8 +132,13 @@ export function compileChannels(card: Card, p: Project): string {
               'Values',
               el(
                 'Standard',
-                t('GUID', card.galleryPermitGuid) + t('Name', `CardForge_Permit_${card.guid}`),
-              ) + el('ScenarioWorkshopItem', t('AssetReference', card.guid) + t('BuildPermits', 1)),
+                t('GUID', card.galleryPermitGuid) +
+                  t('Name', `CardForge_Permit_${card.guid}`),
+              ) +
+                el(
+                  'ScenarioWorkshopItem',
+                  t('AssetReference', card.guid) + t('BuildPermits', 1),
+                ),
             ),
         );
         const pack = el(
@@ -134,7 +148,8 @@ export function compileChannels(card: Card, p: Project): string {
               'Values',
               el(
                 'Standard',
-                t('GUID', card.galleryPackageGuid) + t('Name', `CardForge_Gallery_${card.guid}`),
+                t('GUID', card.galleryPackageGuid) +
+                  t('Name', `CardForge_Gallery_${card.guid}`),
               ) +
                 el(
                   'ScenarioWorkshopPackage',
@@ -177,18 +192,42 @@ export function compileChannels(card: Card, p: Project): string {
     .join('\n');
 }
 function compileText(cards: Card[], english: boolean): string {
+  const entries = cards.flatMap(
+    (c) =>
+      [
+        [
+          c.guid,
+          (english ? c.english || c.name : c.name) +
+            (c.subtitle ? `，${c.subtitle}` : ''),
+        ],
+        [
+          c.descriptionGuid,
+          english ? c.englishDescription || c.description : c.description,
+        ],
+        ...acquisitionTexts(c),
+      ] as [number, string][],
+  );
   return el(
     'ModOps',
-    `<ModOp Type="add" Path="/TextExport/Texts">${cards.map((c) => el('Text', t('GUID', c.guid) + t('Text', english ? (c.english || c.name) + (c.subtitle ? `, ${c.subtitle}` : '') : c.name + (c.subtitle ? `，${c.subtitle}` : ''))) + el('Text', t('GUID', c.descriptionGuid) + t('Text', english ? c.englishDescription || c.description : c.description))).join('')}</ModOp>`,
+    `<ModOp Type="add" Path="/TextExport/Texts">${entries.map(([guid, text]) => el('Text', t('GUID', guid) + t('Text', text))).join('')}</ModOp>`,
   );
 }
-export function compileXml(p: Project): { assets: string; chinese: string; english: string } {
-  const cards = p.cards.filter((c) => c.status !== 'draft').sort((a, b) => a.guid - b.guid);
+export function compileXml(p: Project): {
+  assets: string;
+  chinese: string;
+  english: string;
+} {
+  const cards = p.cards
+    .filter((c) => c.status !== 'draft')
+    .sort((a, b) => a.guid - b.guid);
   return {
     assets: el(
       'ModOps',
       cards
-        .map((c) => OP('addNextSibling', 191431, '', compileAsset(c)) + compileChannels(c, p))
+        .map(
+          (c) =>
+            OP('addNextSibling', 191431, '', compileAsset(c)) + compileChannels(c, p),
+        )
         .join('\n'),
     ),
     chinese: compileText(cards, false),
@@ -201,11 +240,24 @@ function patchImportedFiles(p: Project, files: Map<string, string>): void {
     let xml = decodeText(file.data);
     const doc = parseXml(xml);
     const edits: { start: number; end: number; text: string }[] = [];
+    const removed = new Set((p.removedCards ?? []).flatMap((c) => c.guids));
+    const removedSpans: { start: number; end: number }[] = [];
     for (const node of descendants(doc, 'Asset')) {
       const guid = numberAt(at(node, 'Values'), 'Standard/GUID');
+      if (removed.has(guid)) {
+        edits.push({ start: node.start, end: node.end, text: '' });
+        removedSpans.push(node);
+        continue;
+      }
       const c = p.cards.find((c) => c.guid === guid && c.origin?.file === file.path);
       if (c && c.status !== 'draft' && c.origin?.baseline !== cardSnapshot(c))
         edits.push({ start: node.start, end: node.end, text: compileAsset(c) });
+    }
+    for (const node of descendants(doc, 'Item')) {
+      if (removedSpans.some((span) => node.start >= span.start && node.end <= span.end))
+        continue;
+      if (['ItemLink', 'Reward', 'Asset'].some((k) => removed.has(numberAt(node, k))))
+        edits.push({ start: node.start, end: node.end, text: '' });
     }
     for (const e of edits.sort((a, b) => b.start - a.start))
       xml = xml.slice(0, e.start) + e.text + xml.slice(e.end);
@@ -219,6 +271,10 @@ function patchImportedFiles(p: Project, files: Map<string, string>): void {
     const doc = parseXml(xml),
       edits: { start: number; end: number; text: string }[] = [],
       append: string[] = [];
+    const removed = new Set((p.removedCards ?? []).flatMap((c) => c.guids));
+    for (const node of descendants(doc, 'Text'))
+      if (removed.has(numberAt(node, 'GUID')))
+        edits.push({ start: node.start, end: node.end, text: '' });
     for (const c of p.cards.filter((c) => c.origin && c.status !== 'draft')) {
       const baseline = JSON.parse(c.origin!.baseline) as Card;
       const en = language === 'english';
@@ -271,12 +327,19 @@ export async function createExportPlan(p: Project): Promise<ExportPlan> {
         .join('\n'),
     );
   const xml = compileXml(p),
-    files = new Map(p.mode === 'edit' ? p.importedFiles.map((f) => [f.path, f.data]) : []);
+    files = new Map(
+      p.mode === 'edit' ? p.importedFiles.map((f) => [f.path, f.data]) : [],
+    );
   if (p.mode === 'edit') {
     patchImportedFiles(p, files);
-    for (const c of p.cards.filter((c) => c.origin && c.origin.baseline !== cardSnapshot(c))) {
+    for (const c of p.cards.filter(
+      (c) => c.origin && c.origin.baseline !== cardSnapshot(c),
+    )) {
       const b = JSON.parse(c.origin!.baseline) as Card;
-      if (JSON.stringify(b.sources) !== JSON.stringify(c.sources) || b.status !== c.status)
+      if (
+        JSON.stringify(b.sources) !== JSON.stringify(c.sources) ||
+        b.status !== c.status
+      )
         throw new Error(
           '外部 Mod 副本中的获取渠道／发布状态暂时保留原文。请复制为新卡后修改渠道。',
         );
@@ -305,7 +368,9 @@ export async function createExportPlan(p: Project): Promise<ExportPlan> {
             r = children(parseXml(src), 'ModOps')[0];
           files.set(
             path,
-            encodeText(src.slice(0, r.closeStart) + text.slice(8, -9) + src.slice(r.closeStart)),
+            encodeText(
+              src.slice(0, r.closeStart) + text.slice(8, -9) + src.slice(r.closeStart),
+            ),
           );
         } else files.set(path, encodeText(text));
       }
@@ -325,7 +390,9 @@ export async function createExportPlan(p: Project): Promise<ExportPlan> {
             Version: p.version,
             ModName: { English: p.name, Chinese: p.name },
             Category: { English: 'Gameplay', Chinese: '游戏玩法' },
-            Description: { English: 'Custom items created with Anno 1800 CardForge.' },
+            Description: {
+              English: 'Custom items created with Anno 1800 CardForge.',
+            },
             ModDependencies: p.dependencies,
           },
           null,
@@ -342,7 +409,10 @@ export async function createExportPlan(p: Project): Promise<ExportPlan> {
       JSON.stringify({
         ...p,
         catalog: undefined,
-        cards: p.cards.map((c) => ({ ...c, published: c.status !== 'draft' || c.published })),
+        cards: p.cards.map((c) => ({
+          ...c,
+          published: c.status !== 'draft' || c.published,
+        })),
       }),
     ),
   );

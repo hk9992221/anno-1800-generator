@@ -30,18 +30,27 @@ import {
   Code2,
 } from 'lucide-react';
 import type { Card, ExportPlan, Issue, Project } from './core/types.ts';
-import { ALLOCATIONS, familyOf } from './core/types.ts';
-import { cloneCard, createCard, createProject, parseProject } from './core/project.ts';
+import { ALLOCATIONS } from './core/types.ts';
+import {
+  cloneCard,
+  createCard,
+  createProject,
+  parseProject,
+  createSource,
+  deleteCard,
+} from './core/project.ts';
 import { createEffect } from './core/effects.ts';
-import { assetName, catalogOf } from './core/catalog.ts';
+import { catalogOf } from './core/catalog.ts';
 import { compileXml, createExportPlan, planToZip } from './core/compiler.ts';
 import { importMod, unzipMod } from './core/importer.ts';
 import { validateProject } from './core/validate.ts';
 import { isDesktop, native, type ExportPreview } from './native.ts';
 import { useProject } from './state.ts';
-import { CardEditor, EffectSummary, TABS, type EditorTab } from './components/CardEditor.tsx';
+import { CardEditor, TABS, type EditorTab } from './components/CardEditor.tsx';
 import { CardBadge, Empty, Field, Modal, Portrait } from './components/common.tsx';
 import { BatchDialog, BatchEditDialog } from './components/BatchDialog.tsx';
+import { PortraitPicker } from './components/PortraitPicker.tsx';
+import { CardPreview } from './components/CardPreview.tsx';
 import { ProjectSettings } from './components/ProjectSettings.tsx';
 export default function App() {
   const [toast, setToast] = useState<{ text: string; error: boolean } | null>(null);
@@ -56,6 +65,9 @@ export default function App() {
     [showBatch, setShowBatch] = useState(false),
     [showBatchEdit, setShowBatchEdit] = useState(false),
     [showSettings, setShowSettings] = useState(false),
+    [showPortrait, setShowPortrait] = useState(false),
+    [showPreview, setShowPreview] = useState(false),
+    [deleteTarget, setDeleteTarget] = useState<Card | null>(null),
     [showImport, setShowImport] = useState(false),
     [showIssues, setShowIssues] = useState(false),
     [showXml, setShowXml] = useState(false),
@@ -70,8 +82,12 @@ export default function App() {
       preview?: ExportPreview;
     } | null>(null),
     [exporting, setExporting] = useState(false),
-    [theme, setTheme] = useState(() => localStorage.getItem('cardforge-theme') || 'light'),
-    [zoom, setZoom] = useState(() => Number(localStorage.getItem('cardforge-zoom')) || 100),
+    [theme, setTheme] = useState(
+      () => localStorage.getItem('cardforge-theme') || 'light',
+    ),
+    [zoom, setZoom] = useState(
+      () => Number(localStorage.getItem('cardforge-zoom')) || 100,
+    ),
     [sidebar, setSidebar] = useState(true),
     [newModId, setNewModId] = useState('anno1800-cardforge-custom-cards'),
     [newFolder, setNewFolder] = useState('[Gameplay] Anno1800 Custom Cards');
@@ -85,7 +101,9 @@ export default function App() {
   const cards = project.cards.filter(
     (c) =>
       (groupFilter === 'all' || c.group === groupFilter) &&
-      `${c.name} ${c.english} ${c.guid} ${c.group}`.toLowerCase().includes(query.toLowerCase()),
+      `${c.name} ${c.english} ${c.guid} ${c.group}`
+        .toLowerCase()
+        .includes(query.toLowerCase()),
   );
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -170,15 +188,24 @@ export default function App() {
       notify(String(e), true);
     }
   }
+  function confirmDelete(target: Card) {
+    change((p) => deleteCard(p, target.id));
+    setSelected([]);
+    setDeleteTarget(null);
+    notify('卡牌已删除，GUID 保留不再复用；可撤销恢复');
+  }
   function remove() {
     if (!card) return;
-    change((p) => {
-      const c = p.cards.find((c) => c.id === card.id)!;
-      if (c.published) c.status = 'retired';
-      else p.cards = p.cards.filter((c) => c.id !== card.id);
+    if (card.published || card.origin) setDeleteTarget(card);
+    else confirmDelete(card);
+  }
+  function addSource(type: Card['sources'][number]['type']) {
+    void handle(async () => {
+      change((p) => {
+        const c = p.cards.find((c) => c.id === card?.id);
+        if (c) c.sources.push(createSource(p, type));
+      });
     });
-    setSelected([]);
-    notify(card.published ? '已停止获取，保留存档中的物品定义' : '已删除草稿卡牌，可撤销恢复');
   }
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -200,48 +227,37 @@ export default function App() {
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   });
-  async function indexResources() {
+  async function indexResources(changeRoot = false) {
     await handle(async () => {
-      const root = await native.chooseFolder();
+      const root =
+        (!changeRoot && project.catalog?.gameRoot) ||
+        (await native.chooseFolder(false, 'game'));
       if (!root) return;
       setBusy(true);
-      setProgress('正在发现本机游戏资源…');
+      setProgress('自动识别游戏资源与已安装 Mod…');
       try {
         const catalog = await native.index(root);
         change((p) => {
           p.catalog = catalog;
         });
         setRefresh((v) => v + 1);
-        notify(`已读取 ${catalog.assets.length.toLocaleString()} 条资源`);
+        setShowSettings(false);
+        setShowPortrait(true);
+        setTab('image');
+        notify(
+          `已读取 ${catalog.assets.length.toLocaleString()} 条资源、${catalog.modCount ?? 0} 个 Mod${catalog.warnings?.length ? '；部分 Mod 解析提示见工程设置' : ''}`,
+        );
       } finally {
         setBusy(false);
       }
     });
   }
   async function scanMods() {
-    await handle(async () => {
-      const root = await native.chooseFolder();
-      if (!root) return;
-      setBusy(true);
-      setProgress('正在扫描已安装 Mod 的定义…');
-      try {
-        const result = await native.scanMods(root);
-        change((p) => {
-          const catalog = catalogOf(p.catalog);
-          p.catalog = {
-            ...catalog,
-            assets: [
-              ...catalog.assets.filter((a) => !a.source?.startsWith(root)),
-              ...result.assets,
-            ],
-            scannedModGuids: [...new Set([...(catalog.scannedModGuids ?? []), ...result.guids])],
-          };
-        });
-        notify(`已扫描 ${result.guids.length.toLocaleString()} 个 Mod GUID`);
-      } finally {
-        setBusy(false);
-      }
-    });
+    await indexResources(false);
+  }
+  function choosePortrait() {
+    if (project.catalog?.indexVersion === 2) setShowPortrait(true);
+    else void indexResources();
   }
   async function importFiles(files: Parameters<typeof importMod>[0]) {
     await handle(async () => {
@@ -250,7 +266,10 @@ export default function App() {
         importMode,
         importMode === 'collection' ? project : undefined,
       );
-      if (importMode === 'edit' || files.some((f) => f.path === 'cardforge-project.json')) {
+      if (
+        importMode === 'edit' ||
+        files.some((f) => f.path === 'cardforge-project.json')
+      ) {
         await native.clearProjectPath();
         state.replace(result.project);
       } else change((p) => Object.assign(p, result.project));
@@ -306,7 +325,9 @@ export default function App() {
         notify(`已更新：${path}`);
       }
       change((p) => {
-        p.cards = p.cards.map((c) => (c.status === 'draft' ? c : { ...c, published: true }));
+        p.cards = p.cards.map((c) =>
+          c.status === 'draft' ? c : { ...c, published: true },
+        );
       });
       setExportData(null);
     });
@@ -380,7 +401,9 @@ export default function App() {
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) =>
                   setSelected(
-                    e.target.checked ? [...selected, c.id] : selected.filter((id) => id !== c.id),
+                    e.target.checked
+                      ? [...selected, c.id]
+                      : selected.filter((id) => id !== c.id),
                   )
                 }
               />
@@ -390,7 +413,11 @@ export default function App() {
                 <small>
                   <span className={`rarity-dot rarity-${c.rarity}`} />
                   {ALLOCATIONS[c.allocation]}
-                  {c.status === 'draft' ? ' · 草稿' : c.status === 'retired' ? ' · 停止获取' : ''}
+                  {c.status === 'draft'
+                    ? ' · 草稿'
+                    : c.status === 'retired'
+                      ? ' · 停止获取'
+                      : ''}
                 </small>
               </span>
             </div>
@@ -405,13 +432,15 @@ export default function App() {
             <BookOpen size={18} />
             <span>
               本机资源库
-              <small>{catalogOf(project.catalog).assets.length.toLocaleString()} 条资源</small>
+              <small>
+                {catalogOf(project.catalog).assets.length.toLocaleString()} 条资源
+              </small>
             </span>
             <ArrowRight size={15} />
           </button>
           <div className="sidebar-version">
             <span>WINDOWS EDITION</span>
-            <span>v1.2.1</span>
+            <span>v1.3.0</span>
           </div>
         </div>
       </aside>
@@ -539,7 +568,11 @@ export default function App() {
             >
               停止获取
             </button>
-            <button className="icon-button" title="清空选择" onClick={() => setSelected([])}>
+            <button
+              className="icon-button"
+              title="清空选择"
+              onClick={() => setSelected([])}
+            >
               <X size={16} />
             </button>
           </div>
@@ -554,15 +587,21 @@ export default function App() {
                   <CardBadge card={card} />
                 </div>
                 <div>
+                  <button className="button small" onClick={() => setShowPreview(true)}>
+                    卡牌预览
+                  </button>
                   <button className="icon-button" title="复制卡牌" onClick={clone}>
                     <Copy size={18} />
                   </button>
-                  <button className="button text-button" onClick={() => setShowBatch(true)}>
+                  <button
+                    className="button text-button"
+                    onClick={() => setShowBatch(true)}
+                  >
                     批量生成
                   </button>
                   <button
                     className="icon-button danger"
-                    title={card.published ? '停止获取' : '删除草稿卡牌'}
+                    title="删除卡牌"
                     onClick={remove}
                   >
                     <Trash2 size={18} />
@@ -590,6 +629,10 @@ export default function App() {
                 onChange={editCard}
                 refresh={refresh}
                 onError={(s) => notify(s, true)}
+                onAddSource={addSource}
+                onSetup={() => void indexResources()}
+                onChoosePortrait={choosePortrait}
+                onSelectTargets={() => setTab('targets')}
               />
             </section>
             <aside className="preview-panel">
@@ -600,45 +643,7 @@ export default function App() {
                   实时预览
                 </span>
               </div>
-              <article className={`game-card game-card-${card.rarity}`}>
-                <div className="game-card-top">
-                  <span>ANNO 1800</span>
-                  <Compass size={18} />
-                </div>
-                <div className="game-card-art">
-                  <div className="art-orbit" />
-                  <Portrait image={card.image} size="large" refresh={refresh} />
-                  <span className="art-ribbon">{RARITIES_LOCAL[card.rarity]}</span>
-                </div>
-                <div className="game-card-content">
-                  <span className="game-card-allocation">{ALLOCATIONS[card.allocation]}</span>
-                  <h2>{card.name || '未命名专家'}</h2>
-                  {card.subtitle && <p className="game-card-subtitle">{card.subtitle}</p>}
-                  <div className="ornament">
-                    <span />✦<span />
-                  </div>
-                  <span className="tiny-label">影响目标</span>
-                  <p className="preview-targets">
-                    {familyOf(card.allocation) === 'ship'
-                      ? '装备本卡牌的船舶'
-                      : card.targets.length
-                        ? card.targets
-                            .slice(0, 5)
-                            .map((g) => assetName(project.catalog, g))
-                            .join('、') +
-                          (card.targets.length > 5 ? ` 等 ${card.targets.length} 个目标` : '')
-                        : '尚未选择适用目标'}
-                  </p>
-                  <ul className="preview-effects">
-                    <EffectSummary card={card} catalog={project.catalog} />
-                  </ul>
-                  {card.description && <p className="flavor-text">“{card.description}”</p>}
-                  <div className="game-card-price">
-                    <span>购买价格</span>
-                    <strong>◈ {card.price.toLocaleString()}</strong>
-                  </div>
-                </div>
-              </article>
+              <CardPreview card={card} catalog={project.catalog} refresh={refresh} />
               <div className="preview-footnote">
                 <Check size={15} />
                 <span>修改即时同步至预览，导出前统一校验。</span>
@@ -710,7 +715,8 @@ export default function App() {
         accept=".zip"
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) void handle(async () => importFiles(await unzipMod(await f.arrayBuffer())));
+          if (f)
+            void handle(async () => importFiles(await unzipMod(await f.arrayBuffer())));
           e.target.value = '';
         }}
       />
@@ -727,7 +733,10 @@ export default function App() {
               let s = '';
               for (const b of bytes) s += String.fromCharCode(b);
               await importFiles([
-                { path: 'data/config/export/main/asset/assets.xml', data: btoa(s) },
+                {
+                  path: 'data/config/export/main/asset/assets.xml',
+                  data: btoa(s),
+                },
               ]);
             });
           e.target.value = '';
@@ -756,7 +765,10 @@ export default function App() {
                 const next = { ...c, ...patch, effects: [...c.effects] };
                 if (effect) {
                   const i = next.effects.findIndex((e) => e.type === effect.type),
-                    e = i >= 0 ? structuredClone(next.effects[i]) : createEffect(effect.type);
+                    e =
+                      i >= 0
+                        ? structuredClone(next.effects[i])
+                        : createEffect(effect.type);
                   e.params.value = effect.value;
                   if (i >= 0) next.effects[i] = e;
                   else next.effects.push(e);
@@ -766,6 +778,69 @@ export default function App() {
             })
           }
         />
+      )}
+      {card && showPortrait && (
+        <PortraitPicker
+          catalog={project.catalog}
+          selected={card.image.path}
+          onApply={(path) => editCard({ image: { mode: 'game', path } })}
+          onClose={() => setShowPortrait(false)}
+        />
+      )}
+      {card && showPreview && (
+        <Modal title="卡牌预览" onClose={() => setShowPreview(false)}>
+          <div className="dialog-body preview-dialog">
+            <CardPreview card={card} catalog={project.catalog} refresh={refresh} />
+          </div>
+        </Modal>
+      )}
+      {busy && !showSettings && (
+        <Modal title="读取游戏资源" onClose={() => void native.cancelIndex()}>
+          <div className="dialog-body">
+            <p>{progress || '正在准备…'}</p>
+            <button className="button" onClick={() => void native.cancelIndex()}>
+              取消读取
+            </button>
+          </div>
+        </Modal>
+      )}
+      {deleteTarget && (
+        <Modal title="删除卡牌" onClose={() => setDeleteTarget(null)}>
+          <div className="dialog-body">
+            <p>
+              删除“{deleteTarget.name}
+              ”后，下次导出将移除它的定义和本工程管理的获取途径。如果存档中已有这张卡，更新
+              Mod 后可能丢失该物品。
+            </p>
+            <p>
+              若只想让它不再出现，可选择“仅停止获取”。GUID {deleteTarget.guid}{' '}
+              会保留，不会分配给新卡。
+            </p>
+          </div>
+          <footer className="modal-actions">
+            <button className="button" onClick={() => setDeleteTarget(null)}>
+              取消
+            </button>
+            {!deleteTarget.origin && (
+              <button
+                className="button"
+                onClick={() => {
+                  change((p) => {
+                    const c = p.cards.find((c) => c.id === deleteTarget.id);
+                    if (c) c.status = 'retired';
+                  });
+                  setDeleteTarget(null);
+                  notify('已停止获取，保留已有卡牌定义');
+                }}
+              >
+                仅停止获取
+              </button>
+            )}
+            <button className="button danger" onClick={() => confirmDelete(deleteTarget)}>
+              确认删除卡牌
+            </button>
+          </footer>
+        </Modal>
       )}
       {showSettings && (
         <ProjectSettings
@@ -805,7 +880,10 @@ export default function App() {
               </button>
             </div>
             <div className="import-buttons">
-              <button className="button primary" onClick={() => zipInput.current?.click()}>
+              <button
+                className="button primary"
+                onClick={() => zipInput.current?.click()}
+              >
                 <Upload size={18} />
                 选择 Mod ZIP
               </button>
@@ -818,7 +896,8 @@ export default function App() {
               </button>
             </div>
             <p className="muted">
-              复杂条件补丁和未知效果会明确显示编辑限制。本工具生成的 Mod 可恢复其内嵌工程。
+              复杂条件补丁和未知效果会明确显示编辑限制。本工具生成的 Mod
+              可恢复其内嵌工程。
             </p>
           </div>
         </Modal>
@@ -909,7 +988,11 @@ export default function App() {
                   保存并分享这个卡牌合集 <ArrowRight size={16} />
                 </span>
               </button>
-              <button className="export-option" disabled={exporting} onClick={chooseExportFolder}>
+              <button
+                className="export-option"
+                disabled={exporting}
+                onClick={chooseExportFolder}
+              >
                 <FolderOpen size={25} />
                 <strong>导出 / 更新文件夹</strong>
                 <small>选择普通目录或游戏 mods 目录</small>
@@ -1005,7 +1088,11 @@ export default function App() {
         <div className={`toast ${toast.error ? 'toast-error' : ''}`} role="status">
           {toast.error ? <AlertTriangle size={19} /> : <CheckCircle2 size={19} />}
           <span>{toast.text}</span>
-          <button className="icon-button" aria-label="关闭提示" onClick={() => setToast(null)}>
+          <button
+            className="icon-button"
+            aria-label="关闭提示"
+            onClick={() => setToast(null)}
+          >
             <X size={17} />
           </button>
         </div>
@@ -1013,13 +1100,6 @@ export default function App() {
     </div>
   );
 }
-const RARITIES_LOCAL: Record<string, string> = {
-  Common: '普通',
-  Uncommon: '非凡',
-  Rare: '稀有',
-  Epic: '史诗',
-  Legendary: '传奇',
-};
 function IssueRow({
   issue,
   project,

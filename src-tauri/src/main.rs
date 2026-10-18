@@ -1,4 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+mod game;
 #[cfg(windows)]
 mod native;
 mod rda;

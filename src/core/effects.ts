@@ -3,6 +3,7 @@ import { uid } from './types.ts';
 import { V11_EFFECTS } from './effects-v11.ts';
 import { V12_EFFECTS } from './effects-v12.ts';
 export interface ParamDef {
+  multi?: boolean;
   key: string;
   label: string;
   kind: 'number' | 'product' | 'workforce' | 'need' | 'boolean';
@@ -34,7 +35,16 @@ const n = (
   min = -100,
   max = 10000,
   step = 1,
-): ParamDef => ({ key, label, kind: 'number', default: def, unit, min, max, step });
+): ParamDef => ({
+  key,
+  label,
+  kind: 'number',
+  default: def,
+  unit,
+  min,
+  max,
+  step,
+});
 const g = (
   key: string,
   label: string,
@@ -152,18 +162,31 @@ export const createEffect = (type: string): Effect => {
     params: Object.fromEntries(d.params.map((p) => [p.key, p.default])),
   };
 };
-export function describeEffect(e: Effect, lookup: (guid: number) => string = String): string {
+export function describeEffect(
+  e: Effect,
+  lookup: (guid: number) => string = String,
+): string {
   const d = effectDef(e.type);
   if (!d) return `未知效果：${e.type}`;
   const p = e.params;
   if (d.encoding === 'output')
     return `每 ${p.cycles} 个生产周期额外产出 ${p.amount} 单位${lookup(Number(p.product))}`;
-  if (d.encoding === 'replace') return `将${lookup(Number(p.old))}替换为${lookup(Number(p.new))}`;
+  if (d.encoding === 'replace')
+    return `将${lookup(Number(p.old))}替换为${lookup(Number(p.new))}`;
   if (d.encoding === 'consumption')
     return `${lookup(Number(p.need))}消耗量 ${Number(p.value) > 0 ? '+' : ''}${p.value}%`;
   if (d.encoding === 'need')
-    return `满足${lookup(Number(p.provided))}时，同时提供${lookup(Number(p.substitute))}`;
+    return `满足${lookup(Number(p.provided))}时，同时提供${needOutputs(p.substitute).map(lookup).join('、')}`;
   if (d.params[0]?.kind === 'boolean') return `${d.label}：${p.value ? '开启' : '关闭'}`;
   if (e.type === 'workforceType') return `所需劳动力改为${lookup(Number(p.workforce))}`;
   return `${d.label} ${Number(p.value) > 0 ? '+' : ''}${p.value}${d.params[0]?.unit ?? ''}`;
 }
+
+export const needOutputs = (v: unknown): number[] => [
+  ...new Set(
+    String(v ?? '')
+      .split(/[,，;\s]+/)
+      .map(Number)
+      .filter((n) => Number.isInteger(n) && n > 0 && n <= 2147483647),
+  ),
+];

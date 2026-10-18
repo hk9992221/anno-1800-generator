@@ -1,5 +1,5 @@
 use crate::{
-    resources,
+    game, resources,
     storage::{self, err, ExportPlan, FileData, Preview, Result},
 };
 use base64::{engine::general_purpose::STANDARD, Engine};
@@ -49,15 +49,18 @@ async fn choose_folder(
     app: tauri::AppHandle,
     state: State<'_, AppState>,
     write: bool,
+    purpose: Option<String>,
 ) -> Result<Option<String>> {
     let a = app.clone();
     let file = tauri::async_runtime::spawn_blocking(move || {
         a.dialog()
             .file()
             .set_title(if write {
-                "选择导出／游戏 mods 的父目录"
+                "选择 Mod 导出目录"
+            } else if purpose.as_deref() == Some("game") {
+                "选择 Anno 1800 游戏根目录（含 maindata 和 Bin）"
             } else {
-                "选择游戏、已解包资源或 Mod 目录"
+                "选择文件夹"
             })
             .blocking_pick_folder()
     })
@@ -305,24 +308,46 @@ async fn index_resources(app: tauri::AppHandle, path: String) -> Result<Value> {
         let progress = |message: &str| {
             let _ = a.emit("resource-progress", message);
         };
-        let map = resources::discover(&root, &state.cancel, &progress)?;
+        let root = game::resolve_root(&root)?;
+        let mut map = resources::discover(&root, &state.cancel, &progress)?;
         let mut catalog = resources::index(&map, &root, &state.cancel, &progress)?;
-        let mods = if root.join("mods").is_dir() {
-            Some(root.join("mods"))
-        } else {
-            root.parent().map(|p| p.join("mods")).filter(|p| p.is_dir())
-        };
-        if let Some(mods) = mods {
-            let scanned = resources::scan_mods(&mods, &state.cancel, &progress)?;
-            if let Some(a) = scanned["assets"].as_array() {
-                catalog["assets"]
-                    .as_array_mut()
-                    .unwrap()
-                    .extend(a.iter().cloned());
-            }
-            catalog["scannedModGuids"] = scanned["guids"].clone();
+        let documents = a.path().document_dir().ok();
+        let scanned = game::scan_installed(&root, documents.as_deref(), &state.cancel, &progress)?;
+        catalog["assets"]
+            .as_array_mut()
+            .unwrap()
+            .extend(scanned["assets"].as_array().into_iter().flatten().cloned());
+        catalog["scannedModGuids"] = scanned["guids"].clone();
+        for key in ["warnings", "modCount", "modRoots"] {
+            catalog[key] = scanned[key].clone();
         }
-
+        catalog["gameRoot"] = json!(root.to_string_lossy());
+        resources::complete_catalog(&mut catalog);
+        game::add_mod_images(&root, documents.as_deref(), &mut map)?;
+        if state.cancel.load(Ordering::Relaxed) {
+            return Err("资源读取已取消".into());
+        }
+        catalog["portraits"] = json!(map
+            .keys()
+            .filter(|p| p.starts_with("data/")
+                && (p.ends_with(".dds") || p.ends_with(".png"))
+                && !p.ends_with("_1.dds")
+                && !p.ends_with("_2.dds")
+                && (p.contains("/ui/") || p.contains("portrait") || p.contains("icon")))
+            .map(|p| if let Some(stem) = p.strip_suffix("_0.dds") {
+                format!("{stem}.png")
+            } else if let Some(stem) = p.strip_suffix(".dds") {
+                format!("{stem}.png")
+            } else {
+                p.clone()
+            })
+            .collect::<std::collections::BTreeSet<_>>());
+        state
+            .roots
+            .lock()
+            .map_err(err)?
+            .entry(root)
+            .or_insert(false);
         storage::atomic_write(
             &data_dir(&a)?.join("resource-map.json"),
             &serde_json::to_vec(&map).map_err(err)?,
@@ -353,9 +378,18 @@ fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
     if !p.exists() {
         return Ok(None);
     }
-    Ok(Some(
-        serde_json::from_slice(&fs::read(p).map_err(err)?).map_err(err)?,
-    ))
+    let catalog: Value = serde_json::from_slice(&fs::read(p).map_err(err)?).map_err(err)?;
+    if let Some(root) = catalog["gameRoot"].as_str() {
+        if let Ok(root) = PathBuf::from(root).canonicalize() {
+            app.state::<AppState>()
+                .roots
+                .lock()
+                .map_err(err)?
+                .entry(root)
+                .or_insert(false);
+        }
+    }
+    Ok(Some(catalog))
 }
 #[tauri::command]
 async fn load_portrait(app: tauri::AppHandle, path: String) -> Result<String> {
@@ -370,8 +404,10 @@ async fn load_portrait(app: tauri::AppHandle, path: String) -> Result<String> {
         let resource = candidates
             .iter()
             .find_map(|p| resources.get(p))
+            .cloned()
             .ok_or("原版头像缓存尚未读取，请重新选择本机资源目录")?;
-        let bytes = resources::bytes(resource)?;
+        drop(resources);
+        let bytes = resources::bytes(&resource)?;
         let png = resources::portrait_png(&bytes)?;
         Ok(format!("data:image/png;base64,{}", STANDARD.encode(png)))
     })
@@ -381,23 +417,29 @@ async fn load_portrait(app: tauri::AppHandle, path: String) -> Result<String> {
 
 #[tauri::command]
 async fn scan_mods(app: tauri::AppHandle, path: String) -> Result<Value> {
-    let root = require_root(&app.state::<AppState>(), &path, false)?;
-    let a = app.clone();
-    tauri::async_runtime::spawn_blocking(move || {
-        let state = a.state::<AppState>();
-        state.cancel.store(false, Ordering::Relaxed);
-        resources::scan_mods(&root, &state.cancel, &|m| {
-            let _ = a.emit("resource-progress", m);
-        })
-    })
-    .await
-    .map_err(err)?
+    index_resources(app, path).await
 }
 
 pub fn run() {
     tauri::Builder::default()
         .manage(AppState::default())
         .plugin(tauri_plugin_dialog::init())
+        .setup(|app| {
+            if let Some(window) = app.get_webview_window("main") {
+                if let Some(monitor) = window.current_monitor()? {
+                    let scale = monitor.scale_factor();
+                    let width = (f64::from(monitor.size().width) / scale * 0.9).min(1060.0);
+                    let height = (f64::from(monitor.size().height) / scale * 0.84).min(700.0);
+                    window.set_min_size(Some(tauri::LogicalSize::new(
+                        width.min(760.0),
+                        height.min(480.0),
+                    )))?;
+                    window.set_size(tauri::LogicalSize::new(width, height))?;
+                    window.center()?;
+                }
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             choose_folder,
             load_project,

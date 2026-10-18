@@ -41,10 +41,12 @@ export function download(name: string, bytes: Uint8Array) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 export const native = {
-  async chooseFolder(write = false) {
+  async chooseFolder(write = false, purpose = 'folder') {
     if (!isDesktop())
-      throw new Error('目录读取／部署请使用 Windows 桌面程序；开发预览可打开工程或导入 ZIP');
-    return invoke<string | null>('choose_folder', { write });
+      throw new Error(
+        '目录读取／部署请使用 Windows 桌面程序；开发预览可打开工程或导入 ZIP',
+      );
+    return invoke<string | null>('choose_folder', { write, purpose });
   },
   async openProject() {
     return invoke<{ path: string; text: string } | null>('load_project');
@@ -70,7 +72,7 @@ export const native = {
     return isDesktop() ? invoke<number[]>('load_registry') : [];
   },
   async scanMods(path: string) {
-    return invoke<{ assets: Catalog['assets']; guids: number[] }>('scan_mods', { path });
+    return invoke<Catalog>('scan_mods', { path });
   },
   async readMod(path: string) {
     return invoke<NativeFile[]>('read_mod_folder', { path });
@@ -82,7 +84,11 @@ export const native = {
     return invoke<string>('write_export', { parent, plan, token });
   },
   async zip(name: string, bytes: Uint8Array) {
-    if (isDesktop()) return invoke<string | null>('save_zip', { name, data: bytesToBase64(bytes) });
+    if (isDesktop())
+      return invoke<string | null>('save_zip', {
+        name,
+        data: bytesToBase64(bytes),
+      });
     download(name, bytes);
     return name;
   },
@@ -107,6 +113,8 @@ export const native = {
     return invoke<string>('load_portrait', { path });
   },
   async progress(handler: (message: string) => void) {
-    return isDesktop() ? listen<string>('resource-progress', (e) => handler(e.payload)) : () => {};
+    return isDesktop()
+      ? listen<string>('resource-progress', (e) => handler(e.payload))
+      : () => {};
   },
 };

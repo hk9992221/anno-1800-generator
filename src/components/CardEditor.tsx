@@ -20,11 +20,24 @@ import {
   effectDef,
   type ParamDef,
 } from '../core/effects.ts';
-import { assetName, catalogOf } from '../core/catalog.ts';
+import {
+  assetName,
+  needsForLevels,
+  populationOf,
+  populationTargets,
+  worldName,
+} from '../core/catalog.ts';
+import { SourcesEditor } from './SourcesEditor.tsx';
 import { cropImage } from '../core/images.ts';
 import { AssetPicker } from './AssetPicker.tsx';
 import { Empty, Field, Modal, Portrait } from './common.tsx';
-export type EditorTab = 'basic' | 'image' | 'targets' | 'effects' | 'sources' | 'advanced';
+export type EditorTab =
+  | 'basic'
+  | 'image'
+  | 'targets'
+  | 'effects'
+  | 'sources'
+  | 'advanced';
 export const TABS: { id: EditorTab; label: string }[] = [
   { id: 'basic', label: '基本信息' },
   { id: 'image', label: '图片与头像' },
@@ -40,7 +53,15 @@ export function CardEditor({
   onChange,
   refresh,
   onError,
+  onAddSource,
+  onSetup,
+  onChoosePortrait,
+  onSelectTargets,
 }: {
+  onAddSource: (type: Source['type']) => void;
+  onSetup: () => void;
+  onChoosePortrait: () => void;
+  onSelectTargets: () => void;
   card: Card;
   catalog?: Catalog;
   tab: EditorTab;
@@ -58,9 +79,12 @@ export function CardEditor({
     } | null>(null),
     [adding, setAdding] = useState(false),
     [effectQuery, setEffectQuery] = useState(''),
-    [crop, setCrop] = useState<{ original: string; x: number; y: number; zoom: number } | null>(
-      null,
-    );
+    [crop, setCrop] = useState<{
+      original: string;
+      x: number;
+      y: number;
+      zoom: number;
+    } | null>(null);
   const [cropPreview, setCropPreview] = useState('');
   useEffect(() => {
     if (!crop) {
@@ -81,58 +105,57 @@ export function CardEditor({
     };
   }, [crop]);
   const updateEffect = (id: string, patch: Partial<Effect>) =>
-    onChange({ effects: card.effects.map((e) => (e.id === id ? { ...e, ...patch } : e)) });
-  const updateSource = (id: string, patch: Partial<Source>) =>
-    onChange({ sources: card.sources.map((s) => (s.id === id ? { ...s, ...patch } : s)) });
-  const chooseParam = (effect: Effect, param: ParamDef) =>
+    onChange({
+      effects: card.effects.map((e) => (e.id === id ? { ...e, ...patch } : e)),
+    });
+  const chooseParam = (effect: Effect, param: ParamDef) => {
+    const levels =
+      card.populationLevels ??
+      populationOf(catalog)
+        .filter((p) => p.residences.some((g) => card.targets.includes(g)))
+        .map((p) => p.guid);
+    const needs = needsForLevels(catalog, levels);
+    if (param.kind === 'need' && !levels.length) {
+      onError('请先在适用目标中选择居民阶级');
+      onSelectTargets();
+      return;
+    }
     setPicker({
       title: param.label,
-      selected: [Number(effect.params[param.key])].filter(Boolean),
+      selected: String(effect.params[param.key] ?? '')
+        .split(',')
+        .map(Number)
+        .filter(Boolean),
+      multi: param.multi,
       filter: (a) =>
         param.kind === 'workforce'
           ? a.kind === 'workforce'
           : param.kind === 'need'
-            ? a.kind === 'product' || a.kind === 'building' || a.template.includes('Need')
+            ? needs.includes(a.guid)
             : a.kind === 'product',
       apply: (ids) =>
-        updateEffect(effect.id, { params: { ...effect.params, [param.key]: ids[0] ?? 0 } }),
+        updateEffect(effect.id, {
+          params: {
+            ...effect.params,
+            [param.key]: param.multi ? ids.join(',') : (ids[0] ?? 0),
+          },
+        }),
     });
-  const traders = catalogOf(catalog).traders ?? [];
-  const stages: Record<string, string> = {
-    EarlyGame: '早期',
-    EarlyMidGame: '前中期',
-    MidGame: '中期',
-    LateMidGame: '中后期',
-    LateGame: '后期',
-    EndGame: '终局',
   };
-  const addSource = (type: Source['type']) =>
+  const changeAllocation = (allocation: Card['allocation']) => {
+    const family = familyOf(allocation),
+      changed = family !== familyOf(card.allocation);
     onChange({
-      sources: [
-        ...card.sources,
-        {
-          id: uid(),
-          type,
-          label:
-            type === 'gallery'
-              ? '壮丽艺廊'
-              : type === 'trader'
-                ? '埃利·布莱克沃斯'
-                : type === 'research'
-                  ? '研究所'
-                  : type === 'expedition'
-                    ? '远征'
-                    : type === 'visitor'
-                      ? '访客'
-                      : '任务奖励',
-          poolGuid: 0,
-          weight: 100,
-          tickets: 100,
-          maxCount: 99,
-          scale: 1.5,
-        },
-      ],
+      allocation,
+      ...(changed
+        ? {
+            targets: [],
+            populationLevels: [],
+            effects: family === 'residence' ? [createEffect('happiness')] : [],
+          }
+        : {}),
     });
+  };
   const addEffect = (type: string) => {
     const def = effectDef(type);
     if (!def) return;
@@ -185,7 +208,7 @@ export function CardEditor({
             <Field label="安装位置">
               <select
                 value={card.allocation}
-                onChange={(e) => onChange({ allocation: e.target.value as Card['allocation'] })}
+                onChange={(e) => changeAllocation(e.target.value as Card['allocation'])}
               >
                 {Object.entries(ALLOCATIONS).map(([v, t]) => (
                   <option key={v} value={v}>
@@ -206,14 +229,21 @@ export function CardEditor({
                 <span>金币</span>
               </div>
             </Field>
-            <Field label="卡组">
+            <Field
+              label="卡组（仅用于整理）"
+              hint="卡组不会改变游戏效果；市政厅请在适用目标中选择住宅阶级。"
+            >
               <input
                 value={card.group}
                 onChange={(e) => onChange({ group: e.target.value })}
                 placeholder="我的卡牌"
               />
             </Field>
-            <Field label="背景描述" wide hint="描述作为卡牌背景文本，游戏效果由积木生成。">
+            <Field
+              label="背景描述"
+              wide
+              hint="描述作为卡牌背景文本，游戏效果由积木生成。"
+            >
               <textarea
                 rows={4}
                 value={card.description}
@@ -262,7 +292,13 @@ export function CardEditor({
                       if (!f) return;
                       if (f.size > 20_000_000) throw new Error('请选择小于 20 MB 的图片');
                       const r = new FileReader();
-                      r.onload = () => setCrop({ original: String(r.result), x: 0, y: 0, zoom: 1 });
+                      r.onload = () =>
+                        setCrop({
+                          original: String(r.result),
+                          x: 0,
+                          y: 0,
+                          zoom: 1,
+                        });
                       r.readAsDataURL(f);
                     } catch (e) {
                       onError(String(e));
@@ -271,22 +307,9 @@ export function CardEditor({
                   }}
                 />
               </label>
-              <button
-                className="button"
-                onClick={() =>
-                  setPicker({
-                    title: '选择原版头像',
-                    selected: [],
-                    filter: (a) => !!a.icon && a.kind === 'portrait',
-                    apply: (ids) => {
-                      const a = catalogOf(catalog).assets.find((a) => a.guid === ids[0]);
-                      if (a?.icon) onChange({ image: { mode: 'game', path: a.icon } });
-                    },
-                  })
-                }
-              >
+              <button className="button" onClick={onChoosePortrait}>
                 <Search size={18} />
-                浏览已有头像
+                浏览游戏头像
               </button>
               {card.image.original && (
                 <button
@@ -310,17 +333,7 @@ export function CardEditor({
               </small>
             </div>
           </div>
-          <Field
-            label="原版图标资源路径"
-            hint="原版头像从本机资源读取预览；导出保持对游戏资源的引用。"
-          >
-            <input
-              value={card.image.mode === 'game' ? card.image.path : '自定义图片已保存进工程'}
-              disabled={card.image.mode === 'custom'}
-              onChange={(e) => onChange({ image: { mode: 'game', path: e.target.value } })}
-              placeholder="data/ui/.../icon_specialist.png"
-            />
-          </Field>
+          <p className="muted">选择游戏根目录后自动识别头像，并打开缩略图选择窗口。</p>
         </div>
       )}
       {tab === 'targets' && familyOf(card.allocation) === 'ship' && (
@@ -335,7 +348,7 @@ export function CardEditor({
           <Field label="可装备的船舶类别">
             <select
               value={card.allocation}
-              onChange={(e) => onChange({ allocation: e.target.value as Card['allocation'] })}
+              onChange={(e) => changeAllocation(e.target.value as Card['allocation'])}
             >
               {Object.entries(ALLOCATIONS)
                 .filter(([v]) => familyOf(v as Card['allocation']) === 'ship')
@@ -370,7 +383,13 @@ export function CardEditor({
                       : familyOf(card.allocation) === 'residence'
                         ? a.kind === 'residence' || a.template === 'ItemEffectTargetPool'
                         : a.kind === 'building' || a.template === 'ItemEffectTargetPool',
-                  apply: (targets) => onChange({ targets }),
+                  apply: (targets) =>
+                    onChange({
+                      targets,
+                      populationLevels: populationOf(catalog)
+                        .filter((p) => p.residences.some((g) => targets.includes(g)))
+                        .map((p) => p.guid),
+                    }),
                 })
               }
             >
@@ -378,6 +397,73 @@ export function CardEditor({
               选择目标
             </button>
           </div>
+          {card.allocation === 'TownHall' && (
+            <div className="population-selector">
+              <h3>适用居民阶级（可多选）</h3>
+              <p className="muted compact">
+                市政厅效果按住宅生效；卡组名称只用于整理。需求积木按这里选择的阶级筛选。
+              </p>
+              {populationOf(catalog).length ? (
+                <>
+                  <div className="population-grid">
+                    {populationOf(catalog)
+                      .filter((p) => p.residences.length)
+                      .map((p) => {
+                        const chosen =
+                          card.populationLevels ??
+                          populationOf(catalog)
+                            .filter((p) =>
+                              p.residences.some((g) => card.targets.includes(g)),
+                            )
+                            .map((p) => p.guid);
+                        return (
+                          <label className="population-option" key={p.guid}>
+                            <input
+                              type="checkbox"
+                              checked={chosen.includes(p.guid)}
+                              onChange={(e) => {
+                                const levels = e.target.checked
+                                  ? [...chosen, p.guid]
+                                  : chosen.filter((g) => g !== p.guid);
+                                onChange({
+                                  populationLevels: levels,
+                                  targets: populationTargets(catalog, levels),
+                                });
+                              }}
+                            />
+                            <span>
+                              <strong>{p.name}</strong>
+                              <small>
+                                {worldName(p.region)} · {p.residences.length} 类住宅 ·{' '}
+                                {p.needs.length} 项需求
+                              </small>
+                            </span>
+                          </label>
+                        );
+                      })}
+                  </div>
+                  <button
+                    className="button small"
+                    onClick={() => {
+                      const levels = populationOf(catalog)
+                        .filter((p) => p.residences.length)
+                        .map((p) => p.guid);
+                      onChange({
+                        populationLevels: levels,
+                        targets: populationTargets(catalog, levels),
+                      });
+                    }}
+                  >
+                    选择所有阶级
+                  </button>
+                </>
+              ) : (
+                <button className="button" onClick={onSetup}>
+                  选择游戏根目录，识别全部阶级
+                </button>
+              )}
+            </div>
+          )}
           <div className="target-list">
             {card.targets.map((g) => (
               <div className="target-row" key={g}>
@@ -391,7 +477,18 @@ export function CardEditor({
                 <button
                   className="icon-button"
                   aria-label={`移除 ${assetName(catalog, g)}`}
-                  onClick={() => onChange({ targets: card.targets.filter((t) => t !== g) })}
+                  onClick={() =>
+                    onChange({
+                      targets: card.targets.filter((t) => t !== g),
+                      populationLevels: populationOf(catalog)
+                        .filter((p) =>
+                          p.residences.some(
+                            (id) => id !== g && card.targets.includes(id),
+                          ),
+                        )
+                        .map((p) => p.guid),
+                    })
+                  }
                 >
                   <X size={17} />
                 </button>
@@ -422,9 +519,14 @@ export function CardEditor({
             {card.effects.map((e, index) => {
               const d = effectDef(e.type);
               return (
-                <article className={`effect-block ${!e.enabled ? 'disabled' : ''}`} key={e.id}>
+                <article
+                  className={`effect-block ${!e.enabled ? 'disabled' : ''}`}
+                  key={e.id}
+                >
                   <header>
-                    <span className="block-number">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="block-number">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
                     <div className="block-title">
                       <strong>{d?.label ?? e.type}</strong>
                       <small>
@@ -435,7 +537,9 @@ export function CardEditor({
                       <input
                         type="checkbox"
                         checked={e.enabled}
-                        onChange={(v) => updateEffect(e.id, { enabled: v.target.checked })}
+                        onChange={(v) =>
+                          updateEffect(e.id, { enabled: v.target.checked })
+                        }
                       />
                       <span />
                     </label>
@@ -445,7 +549,10 @@ export function CardEditor({
                       disabled={!index}
                       onClick={() => {
                         const effects = [...card.effects];
-                        [effects[index - 1], effects[index]] = [effects[index], effects[index - 1]];
+                        [effects[index - 1], effects[index]] = [
+                          effects[index],
+                          effects[index - 1],
+                        ];
                         onChange({ effects });
                       }}
                     >
@@ -457,7 +564,10 @@ export function CardEditor({
                       disabled={index === card.effects.length - 1}
                       onClick={() => {
                         const effects = [...card.effects];
-                        [effects[index], effects[index + 1]] = [effects[index + 1], effects[index]];
+                        [effects[index], effects[index + 1]] = [
+                          effects[index + 1],
+                          effects[index],
+                        ];
                         onChange({ effects });
                       }}
                     >
@@ -469,7 +579,10 @@ export function CardEditor({
                         title="复制效果"
                         onClick={() =>
                           onChange({
-                            effects: [...card.effects, { ...structuredClone(e), id: uid() }],
+                            effects: [
+                              ...card.effects,
+                              { ...structuredClone(e), id: uid() },
+                            ],
                           })
                         }
                       >
@@ -480,7 +593,9 @@ export function CardEditor({
                       className="icon-button danger"
                       title="删除效果"
                       onClick={() =>
-                        onChange({ effects: card.effects.filter((v) => v.id !== e.id) })
+                        onChange({
+                          effects: card.effects.filter((v) => v.id !== e.id),
+                        })
                       }
                     >
                       <Trash2 size={16} />
@@ -494,7 +609,10 @@ export function CardEditor({
                             value={e.params[param.key] ? '1' : '0'}
                             onChange={(v) =>
                               updateEffect(e.id, {
-                                params: { ...e.params, [param.key]: v.target.value === '1' },
+                                params: {
+                                  ...e.params,
+                                  [param.key]: v.target.value === '1',
+                                },
                               })
                             }
                           >
@@ -511,17 +629,30 @@ export function CardEditor({
                               value={Number(e.params[param.key])}
                               onChange={(v) =>
                                 updateEffect(e.id, {
-                                  params: { ...e.params, [param.key]: Number(v.target.value) },
+                                  params: {
+                                    ...e.params,
+                                    [param.key]: Number(v.target.value),
+                                  },
                                 })
                               }
                             />
                             <span>{param.unit}</span>
                           </div>
                         ) : (
-                          <button className="resource-button" onClick={() => chooseParam(e, param)}>
-                            {Number(e.params[param.key])
-                              ? assetName(catalog, Number(e.params[param.key]))
-                              : `选择${param.label}`}
+                          <button
+                            className="resource-button"
+                            onClick={() => chooseParam(e, param)}
+                          >
+                            {param.multi
+                              ? String(e.params[param.key] ?? '')
+                                  .split(',')
+                                  .map(Number)
+                                  .filter(Boolean)
+                                  .map((g) => assetName(catalog, g))
+                                  .join('、') || `选择${param.label}`
+                              : Number(e.params[param.key])
+                                ? assetName(catalog, Number(e.params[param.key]))
+                                : `选择${param.label}`}
                             <Search size={16} />
                           </button>
                         )}
@@ -550,197 +681,13 @@ export function CardEditor({
         </div>
       )}
       {tab === 'sources' && (
-        <div className="editor-section">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">ITEM SOURCES</span>
-              <h2>在世界中，找到这张卡牌</h2>
-              <p>可选择多个渠道。价格、物品池和金票分别设置。</p>
-            </div>
-          </div>
-          <div className="source-adds">
-            {(
-              [
-                ['gallery', '壮丽艺廊'],
-                ['trader', '指定商人'],
-                ['research', '研究所'],
-                ['expedition', '远征'],
-                ['visitor', '访客'],
-                ['quest', '任务奖励'],
-              ] as const
-            ).map(([type, label]) => (
-              <button
-                className="button"
-                key={type}
-                disabled={type === 'gallery' && card.sources.some((s) => s.type === 'gallery')}
-                onClick={() => addSource(type)}
-              >
-                <Plus size={16} />
-                {label}
-              </button>
-            ))}
-          </div>
-          {card.sources.map((s) => (
-            <article className="source-block" key={s.id}>
-              <header>
-                <strong>{s.type === 'gallery' ? '壮丽艺廊' : s.label}</strong>
-                <button
-                  className="icon-button danger"
-                  aria-label="删除获取途径"
-                  onClick={() => onChange({ sources: card.sources.filter((v) => v.id !== s.id) })}
-                >
-                  <Trash2 size={17} />
-                </button>
-              </header>
-              <div className="form-grid">
-                {s.type === 'gallery' ? (
-                  <>
-                    <Field label="首次购买金票">
-                      <input
-                        type="number"
-                        min="1"
-                        value={s.tickets}
-                        onChange={(e) => updateSource(s.id, { tickets: Number(e.target.value) })}
-                      />
-                    </Field>
-                    <Field label="最多购买次数">
-                      <input
-                        type="number"
-                        min="1"
-                        max="99"
-                        value={s.maxCount}
-                        onChange={(e) => updateSource(s.id, { maxCount: Number(e.target.value) })}
-                      />
-                    </Field>
-                    <Field label="后续价格倍率">
-                      <input
-                        type="number"
-                        min="1"
-                        step="0.1"
-                        value={s.scale}
-                        onChange={(e) => updateSource(s.id, { scale: Number(e.target.value) })}
-                      />
-                    </Field>
-                  </>
-                ) : (
-                  <>
-                    <Field label={s.type === 'trader' ? '商人' : '渠道备注'}>
-                      {s.type === 'trader' && traders.length ? (
-                        <select
-                          value={s.traderGuid ?? ''}
-                          onChange={(e) => {
-                            const t = traders.find((t) => t.guid === Number(e.target.value)),
-                              first = t?.stages[0];
-                            updateSource(s.id, {
-                              traderGuid: t?.guid,
-                              label: t?.name ?? '自定义商人',
-                              stage: first?.stage,
-                              poolGuid: first?.poolGuid ?? 0,
-                            });
-                          }}
-                        >
-                          <option value="">手动指定商人 / 物品池</option>
-                          {traders.map((t) => (
-                            <option key={t.guid} value={t.guid}>
-                              {t.name} · {t.guid}
-                            </option>
-                          ))}
-                        </select>
-                      ) : s.type === 'trader' ? (
-                        <select
-                          value={s.label}
-                          onChange={(e) =>
-                            updateSource(s.id, { label: e.target.value, poolGuid: 0 })
-                          }
-                        >
-                          {[
-                            ...new Set([
-                              '埃利·布莱克沃斯',
-                              '阿奇博尔德·布莱克爵士',
-                              '卡希娜女王',
-                              '伊莎贝尔·萨门托',
-                              '安妮·哈洛',
-                              '让·拉福尔蒂',
-                              '凯特玛',
-                              '雨果·默西埃',
-                              s.label,
-                            ]),
-                          ].map((n) => (
-                            <option key={n}>{n}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          value={s.label}
-                          onChange={(e) => updateSource(s.id, { label: e.target.value })}
-                        />
-                      )}
-                    </Field>
-                    {s.type === 'trader' && s.traderGuid && (
-                      <Field label="解锁阶段">
-                        <select
-                          value={s.stage ?? ''}
-                          onChange={(e) => {
-                            const t = traders.find((t) => t.guid === s.traderGuid),
-                              stage = t?.stages.find((st) => st.stage === e.target.value);
-                            if (stage)
-                              updateSource(s.id, { stage: stage.stage, poolGuid: stage.poolGuid });
-                          }}
-                        >
-                          {(traders.find((t) => t.guid === s.traderGuid)?.stages ?? []).map(
-                            (st) => (
-                              <option key={st.stage} value={st.stage}>
-                                {stages[st.stage] ?? st.stage} · 池 {st.poolGuid}
-                              </option>
-                            ),
-                          )}
-                        </select>
-                      </Field>
-                    )}
-                    <Field label="获取物品池">
-                      <button
-                        className="resource-button"
-                        onClick={() =>
-                          setPicker({
-                            title: '选择获取物品池',
-                            selected: s.poolGuid ? [s.poolGuid] : [],
-                            filter: (a) => a.kind === 'pool' && !!a.poolPath,
-                            apply: (ids) => updateSource(s.id, { poolGuid: ids[0] ?? 0 }),
-                          })
-                        }
-                      >
-                        {s.poolGuid ? assetName(catalog, s.poolGuid) : '从本机资源选择'}
-                        <Search size={16} />
-                      </button>
-                    </Field>
-                    <Field label="池内相对权重">
-                      <input
-                        type="number"
-                        min="1"
-                        value={s.weight}
-                        onChange={(e) => updateSource(s.id, { weight: Number(e.target.value) })}
-                      />
-                    </Field>
-                    <Field label="已知物品池 GUID">
-                      <input
-                        type="number"
-                        min="1"
-                        value={s.poolGuid || ''}
-                        onChange={(e) => updateSource(s.id, { poolGuid: Number(e.target.value) })}
-                      />
-                    </Field>
-                  </>
-                )}
-              </div>
-              <small className="source-help">
-                {s.type === 'gallery'
-                  ? '生成独立的艺廊许可与商品；通过帕洛玛向单人存档交付，需在目标游戏内验证。'
-                  : '物品池可能被多个 NPC 或奖励系统共享。请核对来源和解锁阶段；权重不代表每次刷新必定出现。'}
-              </small>
-            </article>
-          ))}
-          {!card.sources.length && <Empty>选择一个获取渠道，让你的卡牌出现在游戏世界中。</Empty>}
-        </div>
+        <SourcesEditor
+          card={card}
+          catalog={catalog}
+          onChange={onChange}
+          onAdd={onAddSource}
+          onSetup={onSetup}
+        />
       )}
       {tab === 'advanced' && (
         <div className="editor-section">
@@ -779,7 +726,9 @@ export function CardEditor({
             <Field label="物品类型">
               <select
                 value={card.itemType}
-                onChange={(e) => onChange({ itemType: e.target.value as Card['itemType'] })}
+                onChange={(e) =>
+                  onChange({ itemType: e.target.value as Card['itemType'] })
+                }
               >
                 <option value="Specialist">专家 Specialist</option>
                 <option value="Normal">普通物品 Normal</option>
@@ -829,6 +778,7 @@ export function CardEditor({
           filter={picker.filter}
           onApply={picker.apply}
           onClose={() => setPicker(null)}
+          onSetup={onSetup}
         />
       )}
       {adding && (
@@ -854,7 +804,11 @@ export function CardEditor({
                 d.families.includes(familyOf(card.allocation)) &&
                 `${d.label}${d.help}`.includes(effectQuery),
             ).map((d) => (
-              <button className="effect-option" key={d.id} onClick={() => addEffect(d.id)}>
+              <button
+                className="effect-option"
+                key={d.id}
+                onClick={() => addEffect(d.id)}
+              >
                 <span className="effect-option-icon">
                   <Plus size={20} />
                 </span>

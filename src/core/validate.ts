@@ -1,7 +1,7 @@
 import type { Issue, Project } from './types.ts';
 import { familyOf } from './types.ts';
-import { effectDef } from './effects.ts';
-import { lookupAsset } from './catalog.ts';
+import { effectDef, needOutputs } from './effects.ts';
+import { lookupAsset, populationOf } from './catalog.ts';
 export function validateProject(p: Project): Issue[] {
   const out: Issue[] = [],
     add = (
@@ -22,21 +22,33 @@ export function validateProject(p: Project): Issue[] {
     p.folderName === '..'
   )
     add('error', 'folder', 'Mod 文件夹名包含 Windows 不支持的字符');
-  if (!p.cards.some((c) => c.status !== 'draft'))
+  if (!p.cards.some((c) => c.status !== 'draft') && !p.removedCards?.length)
     add('error', 'empty', '至少需要一张参与导出的卡牌');
   const ids = new Map<number, string>(),
     cardIds = new Set<string>();
   for (const c of p.cards) {
     if (cardIds.has(c.id)) add('error', 'cardId', '工程卡牌 ID 重复', c.id);
     cardIds.add(c.id);
-    for (const g of [c.guid, c.descriptionGuid, c.galleryPermitGuid, c.galleryPackageGuid]) {
-      if (!validGuid(g)) add('error', 'guid', '卡牌及辅助 GUID 必须是合法的游戏整数', c.id);
+    for (const g of [
+      c.guid,
+      c.descriptionGuid,
+      c.galleryPermitGuid,
+      c.galleryPackageGuid,
+      ...c.sources.flatMap((s) => Object.values(s.automation?.ids ?? {})),
+    ]) {
+      if (!validGuid(g))
+        add('error', 'guid', '卡牌及辅助 GUID 必须是合法的游戏整数', c.id);
       if (ids.has(g)) add('error', 'duplicate', `GUID ${g} 与 ${ids.get(g)} 冲突`, c.id);
       else ids.set(g, c.name);
     }
     if (c.status === 'draft') continue;
     if (!c.name.trim()) add('error', 'name', '请填写卡牌名称', c.id);
-    if (!Number.isInteger(c.price) || c.price < 0 || !Number.isInteger(c.stack) || c.stack < 1)
+    if (
+      !Number.isInteger(c.price) ||
+      c.price < 0 ||
+      !Number.isInteger(c.stack) ||
+      c.stack < 1
+    )
       add('error', 'price', '购买价格必须是非负整数，堆叠数量必须是正整数', c.id);
     if (!c.targets.length && familyOf(c.allocation) !== 'ship')
       add('error', 'targets', '请至少选择一个适用目标', c.id);
@@ -70,6 +82,17 @@ export function validateProject(p: Project): Issue[] {
             add('error', 'parameter', `${param.label}必须是开关值`, c.id, e.id);
           continue;
         }
+        if (param.multi) {
+          if (
+            !needOutputs(v).length ||
+            String(v)
+              .split(/[,，;\s]+/)
+              .filter(Boolean)
+              .some((x) => !validGuid(Number(x)))
+          )
+            add('error', 'resource', `请选择${param.label}`, c.id, e.id);
+          continue;
+        }
         const n = Number(v);
         if (!Number.isFinite(n) || !Number.isInteger(n))
           add('error', 'parameter', `${param.label}必须是整数`, c.id, e.id);
@@ -89,6 +112,24 @@ export function validateProject(p: Project): Issue[] {
             e.id,
           );
       }
+      if (d.encoding === 'need') {
+        const ys = needOutputs(e.params.substitute),
+          x = Number(e.params.provided);
+        if (ys.includes(x)) add('error', 'needSelf', 'X 与 Y 不能是同一需求', c.id, e.id);
+        for (const pop of populationOf(p.catalog).filter((p) =>
+          (c.populationLevels ?? []).includes(p.guid),
+        )) {
+          const missing = [x, ...ys].filter((g) => !pop.needs.includes(g));
+          if (missing.length)
+            add(
+              'warning',
+              'needClass',
+              `${pop.name}没有部分所选需求；对应需求对这一阶级无效`,
+              c.id,
+              e.id,
+            );
+        }
+      }
       if (d.encoding === 'replace') {
         const old = Number(e.params.old),
           n = Number(e.params.new);
@@ -98,13 +139,25 @@ export function validateProject(p: Project): Issue[] {
         for (const g of c.targets) {
           const a = lookupAsset(p.catalog, g);
           if (a?.inputs && !a.inputs.includes(old))
-            add('warning', 'input', `${a.name}不使用被替换原料，此积木对它无效`, c.id, e.id);
+            add(
+              'warning',
+              'input',
+              `${a.name}不使用被替换原料，此积木对它无效`,
+              c.id,
+              e.id,
+            );
         }
       }
       if (d.encoding === 'output') {
         const g = Number(e.params.product);
         if (outputs.has(g))
-          add('error', 'output', '同一种额外商品配置了多个周期，请合并为一条明确规则', c.id, e.id);
+          add(
+            'error',
+            'output',
+            '同一种额外商品配置了多个周期，请合并为一条明确规则',
+            c.id,
+            e.id,
+          );
         outputs.add(g);
       }
     }
@@ -119,6 +172,72 @@ export function validateProject(p: Project): Issue[] {
     const pools = new Set<number>();
     let gallery = 0;
     for (const s of c.sources) {
+      if (s.type === 'quest' || s.type === 'expedition') {
+        const a = s.automation;
+        if (!a) {
+          add('error', 'acquisition', '请重新添加该渠道并填写任务／事件内容', c.id);
+          continue;
+        }
+        if (
+          !a.title.trim() ||
+          !a.story.trim() ||
+          !Number.isInteger(a.rewardAmount) ||
+          a.rewardAmount < 1 ||
+          a.rewardAmount > 99
+        )
+          add('error', 'acquisition', '请填写任务名称、内容及 1–99 张奖励数量', c.id);
+        for (const r of a.conditions)
+          if (
+            !Number.isInteger(r.amount) ||
+            r.amount < 0 ||
+            (r.type !== 'time' && !validGuid(r.guid))
+          )
+            add('error', 'trigger', '请补全所有触发条件', c.id);
+        if (s.type === 'quest') {
+          const o = a.objective;
+          if (
+            !validGuid(a.sessionGuid) ||
+            !validGuid(a.giverGuid) ||
+            !Number.isInteger(a.maxRuns) ||
+            a.maxRuns < 1 ||
+            !Number.isInteger(a.cooldownMinutes) ||
+            a.cooldownMinutes < 0 ||
+            a.cooldownMinutes > 1440
+          )
+            add(
+              'error',
+              'quest',
+              '请补全任务地区、发布人、重复次数及 0–1440 分钟冷却时间',
+              c.id,
+            );
+          if (
+            (o.type !== 'time' &&
+              (!validGuid(o.guid) || !Number.isInteger(o.amount) || o.amount < 1)) ||
+            !Number.isInteger(o.seconds) ||
+            o.seconds < 1 ||
+            o.seconds > 86400
+          )
+            add('error', 'objective', '请填写任务目标、数量及 1–86400 秒保持时间', c.id);
+        } else {
+          const x = a.expedition;
+          if (
+            !validGuid(x.baseGuid) ||
+            !validGuid(x.slotGuid) ||
+            !x.eventTitle.trim() ||
+            !x.eventText.trim() ||
+            !x.optionText.trim()
+          )
+            add('error', 'expedition', '请补全远征模板、地区槽、事件和选项', c.id);
+          if (
+            x.requiredProduct &&
+            (!validGuid(x.requiredProduct) ||
+              !Number.isInteger(x.requiredAmount) ||
+              x.requiredAmount < 1)
+          )
+            add('error', 'expeditionGoods', '请设置选项所需物资与正整数数量', c.id);
+        }
+        continue;
+      }
       if (s.type === 'gallery') {
         gallery++;
         if (
@@ -130,7 +249,12 @@ export function validateProject(p: Project): Issue[] {
           !Number.isFinite(s.scale) ||
           s.scale < 1
         )
-          add('error', 'gallery', '艺廊价格至少 1 金票，购买上限 1–99，价格倍率至少 1', c.id);
+          add(
+            'error',
+            'gallery',
+            '艺廊价格至少 1 金票，购买上限 1–99，价格倍率至少 1',
+            c.id,
+          );
       } else {
         if (!validGuid(s.poolGuid))
           add('error', 'pool', `请为${s.label}选择正确的获取物品池`, c.id);
@@ -138,12 +262,23 @@ export function validateProject(p: Project): Issue[] {
           const trader = p.catalog?.traders?.find((t) => t.guid === s.traderGuid),
             stage = trader?.stages.find((st) => st.stage === s.stage);
           if (trader && stage?.poolGuid !== s.poolGuid)
-            add('error', 'traderPool', '商人、解锁阶段与物品池不一致，请重新选择阶段', c.id);
+            add(
+              'error',
+              'traderPool',
+              '商人、解锁阶段与物品池不一致，请重新选择阶段',
+              c.id,
+            );
           if (!trader)
-            add('warning', 'unknownTrader', '当前索引未确认该商人，请重新读取资源核对渠道', c.id);
+            add(
+              'warning',
+              'unknownTrader',
+              '当前索引未确认该商人，请重新读取资源核对渠道',
+              c.id,
+            );
         }
         const a = lookupAsset(p.catalog, s.poolGuid);
-        if (a && !a.poolPath) add('error', 'poolType', `${a.name}不是支持的奖励／物品资产池`, c.id);
+        if (a && !a.poolPath)
+          add('error', 'poolType', `${a.name}不是支持的奖励／物品资产池`, c.id);
         if (!a)
           add(
             'warning',
@@ -154,15 +289,21 @@ export function validateProject(p: Project): Issue[] {
         if (pools.has(s.poolGuid))
           add('error', 'poolDuplicate', '同一卡牌重复添加了相同获取池', c.id);
         pools.add(s.poolGuid);
-        if (!Number.isInteger(s.weight) || s.weight < 1)
-          add('error', 'weight', '物品池权重必须是正整数', c.id);
+        if (!Number.isInteger(s.weight) || s.weight < 1 || s.weight > 1000000)
+          add('error', 'weight', '池内相对权重请输入 1–1,000,000 的整数', c.id);
         if (s.type === 'craft')
           add('error', 'craft', '制作途径需要完整配方，不能当作普通物品池上架', c.id);
       }
     }
-    if (gallery > 1) add('error', 'galleryDuplicate', '同一卡牌只应创建一个艺廊条目', c.id);
+    if (gallery > 1)
+      add('error', 'galleryDuplicate', '同一卡牌只应创建一个艺廊条目', c.id);
     if (c.origin?.unsupported.length && p.mode === 'collection')
-      add('error', 'unknownClone', '含未知字段的外部卡牌需要在原 Mod 副本模式中处理', c.id);
+      add(
+        'error',
+        'unknownClone',
+        '含未知字段的外部卡牌需要在原 Mod 副本模式中处理',
+        c.id,
+      );
     for (const g of c.targets) {
       const a = lookupAsset(p.catalog, g);
       if (!a) add('warning', 'targetMissing', `目标 GUID ${g} 未在索引中找到`, c.id);

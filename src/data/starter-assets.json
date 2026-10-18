@@ -1,5 +1,309 @@
 [
   {
+    "guid": 86,
+    "name": "Farmer",
+    "english": "Farmer",
+    "template": "Profile_Virtual_NeverOwnsObjects",
+    "kind": "profile",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 264,
+    "name": "SessionTradeRouteConsoleScene",
+    "english": "SessionTradeRouteConsoleScene",
+    "template": "SessionTradeRouteConsoleScene",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 355,
+    "name": "Botanical Garden",
+    "english": "Botanical Garden",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 406,
+    "name": "Skyline Tower",
+    "english": "Skyline Tower",
+    "template": "ResidenceBuilding-Unique",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 535,
+    "name": "Local Mail",
+    "english": "Local Mail",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 536,
+    "name": "Regional Mail",
+    "english": "Regional Mail",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 655,
+    "name": "La Xultuna",
+    "english": "La Xultuna",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 835,
+    "name": "Aluminium Smelter",
+    "english": "Aluminium Smelter",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 836,
+    "name": "Bauxite ",
+    "english": "Bauxite ",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 838,
+    "name": "Aluminium Profiles",
+    "english": "Aluminium Profiles",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 840,
+    "name": "Helium",
+    "english": "Helium",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 846,
+    "name": "Bombs",
+    "english": "Bombs",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 847,
+    "name": "Sea Mines",
+    "english": "Sea Mines",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 848,
+    "name": "Pamphlets",
+    "english": "Pamphlets",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 849,
+    "name": "Care Packages",
+    "english": "Care Packages",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 850,
+    "name": "Water Drop",
+    "english": "Water Drop",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 905,
+    "name": "Supply Factory",
+    "english": "Supply Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 906,
+    "name": "Bomb Factory",
+    "english": "Bomb Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 907,
+    "name": "Sea Mine Factory",
+    "english": "Sea Mine Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 908,
+    "name": "Pamphlet Printer",
+    "english": "Pamphlet Printer",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 915,
+    "name": "Water Drop Factory",
+    "english": "Water Drop Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 916,
+    "name": "Care Package Factory",
+    "english": "Care Package Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 917,
+    "name": "Water",
+    "english": "Water",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 923,
+    "name": "Supply Factory",
+    "english": "Supply Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 924,
+    "name": "Bomb Factory",
+    "english": "Bomb Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 934,
+    "name": "Sea Mine Factory",
+    "english": "Sea Mine Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 935,
+    "name": "Pamphlet Printer",
+    "english": "Pamphlet Printer",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 936,
+    "name": "Care Package Factory",
+    "english": "Care Package Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 937,
+    "name": "Water Drop Factory",
+    "english": "Water Drop Factory",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1308,
+    "name": "Bauxite Mine",
+    "english": "Bauxite Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1353,
+    "name": "Helium Extractor",
+    "english": "Helium Extractor",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1388,
+    "name": "Mineral Mine",
+    "english": "Mineral Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1390,
+    "name": "Mineral Mine",
+    "english": "Mineral Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1414,
+    "name": "Industrial Lubricant",
+    "english": "Industrial Lubricant",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1591,
+    "name": "Mineral Resource",
+    "english": "Mineral Resource",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1955,
+    "name": "Cultivation Area",
+    "english": "Cultivation Area",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 2038,
+    "name": "Island Charter",
+    "english": "Island Charter",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 2397,
+    "name": "Furnace",
+    "english": "Furnace",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 2399,
     "name": "煤矿",
     "english": "Coal Mine",
@@ -16,12 +320,412 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 2524,
+    "name": "Overseas Mail",
+    "english": "Overseas Mail",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 4267,
+    "name": "New World Reports",
+    "english": "New World Reports",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 4268,
+    "name": "Arctic Reports",
+    "english": "Arctic Reports",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5380,
+    "name": "Calamari",
+    "english": "Calamari",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5381,
+    "name": "Jalea",
+    "english": "Jalea",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5382,
+    "name": "Ice Cream",
+    "english": "Ice Cream",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5383,
+    "name": "Herbs",
+    "english": "Herbs",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5384,
+    "name": "Nandu Leather",
+    "english": "Nandu Leather",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5385,
+    "name": "Milk",
+    "english": "Milk",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5386,
+    "name": "Orchid",
+    "english": "Orchid",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5387,
+    "name": "Ice Cube",
+    "english": "Ice Cube",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5388,
+    "name": "Perfumes",
+    "english": "Perfumes",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5389,
+    "name": "Costumes",
+    "english": "Costumes",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5390,
+    "name": "Motor",
+    "english": "Motor",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5391,
+    "name": "Scooter",
+    "english": "Scooter",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5392,
+    "name": "Film Reel",
+    "english": "Film Reel",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5393,
+    "name": "Fire Extinguishers",
+    "english": "Fire Extinguishers",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5394,
+    "name": "Police Equipment",
+    "english": "Police Equipment",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5395,
+    "name": "Fans",
+    "english": "Fans",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5397,
+    "name": "Medicine",
+    "english": "Medicine",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5398,
+    "name": "Minerals",
+    "english": "Minerals",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5399,
+    "name": "Ammonia",
+    "english": "Ammonia",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5400,
+    "name": "Pigments",
+    "english": "Pigments",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5401,
+    "name": "Nandu Feathers",
+    "english": "Nandu Feathers",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5403,
+    "name": "Artista",
+    "english": "Artista",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5405,
+    "name": "Artista Residence",
+    "english": "Artista Residence",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 5406,
     "name": "艺术家劳动力",
     "english": "Artista Workforce",
     "template": "Product",
     "kind": "workforce",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 5457,
+    "name": "Nandu Farm",
+    "english": "Nandu Farm",
+    "template": "FarmBuilding_Electrifiable",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5458,
+    "name": "Jalea Kitchen",
+    "english": "Jalea Kitchen",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5459,
+    "name": "Ice Cream Factory",
+    "english": "Ice Cream Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5462,
+    "name": "Laboratory: Pigments",
+    "english": "Laboratory: Pigments",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5463,
+    "name": "Herb Garden",
+    "english": "Herb Garden",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5464,
+    "name": "Herbs",
+    "english": "Herbs",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5657,
+    "name": "Perfume Mixer",
+    "english": "Perfume Mixer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5658,
+    "name": "Scooter Factory",
+    "english": "Scooter Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5659,
+    "name": "Motor Assembly Plant",
+    "english": "Motor Assembly Plant",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5803,
+    "name": "Soccer Balls",
+    "english": "Soccer Balls",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5814,
+    "name": "Orchid Farm",
+    "english": "Orchid Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5815,
+    "name": "Orchids",
+    "english": "Orchids",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5828,
+    "name": "Chemical Plant: Film Reels",
+    "english": "Chemical Plant: Film Reels",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5830,
+    "name": "Cinema",
+    "english": "Cinema",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5831,
+    "name": "Samba School",
+    "english": "Samba School",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5840,
+    "name": "Samba School",
+    "english": "Samba School",
+    "template": "BuffFactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5862,
+    "name": "Fan Factory",
+    "english": "Fan Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5864,
+    "name": "The Sunset Sea",
+    "english": "The Sunset Sea",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5879,
+    "name": "Ball Manufactory",
+    "english": "Ball Manufactory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5933,
+    "name": "Costume Shop",
+    "english": "Costume Shop",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5988,
+    "name": "Concrete Works",
+    "english": "Concrete Works",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5989,
+    "name": "Cement Mine",
+    "english": "Cement Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6018,
+    "name": "Cinema",
+    "english": "Cinema",
+    "template": "BuffFactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6080,
+    "name": "Furnace",
+    "english": "Furnace",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 6083,
@@ -32,12 +736,788 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 6086,
+    "name": "Hacienda Artista Quarters",
+    "english": "Hacienda Artista Quarters",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6261,
+    "name": "Automated Riot Control",
+    "english": "Automated Riot Control",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6262,
+    "name": "Automated Fire Protection",
+    "english": "Automated Fire Protection",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6263,
+    "name": "Automated Healthcare",
+    "english": "Automated Healthcare",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6264,
+    "name": "Beach ",
+    "english": "Beach ",
+    "template": "BuffFactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6265,
+    "name": "Beach",
+    "english": "Beach",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6279,
+    "name": "Cable Factory",
+    "english": "Cable Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6280,
+    "name": "Electric Cables",
+    "english": "Electric Cables",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6360,
+    "name": "Silver Ore",
+    "english": "Silver Ore",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6594,
+    "name": "Mezcal Bar",
+    "english": "Mezcal Bar",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6600,
+    "name": "Mezcal",
+    "english": "Mezcal",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6629,
+    "name": "Laboratory: Fire Extinguisher",
+    "english": "Laboratory: Fire Extinguisher",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6630,
+    "name": "Arsenal: Police Equipment",
+    "english": "Arsenal: Police Equipment",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 6631,
+    "name": "Laboratory: Medicine",
+    "english": "Laboratory: Medicine",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 7233,
+    "name": "ResidenceUpgradeBalancing",
+    "english": "ResidenceUpgradeBalancing",
+    "template": "ResidenceUpgradeFeature",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 7314,
+    "name": "Loading Crane",
+    "english": "Loading Crane",
+    "template": "BuffFactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 7319,
+    "name": "Sea Salt Factory",
+    "english": "Sea Salt Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 7919,
+    "name": "Calamari Fishery",
+    "english": "Calamari Fishery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 8002,
+    "name": "Powered Pasture",
+    "english": "Powered Pasture",
+    "template": "FactoryModuleElectric",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 8026,
+    "name": "Powered Pasture",
+    "english": "Powered Pasture",
+    "template": "FactoryModuleElectric",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 8027,
+    "name": "Powered Pasture",
+    "english": "Powered Pasture",
+    "template": "FactoryModuleElectric",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 13991,
+    "name": "animal_colony02_01_module (Watusi Module)",
+    "english": "animal_colony02_01_module (Watusi Module)",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 13992,
+    "name": "animal_colony02_02_module (Goat Module)",
+    "english": "animal_colony02_02_module (Goat Module)",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24055,
+    "name": "Fish",
+    "english": "Fish",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24110,
+    "name": "Poncho",
+    "english": "Poncho",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24116,
+    "name": "Burrito",
+    "english": "Burrito",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24117,
+    "name": "Tools",
+    "english": "Tools",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24118,
+    "name": "Drip Coffee Pot",
+    "english": "Drip Coffee Pot",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24119,
+    "name": "Steel",
+    "english": "Steel",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24120,
+    "name": "Coal Burner",
+    "english": "Coal Burner",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24121,
+    "name": "Carbon",
+    "english": "Carbon",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24122,
+    "name": "Fedora",
+    "english": "Fedora",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24123,
+    "name": "Atole",
+    "english": "Atole",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24124,
+    "name": "Concrete Factory",
+    "english": "Concrete Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24125,
+    "name": "Cement Mine",
+    "english": "Cement Mine",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24126,
+    "name": "Cement Mine Groundstation",
+    "english": "Cement Mine Groundstation",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24127,
+    "name": "Iron Mine",
+    "english": "Iron Mine",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24128,
+    "name": "Iron Mine Groundstation",
+    "english": "Iron Mine Groundstation",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24129,
+    "name": "Copper Mine",
+    "english": "Copper Mine",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24130,
+    "name": "Coal Mine",
+    "english": "Coal Mine",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24133,
+    "name": "Forestation",
+    "english": "Forestation",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24134,
+    "name": "Aquafarm",
+    "english": "Aquafarm",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24135,
+    "name": "Water Purification",
+    "english": "Water Purification",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24136,
+    "name": "Pump House",
+    "english": "Pump House",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24137,
+    "name": "Dam",
+    "english": "Dam",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24187,
+    "name": "Trees",
+    "english": "Trees",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24320,
+    "name": "Herbarium",
+    "english": "Herbarium",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 24652,
     "name": "渔场",
     "english": "Fishery",
     "template": "FactoryBuilding7_BuildPermit",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 24658,
+    "name": "Pig Farm",
+    "english": "Pig Farm",
+    "template": "FarmBuilding_BuildPermit",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24734,
+    "name": "Isles of Purgation",
+    "english": "Isles of Purgation",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24792,
+    "name": "Hacienda Jornalero Quarters",
+    "english": "Hacienda Jornalero Quarters",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24793,
+    "name": "Hacienda Obrera Quarters",
+    "english": "Hacienda Obrera Quarters",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24794,
+    "name": "Hacienda Farm",
+    "english": "Hacienda Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24798,
+    "name": "Hacienda Sugar Cane Farm",
+    "english": "Hacienda Sugar Cane Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24800,
+    "name": "Hacienda Brewery",
+    "english": "Hacienda Brewery",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24801,
+    "name": "Hacienda Rum Distillery",
+    "english": "Hacienda Rum Distillery",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24805,
+    "name": "Hacienda",
+    "english": "Hacienda",
+    "template": "BuffFactoryCulture",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24807,
+    "name": "Dung",
+    "english": "Dung",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24808,
+    "name": "Fertiliser",
+    "english": "Fertiliser",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24820,
+    "name": "Coal Coking Furnace",
+    "english": "Coal Coking Furnace",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24821,
+    "name": "Coke",
+    "english": "Coke",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24824,
+    "name": "Chewing Gum",
+    "english": "Chewing Gum",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24825,
+    "name": "Chewing Gum Factory",
+    "english": "Chewing Gum Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24836,
+    "name": "factory_Scenario02_Fuel",
+    "english": "factory_Scenario02_Fuel",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24837,
+    "name": "Fuel",
+    "english": "Fuel",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24844,
+    "name": "Cyanide Leacher",
+    "english": "Cyanide Leacher",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24845,
+    "name": "Oxidation Pool",
+    "english": "Oxidation Pool",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24846,
+    "name": "Silver Amalgam",
+    "english": "Silver Amalgam",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24850,
+    "name": "Silver Bars",
+    "english": "Silver Bars",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24851,
+    "name": "Silver Coins",
+    "english": "Silver Coins",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24852,
+    "name": "Cyanide",
+    "english": "Cyanide",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24856,
+    "name": "Silver Smelter",
+    "english": "Silver Smelter",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24857,
+    "name": "Royal Mint",
+    "english": "Royal Mint",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24861,
+    "name": "Ammonia Plant",
+    "english": "Ammonia Plant",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 24863,
+    "name": "Industrial lubricant ",
+    "english": "Industrial lubricant ",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25003,
+    "name": "Hacienda Corn Farm",
+    "english": "Hacienda Corn Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25005,
+    "name": "Hacienda Coffee Farm",
+    "english": "Hacienda Coffee Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25006,
+    "name": "Hacienda Caoutchouc Plantation",
+    "english": "Hacienda Caoutchouc Plantation",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25009,
+    "name": "Hacienda Cocoa Farm",
+    "english": "Hacienda Cocoa Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25019,
+    "name": "Hacienda Potato Farm",
+    "english": "Hacienda Potato Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25020,
+    "name": "Hacienda Spice Farm",
+    "english": "Hacienda Spice Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25064,
+    "name": "Hacienda Beer Brewery",
+    "english": "Hacienda Beer Brewery",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25073,
+    "name": "Waste Water",
+    "english": "Waste Water",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25126,
+    "name": "Hacienda Atole Maker",
+    "english": "Hacienda Atole Maker",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25128,
+    "name": "Hacienda Grain Farm",
+    "english": "Hacienda Grain Farm",
+    "template": "RecipeFarm",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25131,
+    "name": "Atole",
+    "english": "Atole",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25240,
+    "name": "Fertiliser Silo",
+    "english": "Fertiliser Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25241,
+    "name": "Fertiliser Silo",
+    "english": "Fertiliser Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25242,
+    "name": "Fertiliser Silo",
+    "english": "Fertiliser Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25350,
+    "name": "Hacienda Schnapps Distillery",
+    "english": "Hacienda Schnapps Distillery",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25506,
+    "name": "Hot Sauce",
+    "english": "Hot Sauce",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25508,
+    "name": "Hacienda Hot Sauce Brewery",
+    "english": "Hacienda Hot Sauce Brewery",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25546,
+    "name": "Hacienda",
+    "english": "Hacienda",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25547,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25548,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25549,
+    "name": "Silo",
+    "english": "Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25890,
+    "name": "Spice Field",
+    "english": "Spice Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100416,
+    "name": "Clay Pit",
+    "english": "Clay Pit",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 100438,
@@ -80,6 +1560,54 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 100451,
+    "name": "Sawmill",
+    "english": "Sawmill",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100654,
+    "name": "Red Pepper Farm",
+    "english": "Red Pepper Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100655,
+    "name": "Vineyard",
+    "english": "Vineyard",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100656,
+    "name": "Pepper Crop",
+    "english": "Pepper Crop",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100657,
+    "name": "Vines",
+    "english": "Vines",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 100659,
+    "name": "Champagne Cellar",
+    "english": "Champagne Cellar",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 100679,
     "name": "双桅帆船",
     "english": "Schooner",
@@ -88,12 +1616,28 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 100811,
+    "name": "Grand Postal Arena",
+    "english": "Grand Postal Arena",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 100828,
     "name": "双桅帆船",
     "english": "Schooner",
     "template": "EventTradeShip",
     "kind": "ship",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101122,
+    "name": "Dynamite Shop",
+    "english": "Dynamite Shop",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 101153,
@@ -128,12 +1672,212 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 101253,
+    "name": "Coffee Crop",
+    "english": "Coffee Crop",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101254,
+    "name": "Jornalero Residence",
+    "english": "Jornalero Residence",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101255,
+    "name": "Obrero Residence",
+    "english": "Obrero Residence",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101261,
+    "name": "factory_colony01_01 (Timber Factory)",
+    "english": "factory_colony01_01 (Timber Factory)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101262,
+    "name": "Fish Oil Factory",
+    "english": "Fish Oil Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101263,
+    "name": "Plantain Plantation",
+    "english": "Plantain Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101264,
+    "name": "Fried Plantain Kitchen",
+    "english": "Fried Plantain Kitchen",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101265,
+    "name": "factory_colony01_02 (Sailcloth Factory)",
+    "english": "factory_colony01_02 (Sailcloth Factory)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101266,
+    "name": "Poncho Darner",
+    "english": "Poncho Darner",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101267,
+    "name": "factory_colony01_04 (Clay Pit)",
+    "english": "factory_colony01_04 (Clay Pit)",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101268,
+    "name": "factory_colony01_05 (Brick Factory)",
+    "english": "factory_colony01_05 (Brick Factory)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101269,
+    "name": "Cattle Farm",
+    "english": "Cattle Farm",
+    "template": "FarmBuilding_Electrifiable",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101270,
+    "name": "Corn Farm",
+    "english": "Corn Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101271,
+    "name": "Tortilla Maker",
+    "english": "Tortilla Maker",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101272,
+    "name": "Alpaca Farm",
+    "english": "Alpaca Farm",
+    "template": "FarmBuilding_Electrifiable",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101273,
+    "name": "Bombín Weaver",
+    "english": "Bombín Weaver",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101280,
+    "name": "Plantain Grove",
+    "english": "Plantain Grove",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101281,
+    "name": "agriculture_colony01_09_field (Cattle Pasture)",
+    "english": "agriculture_colony01_09_field (Cattle Pasture)",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101282,
+    "name": "Cornfield",
+    "english": "Cornfield",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101283,
+    "name": "Alpaca Pasture",
+    "english": "Alpaca Pasture",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101296,
+    "name": "processing_colony01_03 (Inlay Processing)",
+    "english": "processing_colony01_03 (Inlay Processing)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101303,
+    "name": "coastal_colony01_02 (Niter Coast Building)",
+    "english": "coastal_colony01_02 (Niter Coast Building)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101311,
+    "name": "mining_colony01_01 (Gold Ore Mine)",
+    "english": "mining_colony01_01 (Gold Ore Mine)",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 101331,
+    "name": "Oil Refinery",
+    "english": "Oil Refinery",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 101387,
     "name": "双桅帆船",
     "english": "Schooner",
     "template": "TradeShip",
     "kind": "ship",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101415,
+    "name": "Felt Producer",
+    "english": "Felt Producer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 102237,
@@ -152,6 +1896,22 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 103866,
+    "name": "Bundle of Letters",
+    "english": "Bundle of Letters",
+    "template": "Product_Ammunition",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 103943,
+    "name": "Paloma Expedition Unlock",
+    "english": "Paloma Expedition Unlock",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 105538,
     "name": "快速帆船",
     "english": "Clipper",
@@ -160,12 +1920,1044 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 110934,
+    "name": "Cape Trelawney",
+    "english": "Cape Trelawney",
+    "template": "SessionModerate",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112091,
+    "name": "Explorer Shelter",
+    "english": "Explorer Shelter",
+    "template": "ResidenceBuilding7_Arctic",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112132,
+    "name": "Enbesa",
+    "english": "Enbesa",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112518,
+    "name": "Scrap",
+    "english": "Scrap",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112520,
+    "name": "Nice Scrap",
+    "english": "Nice Scrap",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112523,
+    "name": "Special Scrap",
+    "english": "Special Scrap",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112642,
+    "name": "Explorers",
+    "english": "Explorers",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112643,
+    "name": "Technicians",
+    "english": "Technicians",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112652,
+    "name": "Technician Shelter",
+    "english": "Technician Shelter",
+    "template": "ResidenceBuilding7_Arctic",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 112653,
     "name": "探险家劳动力",
     "english": "Explorer Workforce",
     "template": "Product",
     "kind": "workforce",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 112654,
+    "name": "Technicians Workforce",
+    "english": "Technicians Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112666,
+    "name": "Whale Hunter",
+    "english": "Whale Hunter",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112668,
+    "name": "Pemmican Factory",
+    "english": "Pemmican Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112672,
+    "name": "Parka Factory",
+    "english": "Parka Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112674,
+    "name": "Seal Hunter",
+    "english": "Seal Hunter",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112675,
+    "name": "Sleeping Bag Factory",
+    "english": "Sleeping Bag Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112676,
+    "name": "Goose Farm",
+    "english": "Goose Farm",
+    "template": "FarmBuilding_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112677,
+    "name": "Goose Pen",
+    "english": "Goose Pen",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112679,
+    "name": "Oil Lamp Factory",
+    "english": "Oil Lamp Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112680,
+    "name": "Husky Sled Factory",
+    "english": "Husky Sled Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112681,
+    "name": "Sled Frame Factory",
+    "english": "Sled Frame Factory",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112682,
+    "name": "Husky Farm",
+    "english": "Husky Farm",
+    "template": "FarmBuilding_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112683,
+    "name": "Husky Run",
+    "english": "Husky Run",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112690,
+    "name": "Arctic Gas Mine",
+    "english": "Arctic Gas Mine",
+    "template": "FarmBuilding_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112693,
+    "name": "Post Office",
+    "english": "Post Office",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112694,
+    "name": "Caribou Meat",
+    "english": "Caribou Meat",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112695,
+    "name": "Bear Fur",
+    "english": "Bear Fur",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112696,
+    "name": "Seal Skin",
+    "english": "Seal Skin",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112697,
+    "name": "Goose Feathers",
+    "english": "Goose Feathers",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112698,
+    "name": "Huskies",
+    "english": "Huskies",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112699,
+    "name": "Whale Oil",
+    "english": "Whale Oil",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112700,
+    "name": "Parkas",
+    "english": "Parkas",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112701,
+    "name": "Sleeping Bags",
+    "english": "Sleeping Bags",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112702,
+    "name": "Oil Lamps",
+    "english": "Oil Lamps",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112703,
+    "name": "Husky Sleds",
+    "english": "Husky Sleds",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112704,
+    "name": "Sleds",
+    "english": "Sleds",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112705,
+    "name": "Pemmican",
+    "english": "Pemmican",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112706,
+    "name": "Arctic Gas",
+    "english": "Arctic Gas",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 112708,
+    "name": "Heat",
+    "english": "Heat",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114286,
+    "name": "Arctic Set 01 (Gas)",
+    "english": "Arctic Set 01 (Gas)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114329,
+    "name": "Shepherds",
+    "english": "Shepherds",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114330,
+    "name": "Elders",
+    "english": "Elders",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114340,
+    "name": "Shepherd Workforce",
+    "english": "Shepherd Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114341,
+    "name": "Elder Workforce",
+    "english": "Elder Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114355,
+    "name": "Marketplace",
+    "english": "Marketplace",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114356,
+    "name": "Wanza Timber",
+    "english": "Wanza Timber",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114357,
+    "name": "Sanga Cow",
+    "english": "Sanga Cow",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114358,
+    "name": "Salt",
+    "english": "Salt",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114359,
+    "name": "Dried Meat",
+    "english": "Dried Meat",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114361,
+    "name": "Musicians' Court",
+    "english": "Musicians' Court",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114362,
+    "name": "Monastery",
+    "english": "Monastery",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114364,
+    "name": "Hibiscus Petals",
+    "english": "Hibiscus Petals",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114365,
+    "name": "Linseed",
+    "english": "Linseed",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114367,
+    "name": "Teff",
+    "english": "Teff",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114368,
+    "name": "Indigo Dye",
+    "english": "Indigo Dye",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114369,
+    "name": "Spices",
+    "english": "Spices",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114370,
+    "name": "Beeswax",
+    "english": "Beeswax",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114371,
+    "name": "Goat Milk",
+    "english": "Goat Milk",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114390,
+    "name": "Hibiscus Tea",
+    "english": "Hibiscus Tea",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114391,
+    "name": "Linen",
+    "english": "Linen",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114401,
+    "name": "Finery",
+    "english": "Finery",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114402,
+    "name": "Mud Bricks",
+    "english": "Mud Bricks",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114404,
+    "name": "Tapestries",
+    "english": "Tapestries",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114408,
+    "name": "Spiced Flour",
+    "english": "Spiced Flour",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114410,
+    "name": "Seafood Stew",
+    "english": "Seafood Stew",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114414,
+    "name": "Clay Pipe",
+    "english": "Clay Pipe",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114425,
+    "name": "Radio Tower",
+    "english": "Radio Tower",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114427,
+    "name": "Decorative Cloth",
+    "english": "Decorative Cloth",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114428,
+    "name": "Leather Boots",
+    "english": "Leather Boots",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114429,
+    "name": "Ammunition",
+    "english": "Ammunition",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114430,
+    "name": "Tailored Suits",
+    "english": "Tailored Suits",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114431,
+    "name": "Telephones",
+    "english": "Telephones",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114433,
+    "name": "Essential Oil",
+    "english": "Essential Oil",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114436,
+    "name": "Shepherd Residence",
+    "english": "Shepherd Residence",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114437,
+    "name": "Elder Residence",
+    "english": "Elder Residence",
+    "template": "ResidenceBuilding7_Colony",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114439,
+    "name": "Sanga Farm",
+    "english": "Sanga Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114440,
+    "name": "Salt Works",
+    "english": "Salt Works",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114441,
+    "name": "Linen Mill",
+    "english": "Linen Mill",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114444,
+    "name": "Dry-House",
+    "english": "Dry-House",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114445,
+    "name": "Scholar Residence",
+    "english": "Scholar Residence",
+    "template": "ResidenceBuilding7_BuildPermit",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114447,
+    "name": "Hibiscus Farm",
+    "english": "Hibiscus Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114448,
+    "name": "Linseed Farm",
+    "english": "Linseed Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114450,
+    "name": "Teff Farm",
+    "english": "Teff Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114451,
+    "name": "Indigo Farm",
+    "english": "Indigo Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114452,
+    "name": "Spice Farm",
+    "english": "Spice Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114453,
+    "name": "Apiary",
+    "english": "Apiary",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114456,
+    "name": "Goat Farm",
+    "english": "Goat Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114459,
+    "name": "Teff Mill",
+    "english": "Teff Mill",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114461,
+    "name": "Chandler",
+    "english": "Chandler",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114464,
+    "name": "Lanternsmith",
+    "english": "Lanternsmith",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114466,
+    "name": "Embroiderer",
+    "english": "Embroiderer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114467,
+    "name": "Brick Dry-House",
+    "english": "Brick Dry-House",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114468,
+    "name": "Tea Spicer",
+    "english": "Tea Spicer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114469,
+    "name": "Tapestry Looms",
+    "english": "Tapestry Looms",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114470,
+    "name": "Luminer",
+    "english": "Luminer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114471,
+    "name": "Wat Kitchen",
+    "english": "Wat Kitchen",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114472,
+    "name": "Pipe Maker",
+    "english": "Pipe Maker",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114488,
+    "name": "Hibiscus Field",
+    "english": "Hibiscus Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114489,
+    "name": "Wanza Field",
+    "english": "Wanza Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114490,
+    "name": "Flax Field",
+    "english": "Flax Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114492,
+    "name": "Teff Grass Field",
+    "english": "Teff Grass Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114494,
+    "name": "Indigo Field",
+    "english": "Indigo Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114495,
+    "name": "Spice Field",
+    "english": "Spice Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114496,
+    "name": "Apiary Field",
+    "english": "Apiary Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114498,
+    "name": "Goat Pen",
+    "english": "Goat Pen",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114499,
+    "name": "Sanga Field",
+    "english": "Sanga Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114704,
+    "name": "Sawmill",
+    "english": "Sawmill",
+    "template": "FactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 114890,
+    "name": "Canteen",
+    "english": "Canteen",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 115980,
+    "name": "Lost Expedition Scrap",
+    "english": "Lost Expedition Scrap",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 116029,
+    "name": "Deep Gold Mine",
+    "english": "Deep Gold Mine",
+    "template": "SlotFactoryBuilding7_Arctic",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 116032,
+    "name": "Arctic Set 02 (Gold)",
+    "english": "Arctic Set 02 (Gold)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117698,
+    "name": "Illuminated Script",
+    "english": "Illuminated Script",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117699,
+    "name": "Lanterns",
+    "english": "Lanterns",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117701,
+    "name": "Ornate Candles",
+    "english": "Ornate Candles",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117702,
+    "name": "Paper",
+    "english": "Paper",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117743,
+    "name": "Clay Collector",
+    "english": "Clay Collector",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 117744,
+    "name": "Paper Mill",
+    "english": "Paper Mill",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118571,
+    "name": "Fuel Station",
+    "english": "Fuel Station",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118724,
+    "name": "Ceramics",
+    "english": "Ceramics",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118725,
+    "name": "Ceramics Workshop",
+    "english": "Ceramics Workshop",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118728,
+    "name": "Lobster",
+    "english": "Lobster",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118729,
+    "name": "Lobster Fishery",
+    "english": "Lobster Fishery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118733,
+    "name": "Bootmakers",
+    "english": "Bootmakers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118734,
+    "name": "Tailor's Shop",
+    "english": "Tailor's Shop",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118735,
+    "name": "Telephone Manufacturer",
+    "english": "Telephone Manufacturer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 118745,
+    "name": "Scholars",
+    "english": "Scholars",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 119025,
+    "name": "Silo",
+    "english": "Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 119026,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 119027,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 119028,
+    "name": "Fuel Station",
+    "english": "Fuel Station",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 119093,
@@ -184,6 +2976,14 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 119392,
+    "name": "Research Points",
+    "english": "Research Points",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 120008,
     "name": "木材",
     "english": "Wood",
@@ -192,12 +2992,44 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 120014,
+    "name": "Grapes",
+    "english": "Grapes",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120016,
+    "name": "Champagne",
+    "english": "Champagne",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120020,
+    "name": "Market",
+    "english": "Market",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 120021,
     "name": "煤炭",
     "english": "Coal",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120022,
+    "name": "Electricity",
+    "english": "Electricity",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 120030,
@@ -222,6 +3054,1374 @@
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120033,
+    "name": "Fried Plantains",
+    "english": "Fried Plantains",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120034,
+    "name": "Corn",
+    "english": "Corn",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120035,
+    "name": "Tortillas",
+    "english": "Tortillas",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120036,
+    "name": "Alpaca Wool",
+    "english": "Alpaca Wool",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120037,
+    "name": "Bombins",
+    "english": "Bombins",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120041,
+    "name": "Plantains",
+    "english": "Plantains",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120042,
+    "name": "Fish Oil",
+    "english": "Fish Oil",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120043,
+    "name": "Ponchos",
+    "english": "Ponchos",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120044,
+    "name": "Felt",
+    "english": "Felt",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 120050,
+    "name": "Chapel",
+    "english": "Chapel",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 124478,
+    "name": "Scholar Workforce",
+    "english": "Scholar Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 124737,
+    "name": "Advanced Rum Distillery",
+    "english": "Advanced Rum Distillery",
+    "template": "FactoryBuilding7_BuildPermit",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 124738,
+    "name": "Advanced Coffee Roaster",
+    "english": "Advanced Coffee Roaster",
+    "template": "FactoryBuilding7_BuildPermit",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 124739,
+    "name": "Advanced Cotton Mill",
+    "english": "Advanced Cotton Mill",
+    "template": "FactoryBuilding7_BuildPermit",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132723,
+    "name": "Tourist Customers",
+    "english": "Tourist Customers",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132751,
+    "name": "Restaurant",
+    "english": "Restaurant",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132754,
+    "name": "Bar",
+    "english": "Bar",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132755,
+    "name": "Café",
+    "english": "Café",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132761,
+    "name": "The Iron Tower",
+    "english": "The Iron Tower",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132771,
+    "name": "Chemical Plant",
+    "english": "Chemical Plant",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132777,
+    "name": "Chemical Plant: Lemonade",
+    "english": "Chemical Plant: Lemonade",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 132786,
+    "name": "Chemical Plant: Shampoo",
+    "english": "Chemical Plant: Shampoo",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133093,
+    "name": "Cinnamon",
+    "english": "Cinnamon",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133095,
+    "name": "Coconut Oil",
+    "english": "Coconut Oil",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133097,
+    "name": "Citrus",
+    "english": "Citrus",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133181,
+    "name": "Shampoo",
+    "english": "Shampoo",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133183,
+    "name": "Jam",
+    "english": "Jam",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133185,
+    "name": "Lemonade",
+    "english": "Lemonade",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133532,
+    "name": "Souvenirs",
+    "english": "Souvenirs",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133533,
+    "name": "Chemical Plant: Souvenirs",
+    "english": "Chemical Plant: Souvenirs",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133535,
+    "name": "Museum",
+    "english": "Museum",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133536,
+    "name": "World's Fair",
+    "english": "World's Fair",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133573,
+    "name": "Variety Theatre",
+    "english": "Variety Theatre",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 133891,
+    "name": "Tourist Mooring",
+    "english": "Tourist Mooring",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134257,
+    "name": "Palace",
+    "english": "Palace",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134616,
+    "name": "Camphor Wax",
+    "english": "Camphor Wax",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134619,
+    "name": "Assembly Line",
+    "english": "Assembly Line",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134622,
+    "name": "Assembly Line: Elevators",
+    "english": "Assembly Line: Elevators",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134623,
+    "name": "Elevators",
+    "english": "Elevators",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 134781,
+    "name": "Docklands",
+    "english": "Docklands",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135086,
+    "name": "Resin",
+    "english": "Resin",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135087,
+    "name": "Cherry Wood",
+    "english": "Cherry Wood",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135107,
+    "name": "Furniture Store",
+    "english": "Furniture Store",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135108,
+    "name": "Department Store",
+    "english": "Department Store",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135109,
+    "name": "Drug Store",
+    "english": "Drug Store",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135129,
+    "name": "Lacquer",
+    "english": "Lacquer",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135130,
+    "name": "Ethanol",
+    "english": "Ethanol",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135133,
+    "name": "Chemical Plant: Lacquer",
+    "english": "Chemical Plant: Lacquer",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135134,
+    "name": "Chemical Plant: Ethanol",
+    "english": "Chemical Plant: Ethanol",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135148,
+    "name": "Assembly Line: Typewriters",
+    "english": "Assembly Line: Typewriters",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135150,
+    "name": "Celluloid",
+    "english": "Celluloid",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135185,
+    "name": "Chemical Plant: Chewing Gum",
+    "english": "Chemical Plant: Chewing Gum",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135186,
+    "name": "Chewing Gum",
+    "english": "Chewing Gum",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135221,
+    "name": "Chemical Plant (New World)",
+    "english": "Chemical Plant (New World)",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135224,
+    "name": "Chemical Plant: Celluloid",
+    "english": "Chemical Plant: Celluloid",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135229,
+    "name": "Biscuits",
+    "english": "Biscuits",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135230,
+    "name": "Typewriters",
+    "english": "Typewriters",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135231,
+    "name": "Toys",
+    "english": "Toys",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135232,
+    "name": "Billiard Tables",
+    "english": "Billiard Tables",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135233,
+    "name": "Violins",
+    "english": "Violins",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135234,
+    "name": "Cognac",
+    "english": "Cognac",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135295,
+    "name": "Artisan's Workshop",
+    "english": "Artisan's Workshop",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135361,
+    "name": "Assembly Line: Biscuits",
+    "english": "Assembly Line: Biscuits",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135397,
+    "name": "Artisan's Workshop: Violins",
+    "english": "Artisan's Workshop: Violins",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135407,
+    "name": "Artisan's Workshop: Billiard T [..]",
+    "english": "Artisan's Workshop: Billiard T [..]",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135418,
+    "name": "Artisan's Workshop: Cognac",
+    "english": "Artisan's Workshop: Cognac",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135669,
+    "name": "Artisan's Workshop: Toys",
+    "english": "Artisan's Workshop: Toys",
+    "template": "Multifactory",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135816,
+    "name": "Toaster Supply",
+    "english": "Toaster Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135876,
+    "name": "Crockery Supply",
+    "english": "Crockery Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135877,
+    "name": "Vaccum Cleaner Supply",
+    "english": "Vaccum Cleaner Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135878,
+    "name": "Refrigerator Supply",
+    "english": "Refrigerator Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135879,
+    "name": "Briefcase Supply",
+    "english": "Briefcase Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135880,
+    "name": "Banker's Lamp Supply",
+    "english": "Banker's Lamp Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135881,
+    "name": "Vanity Screen Supply",
+    "english": "Vanity Screen Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135882,
+    "name": "Writing Desk Supply",
+    "english": "Writing Desk Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135883,
+    "name": "Four-Poster Bed Supply",
+    "english": "Four-Poster Bed Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135884,
+    "name": "Lounge Seating Supply",
+    "english": "Lounge Seating Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135885,
+    "name": "Toothpaste Supply",
+    "english": "Toothpaste Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135886,
+    "name": "Detergent Supply",
+    "english": "Detergent Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135887,
+    "name": "Lipstick Supply",
+    "english": "Lipstick Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135888,
+    "name": "Face Cream Supply",
+    "english": "Face Cream Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 135889,
+    "name": "Pomade Supply",
+    "english": "Pomade Supply",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 137757,
+    "name": "Skyline Tower",
+    "english": "Skyline Tower",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 140711,
+    "name": "SessionTransferBalancing",
+    "english": "SessionTransferBalancing",
+    "template": "SessionTransferFeature",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141494,
+    "name": "Set 02 (Balanced Clay Focus)",
+    "english": "Set 02 (Balanced Clay Focus)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141554,
+    "name": "Set 01 (Balanced)",
+    "english": "Set 01 (Balanced)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141555,
+    "name": "Set 03 (Balanced Gold Focus)",
+    "english": "Set 03 (Balanced Gold Focus)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141556,
+    "name": "Set 04 (Balanced Oil Focus)",
+    "english": "Set 04 (Balanced Oil Focus)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141557,
+    "name": "Set 02 (Gold, No Oil)",
+    "english": "Set 02 (Gold, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141558,
+    "name": "Set 03 (Oil, No Gold)",
+    "english": "Set 03 (Oil, No Gold)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141559,
+    "name": "Set 04 (Oil & Gold, No Clay)",
+    "english": "Set 04 (Oil & Gold, No Clay)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141561,
+    "name": "Set 01 (Balanced)",
+    "english": "Set 01 (Balanced)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141562,
+    "name": "Set 01 (Balanced, No Oil)",
+    "english": "Set 01 (Balanced, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141563,
+    "name": "Set 02 (Copper Focus, No Oil)",
+    "english": "Set 02 (Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141564,
+    "name": "Set 03 (Coal Focus, No Oil)",
+    "english": "Set 03 (Coal Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141565,
+    "name": "Set 04 (Zinc Focus, No Oil)",
+    "english": "Set 04 (Zinc Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141566,
+    "name": "Set 05 (Cement Focus, No Oil)",
+    "english": "Set 05 (Cement Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 141567,
+    "name": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "english": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142335,
+    "name": "Set 01 (Balanced, Oil)",
+    "english": "Set 01 (Balanced, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142336,
+    "name": "Set 02 (Copper Focus, Oil)",
+    "english": "Set 02 (Copper Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142337,
+    "name": "Set 03 (Coal Focus, Oil)",
+    "english": "Set 03 (Coal Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142338,
+    "name": "Set 04 (Zinc Focus, Oil)",
+    "english": "Set 04 (Zinc Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142535,
+    "name": "Set 01 (Balanced, Oil)",
+    "english": "Set 01 (Balanced, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142536,
+    "name": "Set 02 (Copper Focus, Oil)",
+    "english": "Set 02 (Copper Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142537,
+    "name": "Set 03 (Coal Focus, Oil)",
+    "english": "Set 03 (Coal Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142538,
+    "name": "Set 04 (Zinc Focus, Oil)",
+    "english": "Set 04 (Zinc Focus, Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142539,
+    "name": "Set 01 (Balanced, No Oil)",
+    "english": "Set 01 (Balanced, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142540,
+    "name": "Set 02 (Copper Focus, No Oil)",
+    "english": "Set 02 (Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142541,
+    "name": "Set 03 (Coal Focus, No Oil)",
+    "english": "Set 03 (Coal Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142542,
+    "name": "Set 04 (Zinc Focus, No Oil)",
+    "english": "Set 04 (Zinc Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142543,
+    "name": "Set 05 (Cement Focus, No Oil)",
+    "english": "Set 05 (Cement Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142544,
+    "name": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "english": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142545,
+    "name": "Set 01 (Balanced, No Oil)",
+    "english": "Set 01 (Balanced, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142546,
+    "name": "Set 02 (Copper Focus, No Oil)",
+    "english": "Set 02 (Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142547,
+    "name": "Set 03 (Coal Focus, No Oil)",
+    "english": "Set 03 (Coal Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142548,
+    "name": "Set 04 (Zinc Focus, No Oil)",
+    "english": "Set 04 (Zinc Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142549,
+    "name": "Set 05 (Cement Focus, No Oil)",
+    "english": "Set 05 (Cement Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142550,
+    "name": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "english": "Set 06 (Zinc & Copper Focus, No Oil)",
+    "template": "MineSlotSet",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 142553,
+    "name": "HardFarmsBalancing",
+    "english": "HardFarmsBalancing",
+    "template": "HardFarmsFeature",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180006,
+    "name": "TransitionConfig",
+    "english": "TransitionConfig",
+    "template": "SessionConfig",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180008,
+    "name": "Gamescom",
+    "english": "Gamescom",
+    "template": "SessionModerate",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180014,
+    "name": "Tropical Paradise",
+    "english": "Tropical Paradise",
+    "template": "SessionModerate",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180022,
+    "name": "Moderate (Easy)",
+    "english": "Moderate (Easy)",
+    "template": "SessionModerateRandom",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180023,
+    "name": "The Old World",
+    "english": "The Old World",
+    "template": "SessionModerate",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180025,
+    "name": "The New World",
+    "english": "The New World",
+    "template": "SessionSouthAmerica",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180039,
+    "name": "NO LOCA MetaSession",
+    "english": "NO LOCA MetaSession",
+    "template": "SessionMeta",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180045,
+    "name": "The Arctic",
+    "english": "The Arctic",
+    "template": "SessionArctic",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 180046,
+    "name": "Benchmark",
+    "english": "Benchmark",
+    "template": "SessionModerateRandom",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 240034,
+    "name": "Audio Test",
+    "english": "Audio Test",
+    "template": "SessionModerate",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269751,
+    "name": "Fuel",
+    "english": "Fuel",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269837,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269839,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269840,
+    "name": "Fuel Station",
+    "english": "Fuel Station",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269848,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269849,
+    "name": "Tractor Barn",
+    "english": "Tractor Barn",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269850,
+    "name": "Grain Farm (GASOLINE TEST)",
+    "english": "Grain Farm (GASOLINE TEST)",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269851,
+    "name": "Grain Farm LESS MODULES",
+    "english": "Grain Farm LESS MODULES",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269957,
+    "name": "Silo",
+    "english": "Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 269958,
+    "name": "Silo",
+    "english": "Silo",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 270041,
+    "name": "Tractor Barn (Gasoline Good)",
+    "english": "Tractor Barn (Gasoline Good)",
+    "template": "BuffFactoryModule",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 270042,
+    "name": "Fuel",
+    "english": "Fuel",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 270044,
+    "name": "Fuel Station (GASOLINE TEST)",
+    "english": "Fuel Station (GASOLINE TEST)",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 500319,
+    "name": "SessionTradeTransferScene",
+    "english": "SessionTradeTransferScene",
+    "template": "SessionTradeTransferScene",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 500344,
+    "name": "SessionTradeRoutesScene",
+    "english": "SessionTradeRoutesScene",
+    "template": "SessionTradeRoutesScene",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 500710,
+    "name": "SessionTradeRouteOverviewScene",
+    "english": "SessionTradeRouteOverviewScene",
+    "template": "SessionTradeRouteOverviewScene",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 501680,
+    "name": "SessionScene",
+    "english": "SessionScene",
+    "template": "SessionScene",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 502287,
+    "name": "DefaultHappinessUIConfig",
+    "english": "DefaultHappinessUIConfig",
+    "template": "ObjectMenuResidenceSceneHappinessConfig",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 502288,
+    "name": "TouristHappinessUIConfig",
+    "english": "TouristHappinessUIConfig",
+    "template": "ObjectMenuResidenceSceneHappinessConfig",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601379,
+    "name": "Tourists",
+    "english": "Tourists",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601445,
+    "name": "Hotel",
+    "english": "Hotel",
+    "template": "ResidenceBuilding7_Hotel",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601485,
+    "name": "Zoo",
+    "english": "Zoo",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601882,
+    "name": "Investor Skyscraper: Level 1",
+    "english": "Investor Skyscraper: Level 1",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601883,
+    "name": "Investor Skyscraper: Level 2",
+    "english": "Investor Skyscraper: Level 2",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601884,
+    "name": "Investor Skyscraper: Level 3",
+    "english": "Investor Skyscraper: Level 3",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601886,
+    "name": "Investor Skyscraper: Level 4",
+    "english": "Investor Skyscraper: Level 4",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601888,
+    "name": "Engineer Skyscraper: Level 1",
+    "english": "Engineer Skyscraper: Level 1",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601889,
+    "name": "Engineer Skyscraper: Level 2",
+    "english": "Engineer Skyscraper: Level 2",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601890,
+    "name": "Engineer Skyscraper: Level 3",
+    "english": "Engineer Skyscraper: Level 3",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 601891,
+    "name": "Investor Skyscraper: Level 5",
+    "english": "Investor Skyscraper: Level 5",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800384,
+    "name": "Arctic_Expedtion01",
+    "english": "Arctic_Expedtion01",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800385,
+    "name": "EuropeNorth_Expedition01",
+    "english": "EuropeNorth_Expedition01",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800386,
+    "name": "SouthAmerica_Expedition01",
+    "english": "SouthAmerica_Expedition01",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800387,
+    "name": "SouthAmerica_Expedition02",
+    "english": "SouthAmerica_Expedition02",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800390,
+    "name": "SouthAmerica_Unlock",
+    "english": "SouthAmerica_Unlock",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800432,
+    "name": "EuropeSouth_Expedition01",
+    "english": "EuropeSouth_Expedition01",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 800433,
+    "name": "EuropeCentral_Expedition01",
+    "english": "EuropeCentral_Expedition01",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 801999,
+    "name": "Campaign Chapter 3",
+    "english": "Campaign Chapter 3",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 803421,
+    "name": "SunkenTreasures_Unlock",
+    "english": "SunkenTreasures_Unlock",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 803422,
+    "name": "Polar Unlock",
+    "english": "Polar Unlock",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 803423,
+    "name": "Africa_Unlock",
+    "english": "Africa_Unlock",
+    "template": "ExpeditionSlot",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010017,
+    "name": "Coins",
+    "english": "Coins",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010052,
@@ -264,12 +4464,52 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010128,
+    "name": "Investor Workforce",
+    "english": "Investor Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010190,
+    "name": "Influence",
+    "english": "Influence",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010192,
     "name": "谷物",
     "english": "Grain",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010193,
+    "name": "Beef",
+    "english": "Beef",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010194,
+    "name": "Hops",
+    "english": "Hops",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010195,
+    "name": "Potatoes",
+    "english": "Potatoes",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010196,
@@ -280,12 +4520,52 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010197,
+    "name": "Wool",
+    "english": "Wool",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010198,
+    "name": "Red Peppers",
+    "english": "Red Peppers",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010199,
+    "name": "Pigs",
+    "english": "Pigs",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010200,
     "name": "鱼",
     "english": "Fish",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010201,
+    "name": "Clay",
+    "english": "Clay",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010202,
+    "name": "Reinforced Concrete",
+    "english": "Reinforced Concrete",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010203,
@@ -304,12 +4584,28 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010205,
+    "name": "Bricks",
+    "english": "Bricks",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010206,
     "name": "缝纫机",
     "english": "Sewing Machines",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010207,
+    "name": "Windows",
+    "english": "Windows",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010208,
@@ -320,12 +4616,52 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010209,
+    "name": "Furs",
+    "english": "Furs",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010210,
+    "name": "Sails",
+    "english": "Sails",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010211,
+    "name": "Chassis",
+    "english": "Chassis",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010213,
     "name": "面包",
     "english": "Bread",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010214,
+    "name": "Beer",
+    "english": "Beer",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010215,
+    "name": "Goulash",
+    "english": "Goulash",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010216,
@@ -336,12 +4672,68 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010217,
+    "name": "Canned Food",
+    "english": "Canned Food",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010218,
+    "name": "Steel Beams",
+    "english": "Steel Beams",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010219,
     "name": "钢铁",
     "english": "Steel",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010221,
+    "name": "Weapons",
+    "english": "Weapons",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010222,
+    "name": "Dynamite",
+    "english": "Dynamite",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010223,
+    "name": "Advanced Weapons",
+    "english": "Advanced Weapons",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010224,
+    "name": "Steam Motors",
+    "english": "Steam Motors",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010225,
+    "name": "Steam Carriages",
+    "english": "Steam Carriages",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010226,
@@ -360,12 +4752,84 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010228,
+    "name": "Quartz Sand",
+    "english": "Quartz Sand",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010229,
+    "name": "Zinc",
+    "english": "Zinc",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010230,
+    "name": "Copper",
+    "english": "Copper",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010231,
+    "name": "Cement",
+    "english": "Cement",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010232,
+    "name": "Saltpeter",
+    "english": "Saltpeter",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010233,
     "name": "金矿石",
     "english": "Gold Ore",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010234,
+    "name": "Tallow",
+    "english": "Tallow",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010235,
+    "name": "Flour",
+    "english": "Flour",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010236,
+    "name": "Malt",
+    "english": "Malt",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010237,
+    "name": "Work Clothes",
+    "english": "Work Clothes",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010238,
@@ -376,12 +4840,52 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010239,
+    "name": "Sugar",
+    "english": "Sugar",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010240,
+    "name": "Cotton Fabric",
+    "english": "Cotton Fabric",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010241,
     "name": "玻璃",
     "english": "Glass",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010242,
+    "name": "Wood Veneers",
+    "english": "Wood Veneers",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010243,
+    "name": "Filaments",
+    "english": "Filaments",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010245,
+    "name": "Penny Farthings",
+    "english": "Penny Farthings",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010246,
@@ -392,12 +4896,52 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010247,
+    "name": "Fur Coats",
+    "english": "Fur Coats",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010248,
+    "name": "Gramophones",
+    "english": "Gramophones",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010249,
     "name": "黄金",
     "english": "Gold",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010250,
+    "name": "Jewelry",
+    "english": "Jewelry",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010251,
+    "name": "Sugar Cane",
+    "english": "Sugar Cane",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010252,
+    "name": "Tobacco",
+    "english": "Tobacco",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010253,
@@ -424,12 +4968,36 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010256,
+    "name": "Pearls",
+    "english": "Pearls",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010257,
+    "name": "Rum",
+    "english": "Rum",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010258,
     "name": "巧克力",
     "english": "Chocolate",
     "template": "Product",
     "kind": "product",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010259,
+    "name": "Cigars",
+    "english": "Cigars",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010262,
@@ -440,12 +5008,100 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010263,
+    "name": "Cattle Farm",
+    "english": "Cattle Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010264,
+    "name": "Hop Farm",
+    "english": "Hop Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010265,
     "name": "马铃薯农场",
     "english": "Potato Farm",
     "template": "FarmBuilding",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010267,
+    "name": "Sheep Farm",
+    "english": "Sheep Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010269,
+    "name": "Pig Farm",
+    "english": "Pig Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010270,
+    "name": "Grain Field",
+    "english": "Grain Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010271,
+    "name": "Pasture",
+    "english": "Pasture",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010272,
+    "name": "Hop Field",
+    "english": "Hop Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010273,
+    "name": "Potato Field",
+    "english": "Potato Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010274,
+    "name": "Forest",
+    "english": "Forest",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010275,
+    "name": "Sheepfold",
+    "english": "Sheepfold",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010277,
+    "name": "Pig Sty",
+    "english": "Pig Sty",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010278,
@@ -456,12 +5112,36 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010280,
+    "name": "Concrete Factory",
+    "english": "Concrete Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010281,
     "name": "肥皂厂",
     "english": "Soap Factory",
     "template": "FactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010282,
+    "name": "Brass Smeltery",
+    "english": "Brass Smeltery",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010283,
+    "name": "Brick Factory",
+    "english": "Brick Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010284,
@@ -472,12 +5152,36 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010285,
+    "name": "Window-Makers",
+    "english": "Window-Makers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010286,
     "name": "灯泡工厂",
     "english": "Light Bulb Factory",
     "template": "FactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010288,
+    "name": "Sailmakers",
+    "english": "Sailmakers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010289,
+    "name": "Coachmakers",
+    "english": "Coachmakers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010291,
@@ -488,12 +5192,36 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010292,
+    "name": "Brewery",
+    "english": "Brewery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010293,
+    "name": "Artisanal Kitchen",
+    "english": "Artisanal Kitchen",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010294,
     "name": "烈酒酿酒厂",
     "english": "Schnapps Distillery",
     "template": "FactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010295,
+    "name": "Cannery",
+    "english": "Cannery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010296,
@@ -504,12 +5232,44 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010297,
+    "name": "Furnace",
+    "english": "Furnace",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010299,
     "name": "武器厂",
     "english": "Weapon Factory",
     "template": "HeavyFactoryBuilding",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010300,
+    "name": "Dynamite Factory",
+    "english": "Dynamite Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010301,
+    "name": "Heavy Weapons Factory",
+    "english": "Heavy Weapons Factory",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010302,
+    "name": "Motor Assembly Line",
+    "english": "Motor Assembly Line",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010303,
@@ -536,12 +5296,68 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010307,
+    "name": "Zinc Mine",
+    "english": "Zinc Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010308,
+    "name": "Copper Mine",
+    "english": "Copper Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010309,
+    "name": "Limestone Quarry",
+    "english": "Limestone Quarry",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010310,
+    "name": "Saltpeter Works",
+    "english": "Saltpeter Works",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010311,
     "name": "金矿",
     "english": "Gold Mine",
     "template": "SlotFactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010312,
+    "name": "Rendering Works",
+    "english": "Rendering Works",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010313,
+    "name": "Flour Mill",
+    "english": "Flour Mill",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010314,
+    "name": "Malthouse",
+    "english": "Malthouse",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010315,
@@ -552,12 +5368,68 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010316,
+    "name": "Butcher's",
+    "english": "Butcher's",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010317,
+    "name": "Sugar Refinery",
+    "english": "Sugar Refinery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010318,
+    "name": "Cotton Mill",
+    "english": "Cotton Mill",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010319,
+    "name": "Glassmakers",
+    "english": "Glassmakers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010320,
+    "name": "Marquetry Workshop",
+    "english": "Marquetry Workshop",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010321,
+    "name": "Filament Factory",
+    "english": "Filament Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010323,
     "name": "自行车工厂",
     "english": "Bicycle Factory",
     "template": "FactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010324,
+    "name": "Clockmakers",
+    "english": "Clockmakers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010325,
@@ -568,12 +5440,44 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010326,
+    "name": "Gramophone Factory",
+    "english": "Gramophone Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010327,
+    "name": "Goldsmiths",
+    "english": "Goldsmiths",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010328,
+    "name": "Jewellers",
+    "english": "Jewellers",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010329,
     "name": "甘蔗种植园",
     "english": "Sugar Cane Plantation",
     "template": "FarmBuilding",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010330,
+    "name": "Tobacco Plantation",
+    "english": "Tobacco Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010331,
@@ -592,12 +5496,84 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010333,
+    "name": "Caoutchouc Plantation",
+    "english": "Caoutchouc Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010334,
+    "name": "Sugar Cane Crop",
+    "english": "Sugar Cane Crop",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010335,
+    "name": "Tobacco Field",
+    "english": "Tobacco Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010336,
+    "name": "Cotton Field",
+    "english": "Cotton Field",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010337,
+    "name": "Cocoa Grove",
+    "english": "Cocoa Grove",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010338,
+    "name": "Caoutchouc Grove",
+    "english": "Caoutchouc Grove",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010339,
+    "name": "Pearl Farm",
+    "english": "Pearl Farm",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010340,
+    "name": "Rum Distillery",
+    "english": "Rum Distillery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010341,
     "name": "巧克力工厂",
     "english": "Chocolate Factory",
     "template": "FactoryBuilding7",
     "kind": "building",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010342,
+    "name": "Cigar Factory",
+    "english": "Cigar Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
   },
   {
     "guid": 1010343,
@@ -640,6 +5616,78 @@
     "source": "常用 GUID 参考"
   },
   {
+    "guid": 1010348,
+    "name": "Boxing Arena",
+    "english": "Boxing Arena",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010349,
+    "name": "Pub",
+    "english": "Pub",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010350,
+    "name": "Church",
+    "english": "Church",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010351,
+    "name": "School",
+    "english": "School",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010352,
+    "name": "Variety Theatre",
+    "english": "Variety Theatre",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010353,
+    "name": "University",
+    "english": "University",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010354,
+    "name": "Electricity",
+    "english": "Electricity",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010355,
+    "name": "Members Club",
+    "english": "Members Club",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010356,
+    "name": "Bank",
+    "english": "Bank",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
     "guid": 1010366,
     "name": "日劳工劳动力",
     "english": "Jornalero Workforce",
@@ -654,5 +5702,117 @@
     "template": "Product",
     "kind": "workforce",
     "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010559,
+    "name": "Hunting Grounds",
+    "english": "Hunting Grounds",
+    "template": "Farmfield",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010560,
+    "name": "Sand Mine",
+    "english": "Sand Mine",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010561,
+    "name": "heavy_colony01_01 (Oil Heavy Industry)",
+    "english": "heavy_colony01_01 (Oil Heavy Industry)",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 1010566,
+    "name": "Oil",
+    "english": "Oil",
+    "template": "Product",
+    "kind": "product",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 5100028,
+    "name": "NO LOCA MetaSession",
+    "english": "NO LOCA MetaSession",
+    "template": "SessionMeta",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 9899004,
+    "name": "SessionSoundConfig",
+    "english": "SessionSoundConfig",
+    "template": "SessionSoundConfig",
+    "kind": "other",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000000,
+    "name": "Farmers",
+    "english": "Farmers",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000001,
+    "name": "Workers",
+    "english": "Workers",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000002,
+    "name": "Artisans",
+    "english": "Artisans",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000003,
+    "name": "Engineers",
+    "english": "Engineers",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000004,
+    "name": "Investors",
+    "english": "Investors",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000005,
+    "name": "Jornaleros",
+    "english": "Jornaleros",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 15000006,
+    "name": "Obreros",
+    "english": "Obreros",
+    "template": "PopulationLevel7",
+    "kind": "population",
+    "source": "内置 GUID 参考"
+  },
+  {
+    "guid": 25000118,
+    "name": "ObjectmenuResidenceScene",
+    "english": "ObjectmenuResidenceScene",
+    "template": "ObjectmenuResidenceScene",
+    "kind": "residence",
+    "source": "内置 GUID 参考"
   }
 ]

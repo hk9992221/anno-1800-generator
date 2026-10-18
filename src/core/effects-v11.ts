@@ -1,5 +1,11 @@
 import type { EffectDef, ParamDef } from './effects.ts';
-const n = (label: string, value: number, unit = '%', min = -100, max = 10000): ParamDef => ({
+const n = (
+  label: string,
+  value: number,
+  unit = '%',
+  min = -100,
+  max = 10000,
+): ParamDef => ({
   key: 'value',
   label,
   kind: 'number',
@@ -49,7 +55,10 @@ export const V11_EFFECTS: EffectDef[] = [
     group: '居民需求',
     families: ['residence'],
     version: '1.1',
-    params: [{ key: 'need', label: '需求商品', kind: 'need', default: 0 }, n('消耗量修正', -25)],
+    params: [
+      { key: 'need', label: '需求商品', kind: 'need', default: 0 },
+      n('消耗量修正', -25),
+    ],
     path: 'ResidenceUpgrade/GoodConsumptionUpgrade',
     encoding: 'consumption',
     repeat: true,
@@ -62,13 +71,19 @@ export const V11_EFFECTS: EffectDef[] = [
     families: ['residence'],
     version: '1.1',
     params: [
-      { key: 'provided', label: '已满足的需求', kind: 'need', default: 0 },
-      { key: 'substitute', label: '额外提供的需求', kind: 'need', default: 0 },
+      { key: 'provided', label: '满足条件 X', kind: 'need', default: 0 },
+      {
+        key: 'substitute',
+        label: '自动满足 Y（可多选）',
+        kind: 'need',
+        default: 0,
+        multi: true,
+      },
     ],
     path: 'ResidenceUpgrade/NeedProvideNeedUpgrade',
     encoding: 'need',
     repeat: true,
-    help: '当“已满足的需求”得到满足时，同时提供另一项需求。',
+    help: '当 X 需求得到满足时，同时提供所选的多项 Y 需求；需求按所选居民阶级筛选。',
   },
   {
     id: 'illness',

@@ -8,7 +8,8 @@ import { decodeText, normalizePath } from './catalog.ts';
 import { safeRelative } from './paths.ts';
 export { safeRelative } from './paths.ts';
 export async function unzipMod(bytes: ArrayBuffer): Promise<NativeFile[]> {
-  if (bytes.byteLength > 250_000_000) throw new Error('ZIP 大于 250 MB，请解压后选择 Mod 文件夹');
+  if (bytes.byteLength > 250_000_000)
+    throw new Error('ZIP 大于 250 MB，请解压后选择 Mod 文件夹');
   const zip = await JSZip.loadAsync(bytes),
     entries = Object.values(zip.files).filter((e) => !e.dir);
   if (entries.length > 20000) throw new Error('压缩包文件过多');
@@ -106,7 +107,8 @@ export function importMod(
     card.group = '导入卡牌';
     card.image.path = value(v, 'Standard/IconFilename');
     const image = files.find(
-      (f) => normalizePath(f.path) === card.image.path && /\.(png|jpe?g|webp)$/i.test(f.path),
+      (f) =>
+        normalizePath(f.path) === card.image.path && /\.(png|jpe?g|webp)$/i.test(f.path),
     );
     if (image)
       card.image = {
@@ -130,7 +132,9 @@ export function importMod(
         if (d.encoding === 'scalar')
           params = {
             [d.params[0].key]:
-              d.params[0].kind === 'boolean' ? value(source) === '1' : Number(value(source)),
+              d.params[0].kind === 'boolean'
+                ? value(source) === '1'
+                : Number(value(source)),
           };
         if (d.encoding === 'output')
           params = {
@@ -139,7 +143,10 @@ export function importMod(
             amount: numberAt(source, 'Amount', 1),
           };
         if (d.encoding === 'replace')
-          params = { old: numberAt(source, 'OldInput'), new: numberAt(source, 'NewInput') };
+          params = {
+            old: numberAt(source, 'OldInput'),
+            new: numberAt(source, 'NewInput'),
+          };
         if (d.encoding === 'consumption')
           params = {
             need: numberAt(source, 'ProvidedNeed'),
@@ -147,8 +154,8 @@ export function importMod(
           };
         if (d.encoding === 'need')
           params = {
-            provided: numberAt(source, 'ProvidedNeed'),
-            substitute: numberAt(source, 'SubstituteNeed'),
+            provided: numberAt(source, 'SubstituteNeed'),
+            substitute: numberAt(source, 'ProvidedNeed'),
           };
         card.effects.push({ id: uid(), type: d.id, enabled: true, params });
       }
@@ -206,7 +213,11 @@ export function importMod(
           weight: 100,
           tickets: numberAt(pack.values, 'ScenarioWorkshopPackage/RubberDots', 100),
           maxCount: numberAt(pack.values, 'ScenarioWorkshopPackage/PackageMaxCount', 99),
-          scale: numberAt(pack.values, 'ScenarioWorkshopPackage/PackageRubberDotScaleFactor', 1.5),
+          scale: numberAt(
+            pack.values,
+            'ScenarioWorkshopPackage/PackageRubberDotScaleFactor',
+            1.5,
+          ),
         };
         card.sources.push(source);
         if (mode === 'edit') {
@@ -218,7 +229,8 @@ export function importMod(
     }
     for (const file of parsed) {
       for (const op of descendants(file.doc, 'ModOp')) {
-        if (op.attrs.Type !== 'add' || !op.attrs.Path?.includes('RewardPool/ItemsPool')) continue;
+        if (op.attrs.Type !== 'add' || !op.attrs.Path?.includes('RewardPool/ItemsPool'))
+          continue;
         for (const item of children(op, 'Item')) {
           if (numberAt(item, 'ItemLink') !== oldGuid) continue;
           for (const g of (op.attrs.GUID ?? '').split(',').map(Number).filter(Boolean))
@@ -292,7 +304,9 @@ export function importMod(
   );
   if (
     parsed.some((f) =>
-      descendants(f.doc, 'ModOp').some((op) => op.attrs.Type === 'replace' || op.attrs.Condition),
+      descendants(f.doc, 'ModOp').some(
+        (op) => op.attrs.Type === 'replace' || op.attrs.Condition,
+      ),
     )
   )
     messages.push('包含补丁修改／条件逻辑：未解析为表单的内容仅在原 Mod 副本中保留');

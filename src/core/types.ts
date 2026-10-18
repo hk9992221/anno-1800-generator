@@ -28,6 +28,49 @@ export interface Source {
   scale: number;
   traderGuid?: number;
   stage?: string;
+  automation?: Acquisition;
+}
+export interface RuleCondition {
+  id: string;
+  type: 'population' | 'building' | 'stock' | 'time' | 'unlocked';
+  guid: number;
+  amount: number;
+}
+export interface Acquisition {
+  ids: Record<string, number>;
+  title: string;
+  story: string;
+  conditions: RuleCondition[];
+  rewardAmount: number;
+  sessionGuid: number;
+  giverGuid: number;
+  cooldownMinutes: number;
+  maxRuns: number;
+  objective: {
+    type: 'stock' | 'building' | 'population' | 'time';
+    guid: number;
+    amount: number;
+    seconds: number;
+  };
+  expedition: {
+    baseGuid: number;
+    slotGuid: number;
+    region: string;
+    difficulty: string;
+    category: string;
+    eventTitle: string;
+    eventText: string;
+    optionText: string;
+    requiredProduct: number;
+    requiredAmount: number;
+  };
+}
+export interface Population {
+  guid: number;
+  name: string;
+  region: string;
+  residences: number[];
+  needs: number[];
 }
 export interface CardImage {
   mode: 'game' | 'custom';
@@ -65,6 +108,7 @@ export interface Card {
   published: boolean;
   image: CardImage;
   targets: number[];
+  populationLevels?: number[];
   effects: Effect[];
   sources: Source[];
   origin?: CardOrigin;
@@ -77,8 +121,22 @@ export interface Asset {
   guid: number;
   name: string;
   english: string;
+  internal?: string;
   template: string;
-  kind: 'building' | 'product' | 'workforce' | 'pool' | 'portrait' | 'ship' | 'residence' | 'other';
+  kind:
+    | 'building'
+    | 'product'
+    | 'workforce'
+    | 'pool'
+    | 'portrait'
+    | 'ship'
+    | 'residence'
+    | 'population'
+    | 'expedition'
+    | 'event'
+    | 'quest'
+    | 'profile'
+    | 'other';
   icon?: string;
   region?: string;
   dlc?: string;
@@ -89,6 +147,14 @@ export interface Asset {
   allocations?: Allocation[];
   capabilities?: string[];
   raw?: string;
+  baseGuid?: number;
+  populationLevel?: number;
+  needs?: number[];
+  needFor?: number[];
+  defaultResidence?: number;
+  traderStages?: { stage: string; poolGuid: number }[];
+  slotRegion?: string;
+  expeditionRegion?: string;
   poolPath?: string;
   owner?: string;
   stage?: string;
@@ -106,6 +172,13 @@ export interface Catalog {
   indexedAt: string;
   scannedModGuids?: number[];
   traders?: Trader[];
+  populations?: Population[];
+  portraits?: string[];
+  gameRoot?: string;
+  modRoots?: string[];
+  modCount?: number;
+  warnings?: string[];
+  indexVersion?: number;
 }
 export interface Project {
   schemaVersion: 1;
@@ -122,6 +195,7 @@ export interface Project {
   dlcs: string[];
   mode: 'collection' | 'edit';
   importedFiles: ResourceFile[];
+  removedCards?: { guid: number; guids: number[]; file?: string }[];
   catalog?: Catalog;
   createdAt: string;
 }
@@ -148,7 +222,7 @@ export interface NativeFile {
   data: string;
 }
 export const ALLOCATIONS: Record<Allocation, string> = {
-  GuildHouse: '贸易工会',
+  GuildHouse: '工会',
   HarborOffice: '港务办公室',
   Lodge: '北极小屋',
   TownHall: '市政厅',

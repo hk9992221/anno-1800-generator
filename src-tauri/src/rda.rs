@@ -124,7 +124,10 @@ pub fn list(path: &Path) -> Result<Vec<Entry>> {
             if !(lower.ends_with("assets.xml")
                 || lower.ends_with("texts_chinese.xml")
                 || lower.ends_with("texts_english.xml")
-                || (lower.contains("icon") && (lower.ends_with(".dds") || lower.ends_with(".png"))))
+                || ((lower.contains("/ui/")
+                    || lower.contains("portrait")
+                    || lower.contains("icon"))
+                    && (lower.ends_with(".dds") || lower.ends_with(".png"))))
             {
                 continue;
             }
