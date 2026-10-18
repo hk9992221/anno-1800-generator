@@ -1,0 +1,658 @@
+[
+  {
+    "guid": 2399,
+    "name": "煤矿",
+    "english": "Coal Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 2400,
+    "name": "铁矿",
+    "english": "Iron Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 5406,
+    "name": "艺术家劳动力",
+    "english": "Artista Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 6083,
+    "name": "缝纫机工厂",
+    "english": "Sewing Machine Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 24652,
+    "name": "渔场",
+    "english": "Fishery",
+    "template": "FactoryBuilding7_BuildPermit",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100438,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100439,
+    "name": "护卫舰",
+    "english": "Frigate",
+    "template": "WarShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100440,
+    "name": "风帆战列舰",
+    "english": "Ship-of-the-line",
+    "template": "WarShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100441,
+    "name": "快速帆船",
+    "english": "Clipper",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100442,
+    "name": "战列巡洋舰",
+    "english": "Battle Cruiser",
+    "template": "WarShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100679,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 100828,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "EventTradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101153,
+    "name": "快速帆船",
+    "english": "Clipper",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101250,
+    "name": "眼镜工厂",
+    "english": "Spectacle Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101251,
+    "name": "咖啡种植园",
+    "english": "Coffee Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101252,
+    "name": "咖啡烘焙厂",
+    "english": "Coffee Roaster",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 101387,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 102237,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 102238,
+    "name": "双桅帆船",
+    "english": "Schooner",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 105538,
+    "name": "快速帆船",
+    "english": "Clipper",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 112653,
+    "name": "探险家劳动力",
+    "english": "Explorer Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 119093,
+    "name": "风帆战列舰",
+    "english": "Ship-of-the-line",
+    "template": "WarShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 119094,
+    "name": "护卫舰",
+    "english": "Frigate",
+    "template": "WarShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120008,
+    "name": "木材",
+    "english": "Wood",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120021,
+    "name": "煤炭",
+    "english": "Coal",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120030,
+    "name": "眼镜",
+    "english": "Spectacles",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120031,
+    "name": "咖啡豆",
+    "english": "Coffee Beans",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 120032,
+    "name": "咖啡",
+    "english": "Coffee",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010052,
+    "name": "农夫劳动力",
+    "english": "Farmer Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010062,
+    "name": "货船",
+    "english": "Cargo Ship",
+    "template": "TradeShip",
+    "kind": "ship",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010115,
+    "name": "工人劳动力",
+    "english": "Worker Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010116,
+    "name": "工匠劳动力",
+    "english": "Artisan Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010117,
+    "name": "工程师劳动力",
+    "english": "Engineer Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010192,
+    "name": "谷物",
+    "english": "Grain",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010196,
+    "name": "木板",
+    "english": "Timber",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010200,
+    "name": "鱼",
+    "english": "Fish",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010203,
+    "name": "肥皂",
+    "english": "Soap",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010204,
+    "name": "黄铜",
+    "english": "Brass",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010206,
+    "name": "缝纫机",
+    "english": "Sewing Machines",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010208,
+    "name": "灯泡",
+    "english": "Light Bulbs",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010213,
+    "name": "面包",
+    "english": "Bread",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010216,
+    "name": "烈酒",
+    "english": "Schnapps",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010219,
+    "name": "钢铁",
+    "english": "Steel",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010226,
+    "name": "煤炭",
+    "english": "Coal",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010227,
+    "name": "铁矿石",
+    "english": "Iron",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010233,
+    "name": "金矿石",
+    "english": "Gold Ore",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010238,
+    "name": "香肠",
+    "english": "Sausages",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010241,
+    "name": "玻璃",
+    "english": "Glass",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010246,
+    "name": "怀表",
+    "english": "Pocket Watches",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010249,
+    "name": "黄金",
+    "english": "Gold",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010253,
+    "name": "棉花",
+    "english": "Cotton",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010254,
+    "name": "可可",
+    "english": "Cocoa",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010255,
+    "name": "橡胶",
+    "english": "Caoutchouc",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010258,
+    "name": "巧克力",
+    "english": "Chocolate",
+    "template": "Product",
+    "kind": "product",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010262,
+    "name": "谷物农场",
+    "english": "Grain Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010265,
+    "name": "马铃薯农场",
+    "english": "Potato Farm",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010278,
+    "name": "渔场",
+    "english": "Fishery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010281,
+    "name": "肥皂厂",
+    "english": "Soap Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010284,
+    "name": "缝纫机工厂",
+    "english": "Sewing Machine Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010286,
+    "name": "灯泡工厂",
+    "english": "Light Bulb Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010291,
+    "name": "面包店",
+    "english": "Bakery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010294,
+    "name": "烈酒酿酒厂",
+    "english": "Schnapps Distillery",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010296,
+    "name": "钢铁厂",
+    "english": "Steelworks",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010299,
+    "name": "武器厂",
+    "english": "Weapon Factory",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010303,
+    "name": "汽车装配厂",
+    "english": "Cab Assembly Line",
+    "template": "HeavyFactoryBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010304,
+    "name": "煤矿",
+    "english": "Coal Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010305,
+    "name": "铁矿",
+    "english": "Iron Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010311,
+    "name": "金矿",
+    "english": "Gold Mine",
+    "template": "SlotFactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010315,
+    "name": "工作服编织厂",
+    "english": "Framework Knitters",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010323,
+    "name": "自行车工厂",
+    "english": "Bicycle Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010325,
+    "name": "皮草商",
+    "english": "Fur Dealer",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010329,
+    "name": "甘蔗种植园",
+    "english": "Sugar Cane Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010331,
+    "name": "棉花种植园",
+    "english": "Cotton Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010332,
+    "name": "可可种植园",
+    "english": "Cocoa Plantation",
+    "template": "FarmBuilding",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010341,
+    "name": "巧克力工厂",
+    "english": "Chocolate Factory",
+    "template": "FactoryBuilding7",
+    "kind": "building",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010343,
+    "name": "农夫住宅",
+    "english": "Farmer Residence",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010344,
+    "name": "工人住宅",
+    "english": "Worker Residence",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010345,
+    "name": "工匠住宅",
+    "english": "Artisan Residence",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010346,
+    "name": "工程师住宅",
+    "english": "Engineer Residence",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010347,
+    "name": "投资人住宅",
+    "english": "Investor Residence",
+    "template": "ResidenceBuilding",
+    "kind": "residence",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010366,
+    "name": "日劳工劳动力",
+    "english": "Jornalero Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  },
+  {
+    "guid": 1010367,
+    "name": "技工劳动力",
+    "english": "Obrero Workforce",
+    "template": "Product",
+    "kind": "workforce",
+    "source": "常用 GUID 参考"
+  }
+]
