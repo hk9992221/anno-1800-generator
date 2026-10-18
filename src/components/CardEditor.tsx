@@ -1,34 +1,955 @@
 import { useEffect, useState } from 'react';
-import { ArrowDown, ArrowUp, CircleHelp, Copy, ImagePlus, Layers3, Plus, Search, Trash2, X } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  CircleHelp,
+  Copy,
+  ImagePlus,
+  Layers3,
+  Plus,
+  Search,
+  Trash2,
+  X,
+} from 'lucide-react';
 import type { Asset, Card, Catalog, Effect, Source } from '../core/types.ts';
 import { ALLOCATIONS, familyOf, RARITIES, uid } from '../core/types.ts';
-import { createEffect, describeEffect, EFFECTS, effectDef, type ParamDef } from '../core/effects.ts';
+import {
+  createEffect,
+  describeEffect,
+  EFFECTS,
+  effectDef,
+  type ParamDef,
+} from '../core/effects.ts';
 import { assetName, catalogOf } from '../core/catalog.ts';
 import { cropImage } from '../core/images.ts';
 import { AssetPicker } from './AssetPicker.tsx';
 import { Empty, Field, Modal, Portrait } from './common.tsx';
-export type EditorTab='basic'|'image'|'targets'|'effects'|'sources'|'advanced';
-export const TABS:{id:EditorTab;label:string}[]=[{id:'basic',label:'基本信息'},{id:'image',label:'图片与头像'},{id:'targets',label:'适用目标'},{id:'effects',label:'效果积木'},{id:'sources',label:'获取途径'},{id:'advanced',label:'高级'}];
-export function CardEditor({card,catalog,tab,onChange,refresh,onError}:{card:Card;catalog?:Catalog;tab:EditorTab;onChange:(update:Partial<Card>)=>void;refresh:number;onError:(text:string)=>void}){
- const [picker,setPicker]=useState<{title:string;selected:number[];multi?:boolean;expand?:boolean;filter:(a:Asset)=>boolean;apply:(ids:number[])=>void}|null>(null),[adding,setAdding]=useState(false),[effectQuery,setEffectQuery]=useState(''),[crop,setCrop]=useState<{original:string;x:number;y:number;zoom:number}|null>(null);
- const [cropPreview,setCropPreview]=useState('');
- useEffect(()=>{if(!crop){setCropPreview('');return;}let live=true;const id=setTimeout(()=>{cropImage(crop.original,crop.x,crop.y,crop.zoom).then(url=>{if(live)setCropPreview(url);}).catch(()=>{});},50);return()=>{live=false;clearTimeout(id);};},[crop]);
- const updateEffect=(id:string,patch:Partial<Effect>)=>onChange({effects:card.effects.map(e=>e.id===id?{...e,...patch}:e)});
- const updateSource=(id:string,patch:Partial<Source>)=>onChange({sources:card.sources.map(s=>s.id===id?{...s,...patch}:s)});
- const chooseParam=(effect:Effect,param:ParamDef)=>setPicker({title:param.label,selected:[Number(effect.params[param.key])].filter(Boolean),filter:a=>param.kind==='workforce'?a.kind==='workforce':param.kind==='need'?a.kind==='product'||a.kind==='building'||a.template.includes('Need'):a.kind==='product',apply:ids=>updateEffect(effect.id,{params:{...effect.params,[param.key]:ids[0]??0}})});
- const addSource=(type:Source['type'])=>onChange({sources:[...card.sources,{id:uid(),type,label:type==='gallery'?'壮丽艺廊':type==='trader'?'埃利·布莱克沃斯':type==='research'?'研究所':type==='expedition'?'远征':type==='visitor'?'访客':'任务奖励',poolGuid:0,weight:100,tickets:100,maxCount:99,scale:1.5}]});
- const addEffect=(type:string)=>{const def=effectDef(type);if(!def)return;if(!def.repeat&&card.effects.some(e=>e.type===type)){onError('此效果已有积木，可直接修改数值');return;}onChange({effects:[...card.effects,createEffect(type)]});setAdding(false);};
- return <>
- {tab==='basic'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">IDENTITY</span><h2>每一张卡牌，都有自己的故事</h2><p>名称、稀有度与安装位置，构成卡牌的基本信息。</p></div></div><div className="form-grid"><Field label="卡牌名称"><input value={card.name} maxLength={128} onChange={e=>onChange({name:e.target.value})} placeholder="给这位专家起一个名字"/></Field><Field label="称号 / 副标题"><input value={card.subtitle} onChange={e=>onChange({subtitle:e.target.value})} placeholder="例如：精密制造的革新者"/></Field><Field label="稀有度"><select value={card.rarity} onChange={e=>onChange({rarity:e.target.value as Card['rarity']})}>{Object.entries(RARITIES).map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></Field><Field label="安装位置"><select value={card.allocation} onChange={e=>onChange({allocation:e.target.value as Card['allocation']})}>{Object.entries(ALLOCATIONS).map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></Field><Field label="购买价格" hint="普通游戏货币；金票价格在获取途径中设置。"><div className="input-unit"><input type="number" min="0" step="1" value={card.price} onChange={e=>onChange({price:Number(e.target.value)})}/><span>金币</span></div></Field><Field label="卡组"><input value={card.group} onChange={e=>onChange({group:e.target.value})} placeholder="我的卡牌"/></Field><Field label="背景描述" wide hint="描述作为卡牌背景文本，游戏效果由积木生成。"><textarea rows={4} value={card.description} onChange={e=>onChange({description:e.target.value})} placeholder="他让每一道工序都有条不紊……"/></Field><Field label="英文名称（可选）"><input value={card.english} onChange={e=>onChange({english:e.target.value})} placeholder="未填写时使用中文名称"/></Field><Field label="英文描述（可选）"><input value={card.englishDescription} onChange={e=>onChange({englishDescription:e.target.value})}/></Field></div></div>}
- {tab==='image'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">PORTRAIT STUDIO</span><h2>让你的卡牌独具一格</h2><p>使用自己的图片，也可以从本机游戏资源中选择头像。</p></div></div><div className="image-studio"><Portrait image={card.image} size="large" refresh={refresh}/><div className="image-actions"><label className="button primary"><ImagePlus size={18}/>上传图片<input hidden type="file" accept="image/png,image/jpeg,image/webp" onChange={async e=>{try{const f=e.target.files?.[0];if(!f)return;if(f.size>20_000_000)throw new Error('请选择小于 20 MB 的图片');const r=new FileReader();r.onload=()=>setCrop({original:String(r.result),x:0,y:0,zoom:1});r.readAsDataURL(f);}catch(e){onError(String(e));}e.target.value='';}}/></label><button className="button" onClick={()=>setPicker({title:'选择原版头像',selected:[],filter:a=>!!a.icon&&a.kind==='portrait',apply:ids=>{const a=catalogOf(catalog).assets.find(a=>a.guid===ids[0]);if(a?.icon)onChange({image:{mode:'game',path:a.icon}});}})}><Search size={18}/>浏览已有头像</button>{card.image.original&&<button className="button" onClick={()=>setCrop({original:card.image.original!,x:card.image.crop?.x??0,y:card.image.crop?.y??0,zoom:card.image.crop?.zoom??1})}>重新裁剪</button>}<small>PNG、JPEG、WebP · 支持透明背景<br/>自定义图标自动生成 DDS 与三级 LOD。</small></div></div><Field label="原版图标资源路径" hint="原版头像从本机资源读取预览；导出保持对游戏资源的引用。"><input value={card.image.mode==='game'?card.image.path:'自定义图片已保存进工程'} disabled={card.image.mode==='custom'} onChange={e=>onChange({image:{mode:'game',path:e.target.value}})} placeholder="data/ui/.../icon_specialist.png"/></Field></div>}
- {tab==='targets'&&familyOf(card.allocation)==='ship'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">SHIP ALLOCATION</span><h2>效果随船出航</h2><p>卡牌作用于装备它的船舶，适用船型由安装位置决定。</p></div></div><Field label="可装备的船舶类别"><select value={card.allocation} onChange={e=>onChange({allocation:e.target.value as Card['allocation']})}>{Object.entries(ALLOCATIONS).filter(([v])=>familyOf(v as Card['allocation'])==='ship').map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></Field></div>}
- {tab==='targets'&&familyOf(card.allocation)!=='ship'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">EFFECT TARGETS</span><h2>这张卡牌，为谁而生？</h2><p>所有效果积木共同作用于这里选择的目标。</p></div><button className="button primary" onClick={()=>setPicker({title:'添加适用目标',selected:card.targets,multi:true,expand:true,filter:a=>familyOf(card.allocation)==='ship'?a.kind==='ship'||a.template==='ItemEffectTargetPool':familyOf(card.allocation)==='residence'?a.kind==='residence'||a.template==='ItemEffectTargetPool':a.kind==='building'||a.template==='ItemEffectTargetPool',apply:targets=>onChange({targets})})}><Plus size={18}/>选择目标</button></div><div className="target-list">{card.targets.map(g=><div className="target-row" key={g}><span className="target-icon"><Layers3 size={20}/></span><div><strong>{assetName(catalog,g)}</strong><small>GUID {g}</small></div><button className="icon-button" aria-label={`移除 ${assetName(catalog,g)}`} onClick={()=>onChange({targets:card.targets.filter(t=>t!==g)})}><X size={17}/></button></div>)}</div>{!card.targets.length&&<Empty icon={<Layers3 size={40}/>}>选择一家工厂、一类住宅，或一艘船，开始定义适用范围。</Empty>}</div>}
- {tab==='effects'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">BUILD YOUR EFFECTS</span><h2>像搭积木一样，组合效果</h2><p>用一项改变开始，再加入你的下一项灵感。</p></div><button className="button primary" onClick={()=>setAdding(true)}><Plus size={18}/>添加效果</button></div><div className="effects-list">{card.effects.map((e,index)=>{const d=effectDef(e.type);return <article className={`effect-block ${!e.enabled?'disabled':''}`} key={e.id}><header><span className="block-number">{String(index+1).padStart(2,'0')}</span><div className="block-title"><strong>{d?.label??e.type}</strong><small>{d?.group} · {d?.version}</small></div><label className="switch" title="启用效果"><input type="checkbox" checked={e.enabled} onChange={v=>updateEffect(e.id,{enabled:v.target.checked})}/><span/></label><button className="icon-button" title="上移" disabled={!index} onClick={()=>{const effects=[...card.effects];[effects[index-1],effects[index]]=[effects[index],effects[index-1]];onChange({effects});}}><ArrowUp size={16}/></button><button className="icon-button" title="下移" disabled={index===card.effects.length-1} onClick={()=>{const effects=[...card.effects];[effects[index],effects[index+1]]=[effects[index+1],effects[index]];onChange({effects});}}><ArrowDown size={16}/></button>{d?.repeat&&<button className="icon-button" title="复制效果" onClick={()=>onChange({effects:[...card.effects,{...structuredClone(e),id:uid()}]})}><Copy size={16}/></button>}<button className="icon-button danger" title="删除效果" onClick={()=>onChange({effects:card.effects.filter(v=>v.id!==e.id)})}><Trash2 size={16}/></button></header><div className="block-params">{d?.params.map(param=><Field key={param.key} label={param.label}>{param.kind==='boolean'?<select value={e.params[param.key]?'1':'0'} onChange={v=>updateEffect(e.id,{params:{...e.params,[param.key]:v.target.value==='1'}})}><option value="1">开启</option><option value="0">关闭</option></select>:param.kind==='number'?<div className="input-unit"><input type="number" min={param.min} max={param.max} step={param.step??1} value={Number(e.params[param.key])} onChange={v=>updateEffect(e.id,{params:{...e.params,[param.key]:Number(v.target.value)}})}/><span>{param.unit}</span></div>:<button className="resource-button" onClick={()=>chooseParam(e,param)}>{Number(e.params[param.key])?assetName(catalog,Number(e.params[param.key])):`选择${param.label}`}<Search size={16}/></button>}</Field>)}</div><div className="block-explanation"><CircleHelp size={14}/><span>{d?.help}</span></div></article>;})}</div>{!card.effects.length&&<button className="add-empty" onClick={()=>setAdding(true)}><Plus size={28}/><strong>添加第一个效果</strong><span>生产率、额外产出、原料替换，以及更多可能</span></button>}<div className="composition-note"><Layers3 size={17}/><span>同类标量效果使用一个积木；额外产出与原料替换支持多条规则。</span></div></div>}
- {tab==='sources'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">ITEM SOURCES</span><h2>在世界中，找到这张卡牌</h2><p>可选择多个渠道。价格、物品池和金票分别设置。</p></div></div><div className="source-adds">{([['gallery','壮丽艺廊'],['trader','指定商人'],['research','研究所'],['expedition','远征'],['visitor','访客'],['quest','任务奖励']]as const).map(([type,label])=><button className="button" key={type} disabled={type==='gallery'&&card.sources.some(s=>s.type==='gallery')} onClick={()=>addSource(type)}><Plus size={16}/>{label}</button>)}</div>{card.sources.map(s=><article className="source-block" key={s.id}><header><strong>{s.type==='gallery'?'壮丽艺廊':s.label}</strong><button className="icon-button danger" aria-label="删除获取途径" onClick={()=>onChange({sources:card.sources.filter(v=>v.id!==s.id)})}><Trash2 size={17}/></button></header><div className="form-grid">{s.type==='gallery'?<><Field label="首次购买金票"><input type="number" min="1" value={s.tickets} onChange={e=>updateSource(s.id,{tickets:Number(e.target.value)})}/></Field><Field label="最多购买次数"><input type="number" min="1" max="99" value={s.maxCount} onChange={e=>updateSource(s.id,{maxCount:Number(e.target.value)})}/></Field><Field label="后续价格倍率"><input type="number" min="1" step="0.1" value={s.scale} onChange={e=>updateSource(s.id,{scale:Number(e.target.value)})}/></Field></>:<><Field label={s.type==='trader'?'商人':'渠道备注'}>{s.type==='trader'?<select value={s.label} onChange={e=>updateSource(s.id,{label:e.target.value,poolGuid:0})}>{[...new Set(['埃利·布莱克沃斯','阿奇博尔德·布莱克爵士','卡希娜女王','伊莎贝尔·萨门托','安妮·哈洛','让·拉福尔蒂','凯特玛','雨果·默西埃',s.label])].map(n=><option key={n}>{n}</option>)}</select>:<input value={s.label} onChange={e=>updateSource(s.id,{label:e.target.value})}/>}</Field><Field label="获取物品池"><button className="resource-button" onClick={()=>setPicker({title:'选择获取物品池',selected:s.poolGuid?[s.poolGuid]:[],filter:a=>a.kind==='pool'&&!!a.poolPath,apply:ids=>updateSource(s.id,{poolGuid:ids[0]??0})})}>{s.poolGuid?assetName(catalog,s.poolGuid):'从本机资源选择'}<Search size={16}/></button></Field><Field label="池内相对权重"><input type="number" min="1" value={s.weight} onChange={e=>updateSource(s.id,{weight:Number(e.target.value)})}/></Field><Field label="已知物品池 GUID"><input type="number" min="1" value={s.poolGuid||''} onChange={e=>updateSource(s.id,{poolGuid:Number(e.target.value)})}/></Field></>}</div><small className="source-help">{s.type==='gallery'?'生成独立的艺廊许可与商品；通过帕洛玛向单人存档交付，需在目标游戏内验证。':'物品池可能被多个 NPC 或奖励系统共享。请核对来源和解锁阶段；权重不代表每次刷新必定出现。'}</small></article>)}{!card.sources.length&&<Empty>选择一个获取渠道，让你的卡牌出现在游戏世界中。</Empty>}</div>}
- {tab==='advanced'&&<div className="editor-section"><div className="section-heading"><div><span className="eyebrow">PROJECT DETAILS</span><h2>身份与发布状态</h2><p>卡牌身份在修改和重复导出时保持稳定。</p></div></div><div className="identity-box"><span>卡牌 ID · 本机时间 + 序列 + 随机数</span><code>{card.id}</code><div><span>物品 GUID</span><strong>{card.guid}</strong><span>描述 GUID</span><strong>{card.descriptionGuid}</strong><span>艺廊辅助 GUID</span><strong>{card.galleryPermitGuid} / {card.galleryPackageGuid}</strong></div></div><div className="form-grid"><Field label="发布状态"><select value={card.status} onChange={e=>onChange({status:e.target.value as Card['status']})}><option value="active">参与导出并开放获取</option><option value="draft">草稿 · 暂不导出</option><option value="retired">停止获取 · 保留已有物品定义</option></select></Field><Field label="物品类型"><select value={card.itemType} onChange={e=>onChange({itemType:e.target.value as Card['itemType']})}><option value="Specialist">专家 Specialist</option><option value="Normal">普通物品 Normal</option></select></Field><Field label="堆叠数量"><input type="number" min="1" value={card.stack} onChange={e=>onChange({stack:Number(e.target.value)})}/></Field><Field label="工程备注" wide><textarea rows={4} value={card.notes} onChange={e=>onChange({notes:e.target.value})}/></Field></div>{card.origin&&<div className="notice"><strong>外部 Mod 副本</strong><p>来源：{card.origin.file}</p>{card.origin.unsupported.length>0&&<><p>以下配置保留原文，无法完整转换成表单：</p><ul>{card.origin.unsupported.map(v=><li key={v}>{v}</li>)}</ul></>}</div>}</div>}
- {picker&&<AssetPicker catalog={catalog} title={picker.title} selected={picker.selected} multi={picker.multi} expand={picker.expand} filter={picker.filter} onApply={picker.apply} onClose={()=>setPicker(null)}/>}
- {adding&&<Modal title="添加效果积木" subtitle={`${ALLOCATIONS[card.allocation]} · 只显示适用的效果`} onClose={()=>setAdding(false)}><div className="picker-tools"><label className="search-box"><Search size={18}/><input autoFocus placeholder="搜索效果名称" value={effectQuery} onChange={e=>setEffectQuery(e.target.value)}/></label></div><div className="effect-library">{EFFECTS.filter(d=>d.families.includes(familyOf(card.allocation))&&`${d.label}${d.help}`.includes(effectQuery)).map(d=><button className="effect-option" key={d.id} onClick={()=>addEffect(d.id)}><span className="effect-option-icon"><Plus size={20}/></span><span><strong>{d.label}</strong><small>{d.help}</small></span><span className="version-tag">{d.version}</span></button>)}</div></Modal>}
- {crop&&<Modal title="裁剪卡牌头像" onClose={()=>setCrop(null)}><div className="crop-stage"><div className="crop-square"><img src={cropPreview||crop.original} alt="头像裁剪预览"/></div></div><div className="crop-sliders"><Field label="缩放"><input type="range" min="1" max="3" step="0.01" value={crop.zoom} onChange={e=>setCrop({...crop,zoom:Number(e.target.value)})}/></Field><Field label="水平位置"><input type="range" min="-1" max="1" step="0.01" value={crop.x} onChange={e=>setCrop({...crop,x:Number(e.target.value)})}/></Field><Field label="垂直位置"><input type="range" min="-1" max="1" step="0.01" value={crop.y} onChange={e=>setCrop({...crop,y:Number(e.target.value)})}/></Field></div><footer className="modal-actions"><button className="button" onClick={()=>setCrop(null)}>取消</button><button className="button primary" onClick={async()=>{try{const data=await cropImage(crop.original,crop.x,crop.y,crop.zoom);onChange({image:{mode:'custom',path:'',data,original:crop.original,crop:{x:crop.x,y:crop.y,zoom:crop.zoom}}});setCrop(null);}catch(e){onError(String(e));}}}>应用裁剪</button></footer></Modal>}
- </>;
+export type EditorTab = 'basic' | 'image' | 'targets' | 'effects' | 'sources' | 'advanced';
+export const TABS: { id: EditorTab; label: string }[] = [
+  { id: 'basic', label: '基本信息' },
+  { id: 'image', label: '图片与头像' },
+  { id: 'targets', label: '适用目标' },
+  { id: 'effects', label: '效果积木' },
+  { id: 'sources', label: '获取途径' },
+  { id: 'advanced', label: '高级' },
+];
+export function CardEditor({
+  card,
+  catalog,
+  tab,
+  onChange,
+  refresh,
+  onError,
+}: {
+  card: Card;
+  catalog?: Catalog;
+  tab: EditorTab;
+  onChange: (update: Partial<Card>) => void;
+  refresh: number;
+  onError: (text: string) => void;
+}) {
+  const [picker, setPicker] = useState<{
+      title: string;
+      selected: number[];
+      multi?: boolean;
+      expand?: boolean;
+      filter: (a: Asset) => boolean;
+      apply: (ids: number[]) => void;
+    } | null>(null),
+    [adding, setAdding] = useState(false),
+    [effectQuery, setEffectQuery] = useState(''),
+    [crop, setCrop] = useState<{ original: string; x: number; y: number; zoom: number } | null>(
+      null,
+    );
+  const [cropPreview, setCropPreview] = useState('');
+  useEffect(() => {
+    if (!crop) {
+      setCropPreview('');
+      return;
+    }
+    let live = true;
+    const id = setTimeout(() => {
+      cropImage(crop.original, crop.x, crop.y, crop.zoom)
+        .then((url) => {
+          if (live) setCropPreview(url);
+        })
+        .catch(() => {});
+    }, 50);
+    return () => {
+      live = false;
+      clearTimeout(id);
+    };
+  }, [crop]);
+  const updateEffect = (id: string, patch: Partial<Effect>) =>
+    onChange({ effects: card.effects.map((e) => (e.id === id ? { ...e, ...patch } : e)) });
+  const updateSource = (id: string, patch: Partial<Source>) =>
+    onChange({ sources: card.sources.map((s) => (s.id === id ? { ...s, ...patch } : s)) });
+  const chooseParam = (effect: Effect, param: ParamDef) =>
+    setPicker({
+      title: param.label,
+      selected: [Number(effect.params[param.key])].filter(Boolean),
+      filter: (a) =>
+        param.kind === 'workforce'
+          ? a.kind === 'workforce'
+          : param.kind === 'need'
+            ? a.kind === 'product' || a.kind === 'building' || a.template.includes('Need')
+            : a.kind === 'product',
+      apply: (ids) =>
+        updateEffect(effect.id, { params: { ...effect.params, [param.key]: ids[0] ?? 0 } }),
+    });
+  const traders = catalogOf(catalog).traders ?? [];
+  const stages: Record<string, string> = {
+    EarlyGame: '早期',
+    EarlyMidGame: '前中期',
+    MidGame: '中期',
+    LateMidGame: '中后期',
+    LateGame: '后期',
+    EndGame: '终局',
+  };
+  const addSource = (type: Source['type']) =>
+    onChange({
+      sources: [
+        ...card.sources,
+        {
+          id: uid(),
+          type,
+          label:
+            type === 'gallery'
+              ? '壮丽艺廊'
+              : type === 'trader'
+                ? '埃利·布莱克沃斯'
+                : type === 'research'
+                  ? '研究所'
+                  : type === 'expedition'
+                    ? '远征'
+                    : type === 'visitor'
+                      ? '访客'
+                      : '任务奖励',
+          poolGuid: 0,
+          weight: 100,
+          tickets: 100,
+          maxCount: 99,
+          scale: 1.5,
+        },
+      ],
+    });
+  const addEffect = (type: string) => {
+    const def = effectDef(type);
+    if (!def) return;
+    if (!def.repeat && card.effects.some((e) => e.type === type)) {
+      onError('此效果已有积木，可直接修改数值');
+      return;
+    }
+    onChange({ effects: [...card.effects, createEffect(type)] });
+    setAdding(false);
+  };
+  return (
+    <>
+      {tab === 'basic' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">IDENTITY</span>
+              <h2>每一张卡牌，都有自己的故事</h2>
+              <p>名称、稀有度与安装位置，构成卡牌的基本信息。</p>
+            </div>
+          </div>
+          <div className="form-grid">
+            <Field label="卡牌名称">
+              <input
+                value={card.name}
+                maxLength={128}
+                onChange={(e) => onChange({ name: e.target.value })}
+                placeholder="给这位专家起一个名字"
+              />
+            </Field>
+            <Field label="称号 / 副标题">
+              <input
+                value={card.subtitle}
+                onChange={(e) => onChange({ subtitle: e.target.value })}
+                placeholder="例如：精密制造的革新者"
+              />
+            </Field>
+            <Field label="稀有度">
+              <select
+                value={card.rarity}
+                onChange={(e) => onChange({ rarity: e.target.value as Card['rarity'] })}
+              >
+                {Object.entries(RARITIES).map(([v, t]) => (
+                  <option key={v} value={v}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="安装位置">
+              <select
+                value={card.allocation}
+                onChange={(e) => onChange({ allocation: e.target.value as Card['allocation'] })}
+              >
+                {Object.entries(ALLOCATIONS).map(([v, t]) => (
+                  <option key={v} value={v}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="购买价格" hint="普通游戏货币；金票价格在获取途径中设置。">
+              <div className="input-unit">
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={card.price}
+                  onChange={(e) => onChange({ price: Number(e.target.value) })}
+                />
+                <span>金币</span>
+              </div>
+            </Field>
+            <Field label="卡组">
+              <input
+                value={card.group}
+                onChange={(e) => onChange({ group: e.target.value })}
+                placeholder="我的卡牌"
+              />
+            </Field>
+            <Field label="背景描述" wide hint="描述作为卡牌背景文本，游戏效果由积木生成。">
+              <textarea
+                rows={4}
+                value={card.description}
+                onChange={(e) => onChange({ description: e.target.value })}
+                placeholder="他让每一道工序都有条不紊……"
+              />
+            </Field>
+            <Field label="英文名称（可选）">
+              <input
+                value={card.english}
+                onChange={(e) => onChange({ english: e.target.value })}
+                placeholder="未填写时使用中文名称"
+              />
+            </Field>
+            <Field label="英文描述（可选）">
+              <input
+                value={card.englishDescription}
+                onChange={(e) => onChange({ englishDescription: e.target.value })}
+              />
+            </Field>
+          </div>
+        </div>
+      )}
+      {tab === 'image' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">PORTRAIT STUDIO</span>
+              <h2>让你的卡牌独具一格</h2>
+              <p>使用自己的图片，也可以从本机游戏资源中选择头像。</p>
+            </div>
+          </div>
+          <div className="image-studio">
+            <Portrait image={card.image} size="large" refresh={refresh} />
+            <div className="image-actions">
+              <label className="button primary">
+                <ImagePlus size={18} />
+                上传图片
+                <input
+                  hidden
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={async (e) => {
+                    try {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      if (f.size > 20_000_000) throw new Error('请选择小于 20 MB 的图片');
+                      const r = new FileReader();
+                      r.onload = () => setCrop({ original: String(r.result), x: 0, y: 0, zoom: 1 });
+                      r.readAsDataURL(f);
+                    } catch (e) {
+                      onError(String(e));
+                    }
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              <button
+                className="button"
+                onClick={() =>
+                  setPicker({
+                    title: '选择原版头像',
+                    selected: [],
+                    filter: (a) => !!a.icon && a.kind === 'portrait',
+                    apply: (ids) => {
+                      const a = catalogOf(catalog).assets.find((a) => a.guid === ids[0]);
+                      if (a?.icon) onChange({ image: { mode: 'game', path: a.icon } });
+                    },
+                  })
+                }
+              >
+                <Search size={18} />
+                浏览已有头像
+              </button>
+              {card.image.original && (
+                <button
+                  className="button"
+                  onClick={() =>
+                    setCrop({
+                      original: card.image.original!,
+                      x: card.image.crop?.x ?? 0,
+                      y: card.image.crop?.y ?? 0,
+                      zoom: card.image.crop?.zoom ?? 1,
+                    })
+                  }
+                >
+                  重新裁剪
+                </button>
+              )}
+              <small>
+                PNG、JPEG、WebP · 支持透明背景
+                <br />
+                自定义图标自动生成 DDS 与三级 LOD。
+              </small>
+            </div>
+          </div>
+          <Field
+            label="原版图标资源路径"
+            hint="原版头像从本机资源读取预览；导出保持对游戏资源的引用。"
+          >
+            <input
+              value={card.image.mode === 'game' ? card.image.path : '自定义图片已保存进工程'}
+              disabled={card.image.mode === 'custom'}
+              onChange={(e) => onChange({ image: { mode: 'game', path: e.target.value } })}
+              placeholder="data/ui/.../icon_specialist.png"
+            />
+          </Field>
+        </div>
+      )}
+      {tab === 'targets' && familyOf(card.allocation) === 'ship' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">SHIP ALLOCATION</span>
+              <h2>效果随船出航</h2>
+              <p>卡牌作用于装备它的船舶，适用船型由安装位置决定。</p>
+            </div>
+          </div>
+          <Field label="可装备的船舶类别">
+            <select
+              value={card.allocation}
+              onChange={(e) => onChange({ allocation: e.target.value as Card['allocation'] })}
+            >
+              {Object.entries(ALLOCATIONS)
+                .filter(([v]) => familyOf(v as Card['allocation']) === 'ship')
+                .map(([v, t]) => (
+                  <option key={v} value={v}>
+                    {t}
+                  </option>
+                ))}
+            </select>
+          </Field>
+        </div>
+      )}
+      {tab === 'targets' && familyOf(card.allocation) !== 'ship' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">EFFECT TARGETS</span>
+              <h2>这张卡牌，为谁而生？</h2>
+              <p>所有效果积木共同作用于这里选择的目标。</p>
+            </div>
+            <button
+              className="button primary"
+              onClick={() =>
+                setPicker({
+                  title: '添加适用目标',
+                  selected: card.targets,
+                  multi: true,
+                  expand: true,
+                  filter: (a) =>
+                    familyOf(card.allocation) === 'ship'
+                      ? a.kind === 'ship' || a.template === 'ItemEffectTargetPool'
+                      : familyOf(card.allocation) === 'residence'
+                        ? a.kind === 'residence' || a.template === 'ItemEffectTargetPool'
+                        : a.kind === 'building' || a.template === 'ItemEffectTargetPool',
+                  apply: (targets) => onChange({ targets }),
+                })
+              }
+            >
+              <Plus size={18} />
+              选择目标
+            </button>
+          </div>
+          <div className="target-list">
+            {card.targets.map((g) => (
+              <div className="target-row" key={g}>
+                <span className="target-icon">
+                  <Layers3 size={20} />
+                </span>
+                <div>
+                  <strong>{assetName(catalog, g)}</strong>
+                  <small>GUID {g}</small>
+                </div>
+                <button
+                  className="icon-button"
+                  aria-label={`移除 ${assetName(catalog, g)}`}
+                  onClick={() => onChange({ targets: card.targets.filter((t) => t !== g) })}
+                >
+                  <X size={17} />
+                </button>
+              </div>
+            ))}
+          </div>
+          {!card.targets.length && (
+            <Empty icon={<Layers3 size={40} />}>
+              选择一家工厂、一类住宅，或一艘船，开始定义适用范围。
+            </Empty>
+          )}
+        </div>
+      )}
+      {tab === 'effects' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">BUILD YOUR EFFECTS</span>
+              <h2>像搭积木一样，组合效果</h2>
+              <p>用一项改变开始，再加入你的下一项灵感。</p>
+            </div>
+            <button className="button primary" onClick={() => setAdding(true)}>
+              <Plus size={18} />
+              添加效果
+            </button>
+          </div>
+          <div className="effects-list">
+            {card.effects.map((e, index) => {
+              const d = effectDef(e.type);
+              return (
+                <article className={`effect-block ${!e.enabled ? 'disabled' : ''}`} key={e.id}>
+                  <header>
+                    <span className="block-number">{String(index + 1).padStart(2, '0')}</span>
+                    <div className="block-title">
+                      <strong>{d?.label ?? e.type}</strong>
+                      <small>
+                        {d?.group} · {d?.version}
+                      </small>
+                    </div>
+                    <label className="switch" title="启用效果">
+                      <input
+                        type="checkbox"
+                        checked={e.enabled}
+                        onChange={(v) => updateEffect(e.id, { enabled: v.target.checked })}
+                      />
+                      <span />
+                    </label>
+                    <button
+                      className="icon-button"
+                      title="上移"
+                      disabled={!index}
+                      onClick={() => {
+                        const effects = [...card.effects];
+                        [effects[index - 1], effects[index]] = [effects[index], effects[index - 1]];
+                        onChange({ effects });
+                      }}
+                    >
+                      <ArrowUp size={16} />
+                    </button>
+                    <button
+                      className="icon-button"
+                      title="下移"
+                      disabled={index === card.effects.length - 1}
+                      onClick={() => {
+                        const effects = [...card.effects];
+                        [effects[index], effects[index + 1]] = [effects[index + 1], effects[index]];
+                        onChange({ effects });
+                      }}
+                    >
+                      <ArrowDown size={16} />
+                    </button>
+                    {d?.repeat && (
+                      <button
+                        className="icon-button"
+                        title="复制效果"
+                        onClick={() =>
+                          onChange({
+                            effects: [...card.effects, { ...structuredClone(e), id: uid() }],
+                          })
+                        }
+                      >
+                        <Copy size={16} />
+                      </button>
+                    )}
+                    <button
+                      className="icon-button danger"
+                      title="删除效果"
+                      onClick={() =>
+                        onChange({ effects: card.effects.filter((v) => v.id !== e.id) })
+                      }
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </header>
+                  <div className="block-params">
+                    {d?.params.map((param) => (
+                      <Field key={param.key} label={param.label}>
+                        {param.kind === 'boolean' ? (
+                          <select
+                            value={e.params[param.key] ? '1' : '0'}
+                            onChange={(v) =>
+                              updateEffect(e.id, {
+                                params: { ...e.params, [param.key]: v.target.value === '1' },
+                              })
+                            }
+                          >
+                            <option value="1">开启</option>
+                            <option value="0">关闭</option>
+                          </select>
+                        ) : param.kind === 'number' ? (
+                          <div className="input-unit">
+                            <input
+                              type="number"
+                              min={param.min}
+                              max={param.max}
+                              step={param.step ?? 1}
+                              value={Number(e.params[param.key])}
+                              onChange={(v) =>
+                                updateEffect(e.id, {
+                                  params: { ...e.params, [param.key]: Number(v.target.value) },
+                                })
+                              }
+                            />
+                            <span>{param.unit}</span>
+                          </div>
+                        ) : (
+                          <button className="resource-button" onClick={() => chooseParam(e, param)}>
+                            {Number(e.params[param.key])
+                              ? assetName(catalog, Number(e.params[param.key]))
+                              : `选择${param.label}`}
+                            <Search size={16} />
+                          </button>
+                        )}
+                      </Field>
+                    ))}
+                  </div>
+                  <div className="block-explanation">
+                    <CircleHelp size={14} />
+                    <span>{d?.help}</span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          {!card.effects.length && (
+            <button className="add-empty" onClick={() => setAdding(true)}>
+              <Plus size={28} />
+              <strong>添加第一个效果</strong>
+              <span>生产率、额外产出、原料替换，以及更多可能</span>
+            </button>
+          )}
+          <div className="composition-note">
+            <Layers3 size={17} />
+            <span>同类标量效果使用一个积木；额外产出与原料替换支持多条规则。</span>
+          </div>
+        </div>
+      )}
+      {tab === 'sources' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">ITEM SOURCES</span>
+              <h2>在世界中，找到这张卡牌</h2>
+              <p>可选择多个渠道。价格、物品池和金票分别设置。</p>
+            </div>
+          </div>
+          <div className="source-adds">
+            {(
+              [
+                ['gallery', '壮丽艺廊'],
+                ['trader', '指定商人'],
+                ['research', '研究所'],
+                ['expedition', '远征'],
+                ['visitor', '访客'],
+                ['quest', '任务奖励'],
+              ] as const
+            ).map(([type, label]) => (
+              <button
+                className="button"
+                key={type}
+                disabled={type === 'gallery' && card.sources.some((s) => s.type === 'gallery')}
+                onClick={() => addSource(type)}
+              >
+                <Plus size={16} />
+                {label}
+              </button>
+            ))}
+          </div>
+          {card.sources.map((s) => (
+            <article className="source-block" key={s.id}>
+              <header>
+                <strong>{s.type === 'gallery' ? '壮丽艺廊' : s.label}</strong>
+                <button
+                  className="icon-button danger"
+                  aria-label="删除获取途径"
+                  onClick={() => onChange({ sources: card.sources.filter((v) => v.id !== s.id) })}
+                >
+                  <Trash2 size={17} />
+                </button>
+              </header>
+              <div className="form-grid">
+                {s.type === 'gallery' ? (
+                  <>
+                    <Field label="首次购买金票">
+                      <input
+                        type="number"
+                        min="1"
+                        value={s.tickets}
+                        onChange={(e) => updateSource(s.id, { tickets: Number(e.target.value) })}
+                      />
+                    </Field>
+                    <Field label="最多购买次数">
+                      <input
+                        type="number"
+                        min="1"
+                        max="99"
+                        value={s.maxCount}
+                        onChange={(e) => updateSource(s.id, { maxCount: Number(e.target.value) })}
+                      />
+                    </Field>
+                    <Field label="后续价格倍率">
+                      <input
+                        type="number"
+                        min="1"
+                        step="0.1"
+                        value={s.scale}
+                        onChange={(e) => updateSource(s.id, { scale: Number(e.target.value) })}
+                      />
+                    </Field>
+                  </>
+                ) : (
+                  <>
+                    <Field label={s.type === 'trader' ? '商人' : '渠道备注'}>
+                      {s.type === 'trader' && traders.length ? (
+                        <select
+                          value={s.traderGuid ?? ''}
+                          onChange={(e) => {
+                            const t = traders.find((t) => t.guid === Number(e.target.value)),
+                              first = t?.stages[0];
+                            updateSource(s.id, {
+                              traderGuid: t?.guid,
+                              label: t?.name ?? '自定义商人',
+                              stage: first?.stage,
+                              poolGuid: first?.poolGuid ?? 0,
+                            });
+                          }}
+                        >
+                          <option value="">手动指定商人 / 物品池</option>
+                          {traders.map((t) => (
+                            <option key={t.guid} value={t.guid}>
+                              {t.name} · {t.guid}
+                            </option>
+                          ))}
+                        </select>
+                      ) : s.type === 'trader' ? (
+                        <select
+                          value={s.label}
+                          onChange={(e) =>
+                            updateSource(s.id, { label: e.target.value, poolGuid: 0 })
+                          }
+                        >
+                          {[
+                            ...new Set([
+                              '埃利·布莱克沃斯',
+                              '阿奇博尔德·布莱克爵士',
+                              '卡希娜女王',
+                              '伊莎贝尔·萨门托',
+                              '安妮·哈洛',
+                              '让·拉福尔蒂',
+                              '凯特玛',
+                              '雨果·默西埃',
+                              s.label,
+                            ]),
+                          ].map((n) => (
+                            <option key={n}>{n}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          value={s.label}
+                          onChange={(e) => updateSource(s.id, { label: e.target.value })}
+                        />
+                      )}
+                    </Field>
+                    {s.type === 'trader' && s.traderGuid && (
+                      <Field label="解锁阶段">
+                        <select
+                          value={s.stage ?? ''}
+                          onChange={(e) => {
+                            const t = traders.find((t) => t.guid === s.traderGuid),
+                              stage = t?.stages.find((st) => st.stage === e.target.value);
+                            if (stage)
+                              updateSource(s.id, { stage: stage.stage, poolGuid: stage.poolGuid });
+                          }}
+                        >
+                          {(traders.find((t) => t.guid === s.traderGuid)?.stages ?? []).map(
+                            (st) => (
+                              <option key={st.stage} value={st.stage}>
+                                {stages[st.stage] ?? st.stage} · 池 {st.poolGuid}
+                              </option>
+                            ),
+                          )}
+                        </select>
+                      </Field>
+                    )}
+                    <Field label="获取物品池">
+                      <button
+                        className="resource-button"
+                        onClick={() =>
+                          setPicker({
+                            title: '选择获取物品池',
+                            selected: s.poolGuid ? [s.poolGuid] : [],
+                            filter: (a) => a.kind === 'pool' && !!a.poolPath,
+                            apply: (ids) => updateSource(s.id, { poolGuid: ids[0] ?? 0 }),
+                          })
+                        }
+                      >
+                        {s.poolGuid ? assetName(catalog, s.poolGuid) : '从本机资源选择'}
+                        <Search size={16} />
+                      </button>
+                    </Field>
+                    <Field label="池内相对权重">
+                      <input
+                        type="number"
+                        min="1"
+                        value={s.weight}
+                        onChange={(e) => updateSource(s.id, { weight: Number(e.target.value) })}
+                      />
+                    </Field>
+                    <Field label="已知物品池 GUID">
+                      <input
+                        type="number"
+                        min="1"
+                        value={s.poolGuid || ''}
+                        onChange={(e) => updateSource(s.id, { poolGuid: Number(e.target.value) })}
+                      />
+                    </Field>
+                  </>
+                )}
+              </div>
+              <small className="source-help">
+                {s.type === 'gallery'
+                  ? '生成独立的艺廊许可与商品；通过帕洛玛向单人存档交付，需在目标游戏内验证。'
+                  : '物品池可能被多个 NPC 或奖励系统共享。请核对来源和解锁阶段；权重不代表每次刷新必定出现。'}
+              </small>
+            </article>
+          ))}
+          {!card.sources.length && <Empty>选择一个获取渠道，让你的卡牌出现在游戏世界中。</Empty>}
+        </div>
+      )}
+      {tab === 'advanced' && (
+        <div className="editor-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">PROJECT DETAILS</span>
+              <h2>身份与发布状态</h2>
+              <p>卡牌身份在修改和重复导出时保持稳定。</p>
+            </div>
+          </div>
+          <div className="identity-box">
+            <span>卡牌 ID · 本机时间 + 序列 + 随机数</span>
+            <code>{card.id}</code>
+            <div>
+              <span>物品 GUID</span>
+              <strong>{card.guid}</strong>
+              <span>描述 GUID</span>
+              <strong>{card.descriptionGuid}</strong>
+              <span>艺廊辅助 GUID</span>
+              <strong>
+                {card.galleryPermitGuid} / {card.galleryPackageGuid}
+              </strong>
+            </div>
+          </div>
+          <div className="form-grid">
+            <Field label="发布状态">
+              <select
+                value={card.status}
+                onChange={(e) => onChange({ status: e.target.value as Card['status'] })}
+              >
+                <option value="active">参与导出并开放获取</option>
+                <option value="draft">草稿 · 暂不导出</option>
+                <option value="retired">停止获取 · 保留已有物品定义</option>
+              </select>
+            </Field>
+            <Field label="物品类型">
+              <select
+                value={card.itemType}
+                onChange={(e) => onChange({ itemType: e.target.value as Card['itemType'] })}
+              >
+                <option value="Specialist">专家 Specialist</option>
+                <option value="Normal">普通物品 Normal</option>
+              </select>
+            </Field>
+            <Field label="堆叠数量">
+              <input
+                type="number"
+                min="1"
+                value={card.stack}
+                onChange={(e) => onChange({ stack: Number(e.target.value) })}
+              />
+            </Field>
+            <Field label="工程备注" wide>
+              <textarea
+                rows={4}
+                value={card.notes}
+                onChange={(e) => onChange({ notes: e.target.value })}
+              />
+            </Field>
+          </div>
+          {card.origin && (
+            <div className="notice">
+              <strong>外部 Mod 副本</strong>
+              <p>来源：{card.origin.file}</p>
+              {card.origin.unsupported.length > 0 && (
+                <>
+                  <p>以下配置保留原文，无法完整转换成表单：</p>
+                  <ul>
+                    {card.origin.unsupported.map((v) => (
+                      <li key={v}>{v}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      {picker && (
+        <AssetPicker
+          catalog={catalog}
+          title={picker.title}
+          selected={picker.selected}
+          multi={picker.multi}
+          expand={picker.expand}
+          filter={picker.filter}
+          onApply={picker.apply}
+          onClose={() => setPicker(null)}
+        />
+      )}
+      {adding && (
+        <Modal
+          title="添加效果积木"
+          subtitle={`${ALLOCATIONS[card.allocation]} · 只显示适用的效果`}
+          onClose={() => setAdding(false)}
+        >
+          <div className="picker-tools">
+            <label className="search-box">
+              <Search size={18} />
+              <input
+                autoFocus
+                placeholder="搜索效果名称"
+                value={effectQuery}
+                onChange={(e) => setEffectQuery(e.target.value)}
+              />
+            </label>
+          </div>
+          <div className="effect-library">
+            {EFFECTS.filter(
+              (d) =>
+                d.families.includes(familyOf(card.allocation)) &&
+                `${d.label}${d.help}`.includes(effectQuery),
+            ).map((d) => (
+              <button className="effect-option" key={d.id} onClick={() => addEffect(d.id)}>
+                <span className="effect-option-icon">
+                  <Plus size={20} />
+                </span>
+                <span>
+                  <strong>{d.label}</strong>
+                  <small>{d.help}</small>
+                </span>
+                <span className="version-tag">{d.version}</span>
+              </button>
+            ))}
+          </div>
+        </Modal>
+      )}
+      {crop && (
+        <Modal title="裁剪卡牌头像" onClose={() => setCrop(null)}>
+          <div className="crop-stage">
+            <div className="crop-square">
+              <img src={cropPreview || crop.original} alt="头像裁剪预览" />
+            </div>
+          </div>
+          <div className="crop-sliders">
+            <Field label="缩放">
+              <input
+                type="range"
+                min="1"
+                max="3"
+                step="0.01"
+                value={crop.zoom}
+                onChange={(e) => setCrop({ ...crop, zoom: Number(e.target.value) })}
+              />
+            </Field>
+            <Field label="水平位置">
+              <input
+                type="range"
+                min="-1"
+                max="1"
+                step="0.01"
+                value={crop.x}
+                onChange={(e) => setCrop({ ...crop, x: Number(e.target.value) })}
+              />
+            </Field>
+            <Field label="垂直位置">
+              <input
+                type="range"
+                min="-1"
+                max="1"
+                step="0.01"
+                value={crop.y}
+                onChange={(e) => setCrop({ ...crop, y: Number(e.target.value) })}
+              />
+            </Field>
+          </div>
+          <footer className="modal-actions">
+            <button className="button" onClick={() => setCrop(null)}>
+              取消
+            </button>
+            <button
+              className="button primary"
+              onClick={async () => {
+                try {
+                  const data = await cropImage(crop.original, crop.x, crop.y, crop.zoom);
+                  onChange({
+                    image: {
+                      mode: 'custom',
+                      path: '',
+                      data,
+                      original: crop.original,
+                      crop: { x: crop.x, y: crop.y, zoom: crop.zoom },
+                    },
+                  });
+                  setCrop(null);
+                } catch (e) {
+                  onError(String(e));
+                }
+              }}
+            >
+              应用裁剪
+            </button>
+          </footer>
+        </Modal>
+      )}
+    </>
+  );
 }
-export function EffectSummary({card,catalog}:{card:Card;catalog?:Catalog}){return <>{card.effects.filter(e=>e.enabled).map(e=><li key={e.id}><span className="effect-dot"/>{describeEffect(e,g=>assetName(catalog,g))}</li>)}</>;}
+export function EffectSummary({ card, catalog }: { card: Card; catalog?: Catalog }) {
+  return (
+    <>
+      {card.effects
+        .filter((e) => e.enabled)
+        .map((e) => (
+          <li key={e.id}>
+            <span className="effect-dot" />
+            {describeEffect(e, (g) => assetName(catalog, g))}
+          </li>
+        ))}
+    </>
+  );
+}

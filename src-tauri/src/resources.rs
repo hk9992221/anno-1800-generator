@@ -3,6 +3,7 @@ use crate::{
     storage::{err, stamp, Result},
 };
 use quick_xml::{events::Event, Reader, Writer};
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::{
@@ -12,7 +13,7 @@ use std::{
     path::{Path, PathBuf},
     sync::atomic::{AtomicBool, Ordering},
 };
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Resource {
     Disk(PathBuf),
     Archive(rda::Entry),
@@ -282,6 +283,7 @@ pub fn index(
         })?;
     }
     let mut assets = BTreeMap::new();
+    let mut traders = BTreeMap::new();
     let candidates: Vec<_> = map
         .iter()
         .filter(|(p, _)| p.ends_with("assets.xml"))
@@ -315,6 +317,30 @@ pub fn index(
                 english
             };
             let name = translations.get(&g).cloned().unwrap_or(english.clone());
+            let stages: Vec<_> = [
+                "EarlyGame",
+                "EarlyMidGame",
+                "MidGame",
+                "LateMidGame",
+                "LateGame",
+                "EndGame",
+            ]
+            .into_iter()
+            .filter_map(|stage| {
+                let path = format!("Values/Trader/Progression/{stage}/OfferingItems");
+                let ai_path =
+                    format!("Values/ConstructionAI/ItemTradeConfig/ItemPools/{stage}/Pool");
+                text_at(n, &path)
+                    .parse::<u32>()
+                    .ok()
+                    .or_else(|| text_at(n, &ai_path).parse().ok())
+                    .filter(|guid| *guid > 0)
+                    .map(|pool| json!({"stage":stage,"poolGuid":pool}))
+            })
+            .collect();
+            if !stages.is_empty() {
+                traders.insert(g, json!({"guid":g,"name":name,"stages":stages}));
+            }
             let values = n.children().find(|c| c.has_tag_name("Values"));
             let has = |tag: &str| values.is_some_and(|v| v.children().any(|c| c.has_tag_name(tag)));
             let kind = if template == "Product" {
@@ -413,7 +439,7 @@ pub fn index(
         return Err("assets.xml 中未找到可识别的资产定义".into());
     }
     Ok(
-        json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets.into_values().collect::<Vec<_>>(),"indexedAt":stamp()}),
+        json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets.into_values().collect::<Vec<_>>(),"traders":traders.into_values().collect::<Vec<_>>(),"indexedAt":stamp()}),
     )
 }
 

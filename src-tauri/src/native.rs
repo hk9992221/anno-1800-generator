@@ -324,6 +324,10 @@ async fn index_resources(app: tauri::AppHandle, path: String) -> Result<Value> {
         }
 
         storage::atomic_write(
+            &data_dir(&a)?.join("resource-map.json"),
+            &serde_json::to_vec(&map).map_err(err)?,
+        )?;
+        storage::atomic_write(
             &data_dir(&a)?.join("catalog.json"),
             serde_json::to_string(&catalog).map_err(err)?.as_bytes(),
         )?;
@@ -339,6 +343,12 @@ fn cancel_index(state: State<'_, AppState>) {
 }
 #[tauri::command]
 fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
+    let map_path = data_dir(&app)?.join("resource-map.json");
+    if let Ok(bytes) = fs::read(map_path) {
+        if let Ok(map) = serde_json::from_slice::<resources::Resources>(&bytes) {
+            *app.state::<AppState>().resources.lock().map_err(err)? = map;
+        }
+    }
     let p = data_dir(&app)?.join("catalog.json");
     if !p.exists() {
         return Ok(None);
