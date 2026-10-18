@@ -15,7 +15,7 @@ export function validateProject(p:Project):Issue[]{
   if(c.status==='draft')continue;
   if(!c.name.trim())add('error','name','请填写卡牌名称',c.id);
   if(!Number.isInteger(c.price)||c.price<0||!Number.isInteger(c.stack)||c.stack<1)add('error','price','购买价格必须是非负整数，堆叠数量必须是正整数',c.id);
-  if(!c.targets.length)add('error','targets','请至少选择一个适用目标',c.id);
+  if(!c.targets.length&&familyOf(c.allocation)!=='ship')add('error','targets','请至少选择一个适用目标',c.id);
   if(c.image.mode==='custom'&&!c.image.data)add('error','image','上传图片的数据缺失',c.id);
   if(c.image.mode==='game'&&(!c.image.path.startsWith('data/')||c.image.path.includes('..')))add('error','imagePath','原版头像必须引用 data/ 下的合法资源路径',c.id);
   if(c.status==='active'&&!c.sources.length)add('warning','sources','尚未设置获取途径：卡牌可能无法在正常游戏中取得',c.id);
@@ -35,6 +35,7 @@ export function validateProject(p:Project):Issue[]{
    if(d.encoding==='output'){const g=Number(e.params.product);if(outputs.has(g))add('error','output','同一种额外商品配置了多个周期，请合并为一条明确规则',c.id,e.id);outputs.add(g);}
   }
   for(const n of replacements.values())if(replacements.has(n))add('error','replaceChain','原料替换链／闭环存在歧义，请拆分规则',c.id);
+  if(c.effects.some(e=>e.enabled&&e.type==='whiteFlag'&&e.params.value)&&c.effects.some(e=>e.enabled&&e.type==='pirateFlag'&&e.params.value))add('error','flags','白旗和海盗旗不能同时启用',c.id);
   const pools=new Set<number>();let gallery=0;
   for(const s of c.sources){if(s.type==='gallery'){gallery++;if(!Number.isInteger(s.tickets)||s.tickets<1||!Number.isInteger(s.maxCount)||s.maxCount<1||s.maxCount>99||!Number.isFinite(s.scale)||s.scale<1)add('error','gallery','艺廊价格至少 1 金票，购买上限 1–99，价格倍率至少 1',c.id);}else{
    if(!validGuid(s.poolGuid))add('error','pool',`请为${s.label}选择正确的获取物品池`,c.id);

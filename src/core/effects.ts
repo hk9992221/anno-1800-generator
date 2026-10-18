@@ -1,6 +1,7 @@
 import type { Effect, Family } from './types.ts';
 import { uid } from './types.ts';
 import { V11_EFFECTS } from './effects-v11.ts';
+import { V12_EFFECTS } from './effects-v12.ts';
 export interface ParamDef {key:string;label:string;kind:'number'|'product'|'workforce'|'need'|'boolean';unit?:string;default:number|string|boolean;min?:number;max?:number;step?:number;}
 export interface EffectDef {id:string;label:string;group:string;families:Family[];version:string;params:ParamDef[];path:string;encoding:'upgrade'|'scalar'|'output'|'replace'|'consumption'|'need';repeat?:boolean;scale?:number;percental?:boolean;help:string;}
 const n=(key:string,label:string,def:number,unit='%',min=-100,max=10000,step=1):ParamDef=>({key,label,kind:'number',default:def,unit,min,max,step});
@@ -15,6 +16,7 @@ export const EFFECTS:EffectDef[]=[
  {id:'additionalOutput',label:'额外产出',group:'配方',families:['production'],version:'1.0',params:[g('product','额外商品','product'),n('cycles','每几个生产周期',3,'周期',1,10000),n('amount','额外产量',1,'单位',1,10000)],path:'FactoryUpgrade/AdditionalOutput',encoding:'output',repeat:true,help:'额外产出与主产品并存；周期和产量都是正整数。'},
  {id:'replaceInput',label:'原料替换',group:'配方',families:['production'],version:'1.0',params:[g('old','将原料','product'),g('new','替换为','product')],path:'FactoryUpgrade/ReplaceInputs',encoding:'replace',repeat:true,help:'保留原配方数量。工厂必须实际使用被替换原料；不支持有歧义的替换链。'},
  ...V11_EFFECTS,
+ ...V12_EFFECTS,
 ];
 export const effectDef=(type:string)=>EFFECTS.find(d=>d.id===type);
 export const createEffect=(type:string):Effect=>{const d=effectDef(type);if(!d)throw new Error('未知效果');return{id:uid(),type,enabled:true,params:Object.fromEntries(d.params.map(p=>[p.key,p.default]))};};

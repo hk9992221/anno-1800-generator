@@ -18,8 +18,8 @@ export function cardFields(card:Card):Record<string,string> {
   'Values/Text/LocaText/English/Text':escapeXml(card.english||name),
   'Values/Item/MaxStackSize':String(card.stack),'Values/Item/Rarity':card.rarity,'Values/Item/ItemType':card.itemType,
   'Values/Item/Allocation':card.allocation,'Values/Item/TradePrice':String(card.price),
-  'Values/ItemEffect/EffectTargets':card.targets.map(g=>el('Item',t('GUID',g))).join(''),
  };
+ if(familyOf(card.allocation)!=='ship')out['Values/ItemEffect/EffectTargets']=card.targets.map(g=>el('Item',t('GUID',g))).join('');
  const groups=new Map<string,string[]>();
  for(const e of card.effects.filter(e=>e.enabled)){const d=effectDef(e.type);if(!d)throw new Error(`未知效果 ${e.type}`);const p=e.params;let body='';
   switch(d.encoding){
