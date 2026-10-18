@@ -22,10 +22,16 @@ pub fn safe_path(path: &str) -> Result<PathBuf> {
     if path.is_empty()
         || path.contains('\\')
         || path.contains(':')
-        || path.contains('\0')
-        || path
-            .split('/')
-            .any(|p| p.is_empty() || p == ".." || p == "." || p.ends_with('.') || p.ends_with(' '))
+        || path.chars().any(|c| c < ' ' || "*?\"<>|".contains(c))
+        || path.split('/').any(|p| {
+            p.is_empty() || p == ".." || p == "." || p.ends_with('.') || p.ends_with(' ') || {
+                let stem = p.split('.').next().unwrap_or("").to_ascii_uppercase();
+                ["CON", "PRN", "AUX", "NUL"].contains(&stem.as_str())
+                    || ((stem.starts_with("COM") || stem.starts_with("LPT"))
+                        && stem.len() == 4
+                        && matches!(stem.as_bytes()[3], b'1'..=b'9'))
+            }
+        })
     {
         return Err(format!("不安全的相对路径：{path}"));
     }
@@ -36,24 +42,20 @@ pub fn safe_path(path: &str) -> Result<PathBuf> {
     Ok(p)
 }
 pub fn atomic_write(path: &Path, data: &[u8]) -> Result<()> {
+    use std::io::Write;
     let parent = path.parent().ok_or("无效保存路径")?;
     fs::create_dir_all(parent).map_err(err)?;
     let tmp = parent.join(format!(".cardforge-write-{}", stamp()));
-    fs::write(&tmp, data).map_err(err)?;
-    let backup = parent.join(format!(".cardforge-save-{}", stamp()));
-    let existed = path.exists();
-    if existed {
-        fs::rename(path, &backup).map_err(err)?;
+    let mut f = fs::File::create(&tmp).map_err(err)?;
+    f.write_all(data).map_err(err)?;
+    f.sync_all().map_err(err)?;
+    drop(f);
+    if path.exists() {
+        fs::copy(path, path.with_extension("cardforge-backup")).map_err(err)?;
     }
     if let Err(e) = fs::rename(&tmp, path) {
-        if existed {
-            let _ = fs::rename(&backup, path);
-        }
         let _ = fs::remove_file(tmp);
         return Err(err(e));
-    }
-    if existed {
-        let _ = fs::remove_file(backup);
     }
     Ok(())
 }

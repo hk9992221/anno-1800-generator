@@ -43,7 +43,7 @@ dependencies = [
 
 [[package]]
 name = "anno1800-cardforge"
-version = "1.0.0"
+version = "1.2.0"
 dependencies = [
  "base64 0.22.1",
  "ddsfile",
@@ -1560,6 +1560,7 @@ dependencies = [
  "bytemuck",
  "ddsfile",
  "half",
+ "image",
  "thiserror 1.0.69",
 ]
 

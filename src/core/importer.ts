@@ -5,7 +5,8 @@ import { EFFECTS } from './effects.ts';
 import { createCard, createProject, parseProject } from './project.ts';
 import { at, children, descendants, numberAt, parseXml, rawNode, value } from './xml.ts';
 import { decodeText, normalizePath } from './catalog.ts';
-export function safeRelative(path:string):boolean {return !!path&&!path.startsWith('/')&&!/^[A-Za-z]:/.test(path)&&!path.includes('\\')&&!path.split('/').some(p=>p==='..'||p==='.'||!p)&&!path.includes('\0');}
+import { safeRelative } from './paths.ts';
+export { safeRelative } from './paths.ts';
 export async function unzipMod(bytes:ArrayBuffer):Promise<NativeFile[]>{
  if(bytes.byteLength>250_000_000)throw new Error('ZIP 大于 250 MB，请解压后选择 Mod 文件夹');
  const zip=await JSZip.loadAsync(bytes),entries=Object.values(zip.files).filter(e=>!e.dir);
@@ -18,7 +19,7 @@ export async function unzipMod(bytes:ArrayBuffer):Promise<NativeFile[]>{
 export function importMod(files:NativeFile[],mode:'collection'|'edit',into?:Project):{project:Project;messages:string[]} {
  if(files.some(f=>!safeRelative(normalizePath(f.path))))throw new Error('Mod 文件包含不安全路径');
  const embedded=files.find(f=>normalizePath(f.path)==='cardforge-project.json');
- if(embedded&&!into)return{project:parseProject(decodeText(embedded.data)),messages:['已恢复完整卡牌工坊工程和稳定身份']};
+ if(embedded)return{project:parseProject(decodeText(embedded.data)),messages:['已恢复完整卡牌工坊工程和稳定身份']};
  const p=into?structuredClone(into):createProject(),messages:string[]=[],texts=new Map<number,string>(),english=new Map<number,string>();
  const docs=files.filter(f=>/\.xml$/i.test(f.path)).map(f=>({path:normalizePath(f.path),xml:decodeText(f.data)}));
  for(const f of docs.filter(f=>/texts_(chinese|english)\.xml$/i.test(f.path))){for(const n of descendants(parseXml(f.xml),'Text')){const g=numberAt(n,'GUID');if(g)(f.path.includes('chinese')?texts:english).set(g,value(n,'Text'));}}

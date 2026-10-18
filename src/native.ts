@@ -14,6 +14,8 @@ export const native={
  async clearProjectPath(){if(isDesktop())await invoke('clear_project_path');},
  async draft(p:Project){const text=JSON.stringify(p);if(isDesktop())await invoke('save_draft',{text});else await browserDraft(text);},
  async loadDraft(){return isDesktop()?invoke<string|null>('load_draft'):browserDraft();},
+ async registry(){return isDesktop()?invoke<number[]>('load_registry'):[];},
+ async scanMods(path:string){return invoke<{assets:Catalog['assets'];guids:number[]}>('scan_mods',{path});},
  async readMod(path:string){return invoke<NativeFile[]>('read_mod_folder',{path});},
  async preview(parent:string,plan:ExportPlan){return invoke<ExportPreview>('preview_export',{parent,plan});},
  async write(parent:string,plan:ExportPlan,token:string){return invoke<string>('write_export',{parent,plan,token});},

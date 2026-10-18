@@ -7,7 +7,6 @@ use serde_json::{json, Value};
 use std::{
     collections::BTreeMap,
     fs,
-    io::Cursor,
     path::{Path, PathBuf},
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -23,6 +22,7 @@ struct AppState {
     resources: Mutex<resources::Resources>,
     cancel: AtomicBool,
     export_lock: Mutex<()>,
+    registry_lock: Mutex<()>,
 }
 fn data_dir(app: &tauri::AppHandle) -> Result<PathBuf> {
     let exe = std::env::current_exe().map_err(err)?;
@@ -150,17 +150,47 @@ fn clear_project_path(state: State<'_, AppState>) -> Result<()> {
 }
 #[tauri::command]
 fn save_draft(app: tauri::AppHandle, text: String) -> Result<()> {
-    let _: Value = serde_json::from_str(&text).map_err(err)?;
-    storage::atomic_write(&data_dir(&app)?.join("draft.json"), text.as_bytes())
+    let state = app.state::<AppState>();
+    let _lock = state.registry_lock.lock().map_err(err)?;
+    let value: Value = serde_json::from_str(&text).map_err(err)?;
+    let dir = data_dir(&app)?;
+    let path = dir.join("guid-registry.json");
+    let mut ids: std::collections::BTreeSet<u32> = if path.exists() {
+        serde_json::from_slice(&fs::read(&path).map_err(err)?).map_err(err)?
+    } else {
+        Default::default()
+    };
+    if let Some(guids) = value["reservedGuids"].as_array() {
+        for id in guids {
+            if let Some(g) = id.as_u64() {
+                if g <= 2147483647 {
+                    ids.insert(g as u32);
+                }
+            }
+        }
+    }
+    storage::atomic_write(&path, &serde_json::to_vec(&ids).map_err(err)?)?;
+    storage::atomic_write(&dir.join("draft.json"), text.as_bytes())
+}
+#[tauri::command]
+fn load_registry(app: tauri::AppHandle) -> Result<Vec<u32>> {
+    let p = data_dir(&app)?.join("guid-registry.json");
+    if !p.exists() {
+        return Ok(vec![]);
+    }
+    serde_json::from_slice(&fs::read(p).map_err(err)?).map_err(err)
 }
 #[tauri::command]
 fn load_draft(app: tauri::AppHandle) -> Result<Option<String>> {
     let p = data_dir(&app)?.join("draft.json");
-    if p.exists() {
-        Ok(Some(fs::read_to_string(p).map_err(err)?))
-    } else {
-        Ok(None)
+    for candidate in [p.clone(), p.with_extension("cardforge-backup")] {
+        if let Ok(text) = fs::read_to_string(&candidate) {
+            if serde_json::from_str::<Value>(&text).is_ok() {
+                return Ok(Some(text));
+            }
+        }
     }
+    Ok(None)
 }
 #[tauri::command]
 async fn read_mod_folder(app: tauri::AppHandle, path: String) -> Result<Vec<FileData>> {
@@ -276,7 +306,23 @@ async fn index_resources(app: tauri::AppHandle, path: String) -> Result<Value> {
             let _ = a.emit("resource-progress", message);
         };
         let map = resources::discover(&root, &state.cancel, &progress)?;
-        let catalog = resources::index(&map, &root, &state.cancel, &progress)?;
+        let mut catalog = resources::index(&map, &root, &state.cancel, &progress)?;
+        let mods = if root.join("mods").is_dir() {
+            Some(root.join("mods"))
+        } else {
+            root.parent().map(|p| p.join("mods")).filter(|p| p.is_dir())
+        };
+        if let Some(mods) = mods {
+            let scanned = resources::scan_mods(&mods, &state.cancel, &progress)?;
+            if let Some(a) = scanned["assets"].as_array() {
+                catalog["assets"]
+                    .as_array_mut()
+                    .unwrap()
+                    .extend(a.iter().cloned());
+            }
+            catalog["scannedModGuids"] = scanned["guids"].clone();
+        }
+
         storage::atomic_write(
             &data_dir(&a)?.join("catalog.json"),
             serde_json::to_string(&catalog).map_err(err)?.as_bytes(),
@@ -316,24 +362,28 @@ async fn load_portrait(app: tauri::AppHandle, path: String) -> Result<String> {
             .find_map(|p| resources.get(p))
             .ok_or("原版头像缓存尚未读取，请重新选择本机资源目录")?;
         let bytes = resources::bytes(resource)?;
-        let rgba = if bytes.starts_with(b"DDS ") {
-            let dds = ddsfile::Dds::read(&mut Cursor::new(&bytes)).map_err(err)?;
-            image_dds::image_from_dds(&dds, 0).map_err(err)?
-        } else {
-            image::load_from_memory(&bytes).map_err(err)?.into_rgba8()
-        };
-        let mut out = Cursor::new(vec![]);
-        image::DynamicImage::ImageRgba8(rgba)
-            .write_to(&mut out, image::ImageFormat::Png)
-            .map_err(err)?;
-        Ok(format!(
-            "data:image/png;base64,{}",
-            STANDARD.encode(out.into_inner())
-        ))
+        let png = resources::portrait_png(&bytes)?;
+        Ok(format!("data:image/png;base64,{}", STANDARD.encode(png)))
     })
     .await
     .map_err(err)?
 }
+
+#[tauri::command]
+async fn scan_mods(app: tauri::AppHandle, path: String) -> Result<Value> {
+    let root = require_root(&app.state::<AppState>(), &path, false)?;
+    let a = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = a.state::<AppState>();
+        state.cancel.store(false, Ordering::Relaxed);
+        resources::scan_mods(&root, &state.cancel, &|m| {
+            let _ = a.emit("resource-progress", m);
+        })
+    })
+    .await
+    .map_err(err)?
+}
+
 pub fn run() {
     tauri::Builder::default()
         .manage(AppState::default())
@@ -345,6 +395,8 @@ pub fn run() {
             clear_project_path,
             save_draft,
             load_draft,
+            load_registry,
+            scan_mods,
             read_mod_folder,
             preview_export,
             write_export,

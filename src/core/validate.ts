@@ -49,7 +49,7 @@ export function validateProject(p:Project):Issue[]{
   if(c.origin?.unsupported.length&&p.mode==='collection')add('error','unknownClone','含未知字段的外部卡牌需要在原 Mod 副本模式中处理',c.id);
   for(const g of c.targets){const a=lookupAsset(p.catalog,g);if(!a)add('warning','targetMissing',`目标 GUID ${g} 未在索引中找到`,c.id);else if(a.dlc&&!p.dlcs.includes(a.dlc))add('warning','dlc',`${a.name}需要 ${a.dlc}，请核对游戏环境`,c.id);}
  }
- for(const [g,name]of ids){const a=p.catalog?.assets.find(a=>a.guid===g);if(a&&!p.cards.some(c=>c.origin&&c.guid===g))add('error','installedConflict',`${name} 的 GUID ${g} 已被索引中的 ${a.name} 使用`,p.cards.find(c=>c.guid===g)?.id);}
+ for(const [g,name]of ids){const a=p.catalog?.assets.find(a=>a.guid===g&&a.projectId!==p.projectId);if(a&&!p.cards.some(c=>c.origin&&c.guid===g))add('error','installedConflict',`${name} 的 GUID ${g} 已被索引中的 ${a.name} 使用`,p.cards.find(c=>c.guid===g)?.id);}
  if(!p.catalog)add('info','baseline','当前使用常用 GUID 参考。读取本机资源后可检查配方、原版头像和获取物品池。');
  if(p.cards.some(c=>c.sources.some(s=>s.type==='gallery')))add('info','galleryCheck','艺廊导出使用独立许可／商品条目。请在目标游戏中验证金票购买和帕洛玛交付。');
  return out;

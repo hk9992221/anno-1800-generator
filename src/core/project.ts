@@ -5,7 +5,7 @@ export function createProject():Project {return{schemaVersion:1,projectId:uid(),
 export function allocate(p:Project,count:number,seed=uid()):number[]{
  const {start,end}=p.guidRange;
  if(!Number.isInteger(start)||!Number.isInteger(end)||start<1337471142||end>2147483647||end<start)throw new Error('GUID 范围必须在游戏允许的 Mod 整数范围内');
- const used=new Set([...p.reservedGuids,...p.cards.flatMap(c=>[c.guid,c.descriptionGuid,c.galleryPermitGuid,c.galleryPackageGuid]),...(p.catalog?.assets.map(a=>a.guid)??[])]);
+ const used=new Set([...p.reservedGuids,...p.cards.flatMap(c=>[c.guid,c.descriptionGuid,c.galleryPermitGuid,c.galleryPackageGuid]),...(p.catalog?.assets.map(a=>a.guid)??[]),...(p.catalog?.scannedModGuids??[])]);
  let hash=2166136261;for(const ch of seed){hash^=ch.charCodeAt(0);hash=Math.imul(hash,16777619)>>>0;}
  const width=end-start+1,result:number[]=[];let offset=hash%width,examined=0;
  while(result.length<count){if(examined++>=width)throw new Error('GUID 范围不足，请在工程设置中检查范围');const next=start+offset;offset=(offset+1)%width;if(!used.has(next)){result.push(next);used.add(next);}}

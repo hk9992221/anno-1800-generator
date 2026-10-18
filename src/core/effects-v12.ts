@@ -15,5 +15,5 @@ export const V12_EFFECTS:EffectDef[]=[
  {id:'tradePrice',label:'主动交易价格',group:'船舶',families:['ship'],version:'1.2',path:'TradeShipUpgrade/ActiveTradePriceInPercent',encoding:'scalar',params:[{key:'value',label:'主动交易价格修正',kind:'number',default:-10,min:-100,max:10000,step:1,unit:'%'}],help:'改变装备船主动交易的价格修正，不影响卡牌自身购买价格。'},
  {id:'whiteFlag',label:'白旗',group:'船舶',families:['ship'],version:'1.2',path:'VehicleUpgrade/ActivateWhiteFlag',encoding:'scalar',params:[{key:'value',label:'启用白旗',kind:'boolean',default:true}],help:'启用游戏白旗机制；与海盗旗互斥。'},
  {id:'pirateFlag',label:'海盗旗',group:'船舶',families:['ship'],version:'1.2',path:'VehicleUpgrade/ActivatePirateFlag',encoding:'scalar',params:[{key:'value',label:'启用海盗旗',kind:'boolean',default:true}],help:'启用游戏海盗旗机制；与白旗互斥。'},
- {id:'equipmentSlot',label:'额外装备插槽',group:'船舶',families:['ship'],version:'1.2',path:'ItemContainerUpgrade/SocketCountUpgrade',encoding:'upgrade',percental:false,params:[{key:'value',label:'增加装备插槽',kind:'number',default:1,min:1,max:1,step:1,unit:'个'}],help:'使用引擎提供的单个额外装备插槽；不会增加普通货物舱位。'},
+ {id:'equipmentSlot',label:'额外装备插槽',group:'船舶',families:['ship'],version:'1.2',path:'ItemContainerUpgrade/SocketCountUpgrade/Value',encoding:'scalar',params:[{key:'value',label:'增加装备插槽',kind:'number',default:1,min:1,max:1,step:1,unit:'个'}],help:'使用引擎提供的单个额外装备插槽；不会增加普通货物舱位。'},
 ];

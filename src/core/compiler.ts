@@ -6,6 +6,7 @@ import { at, children, descendants, element as el, escapeXml, numberAt, parseXml
 import { decodeText, encodeText, lookupAsset } from './catalog.ts';
 import { iconFiles } from './images.ts';
 import { validateProject } from './validate.ts';
+import { safeRelative } from './paths.ts';
 export const ASSETS_PATH='data/config/export/main/asset/assets.xml';
 const OP=(type:string,guid:number,path:string,body:string)=>`<ModOp Type="${type}" GUID="${guid}"${path?` Path="${escapeXml(path)}"`:''}>${body}</ModOp>`;
 export function cardFields(card:Card):Record<string,string> {
@@ -21,7 +22,7 @@ export function cardFields(card:Card):Record<string,string> {
  };
  if(familyOf(card.allocation)!=='ship')out['Values/ItemEffect/EffectTargets']=card.targets.map(g=>el('Item',t('GUID',g))).join('');
  const groups=new Map<string,string[]>();
- for(const e of card.effects.filter(e=>e.enabled)){const d=effectDef(e.type);if(!d)throw new Error(`未知效果 ${e.type}`);const p=e.params;let body='';
+ for(const e of card.effects.filter(e=>e.enabled).sort((a,b)=>a.type.localeCompare(b.type,'en')||JSON.stringify(a.params).localeCompare(JSON.stringify(b.params),'en'))){const d=effectDef(e.type);if(!d)throw new Error(`未知效果 ${e.type}`);const p=e.params;let body='';
   switch(d.encoding){
    case'upgrade':body=t('Value',Number(p.value)*(d.scale??1))+(d.scale?'':t('Percental',d.percental===false?0:1));break;
    case'scalar':body=escapeXml(d.params[0]?.kind==='boolean'?(p.value?1:0):(p[d.params[0].key]??0));break;
@@ -74,6 +75,7 @@ function patchImportedFiles(p:Project,files:Map<string,string>):void {
  }
 }
 export async function createExportPlan(p:Project):Promise<ExportPlan>{
+ if(!safeRelative(p.folderName)||p.folderName.includes('/')||p.importedFiles.some(f=>!safeRelative(f.path)))throw new Error('工程中包含无效的 Windows 输出路径');
  const errors=validateProject(p).filter(i=>i.severity==='error');if(errors.length)throw new Error(errors.slice(0,4).map(i=>i.message).join('\n'));
  const xml=compileXml(p),files=new Map(p.mode==='edit'?p.importedFiles.map(f=>[f.path,f.data]):[]);
  if(p.mode==='edit'){
@@ -84,8 +86,8 @@ export async function createExportPlan(p:Project):Promise<ExportPlan>{
  if(!files.has('modinfo.json'))files.set('modinfo.json',encodeText(JSON.stringify({ModID:p.modId,Version:p.version,ModName:{English:p.name,Chinese:p.name},Category:{English:'Gameplay',Chinese:'游戏玩法'},Description:{English:'Custom items created with Anno 1800 CardForge.'},ModDependencies:p.dependencies},null,2)));
  for(const c of p.cards.filter(c=>c.status!=='draft'))for(const f of await iconFiles(c.image,c.guid))files.set(f.path,f.data);
  // The embedded editor project makes our own ZIP/folder output fully reopenable.
- files.set('cardforge-project.json',encodeText(JSON.stringify({...p,cards:p.cards.map(c=>({...c,published:c.status!=='draft'||c.published}))})));
+ files.set('cardforge-project.json',encodeText(JSON.stringify({...p,catalog:undefined,cards:p.cards.map(c=>({...c,published:c.status!=='draft'||c.published}))})));
  for(const [path,data]of files){if(path==='cardforge-project.json')continue;if(/\.xml$/i.test(path))parseXml(decodeText(data));}
  return{projectId:p.projectId,modId:p.modId,folderName:p.folderName,files:[...files].sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,data])=>({path,data})),cardGuids:p.cards.filter(c=>c.status!=='draft').map(c=>c.guid)};
 }
-export async function planToZip(plan:ExportPlan):Promise<Uint8Array>{const zip=new JSZip();for(const file of plan.files)zip.file(`${plan.folderName}/${file.path}`,file.data,{base64:true,date:new Date('2020-01-01T00:00:00Z')});return zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6},platform:'DOS'});}
+export async function planToZip(plan:ExportPlan):Promise<Uint8Array>{if(!safeRelative(plan.folderName)||plan.folderName.includes('/')||plan.files.some(f=>!safeRelative(f.path)))throw new Error('Mod 包含无效的 Windows 文件路径');const zip=new JSZip();for(const file of plan.files)zip.file(`${plan.folderName}/${file.path}`,file.data,{base64:true,date:new Date('2020-01-01T00:00:00Z')});return zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6},platform:'DOS'});}

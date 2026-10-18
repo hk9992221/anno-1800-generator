@@ -18,6 +18,117 @@ pub enum Resource {
     Archive(rda::Entry),
 }
 pub type Resources = BTreeMap<String, Resource>;
+
+/// Enumerate concrete definitions in installed mods without applying arbitrary patches.
+pub fn scan_mods(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> Result<Value> {
+    let mut assets = vec![];
+    let mut guids = std::collections::BTreeSet::<u32>::new();
+    fn walk(
+        root: &Path,
+        dir: &Path,
+        cancel: &AtomicBool,
+        progress: &impl Fn(&str),
+        assets: &mut Vec<Value>,
+        guids: &mut std::collections::BTreeSet<u32>,
+    ) -> Result<()> {
+        if cancel.load(Ordering::Relaxed) {
+            return Err("扫描已取消".into());
+        }
+        for e in fs::read_dir(dir).map_err(err)? {
+            let e = e.map_err(err)?;
+            let ty = e.file_type().map_err(err)?;
+            let path = e.path();
+            if ty.is_symlink() || e.file_name().to_string_lossy().starts_with('.') {
+                continue;
+            }
+            if ty.is_dir() {
+                walk(root, &path, cancel, progress, assets, guids)?;
+                continue;
+            }
+            if path.extension().and_then(|v| v.to_str()) != Some("xml") {
+                continue;
+            }
+            progress(&format!(
+                "扫描 Mod GUID：{}",
+                path.file_name().unwrap_or_default().to_string_lossy()
+            ));
+            let mut project_id = String::new();
+            for ancestor in path.ancestors().skip(1) {
+                if !ancestor.starts_with(root) {
+                    break;
+                }
+                let manifest = ancestor.join("cardforge-manifest.json");
+                if manifest.is_file() {
+                    if let Ok(bytes) = fs::read(manifest) {
+                        if let Ok(m) = serde_json::from_slice::<Value>(&bytes) {
+                            project_id = m["projectId"].as_str().unwrap_or("").into();
+                        }
+                    }
+                    break;
+                }
+            }
+            let file = fs::File::open(&path).map_err(err)?;
+            asset_fragments(BufReader::new(file), b"Asset", |text| {
+                let doc = roxmltree::Document::parse(text).map_err(err)?;
+                let n = doc.root_element();
+                let guid = text_at(n, "Values/Standard/GUID")
+                    .parse::<u32>()
+                    .unwrap_or(0);
+                if guid == 0 {
+                    return Ok(());
+                }
+                guids.insert(guid);
+                let template = text_at(n, "Template");
+                let kind = if template == "Product" {
+                    if text_at(n, "Values/Standard/Name")
+                        .to_lowercase()
+                        .contains("workforce")
+                    {
+                        "workforce"
+                    } else {
+                        "product"
+                    }
+                } else if template.contains("Residence") {
+                    "residence"
+                } else if template.contains("Factory")
+                    || template.contains("Farm")
+                    || template.contains("Mine")
+                {
+                    "building"
+                } else if template.contains("Item") {
+                    "portrait"
+                } else if template.contains("Ship") {
+                    "ship"
+                } else {
+                    "other"
+                };
+                assets.push(json!({"guid":guid,"name":text_at(n,"Values/Standard/Name"),"english":text_at(n,"Values/Text/LocaText/English/Text"),"template":template,"kind":kind,"icon":text_at(n,"Values/Standard/IconFilename"),"source":path.to_string_lossy(),"projectId":project_id}));
+                Ok(())
+            })?;
+            if path
+                .file_name()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .starts_with("texts_")
+            {
+                asset_fragments(
+                    BufReader::new(fs::File::open(&path).map_err(err)?),
+                    b"Text",
+                    |text| {
+                        let d = roxmltree::Document::parse(text).map_err(err)?;
+                        if let Ok(g) = text_at(d.root_element(), "GUID").parse::<u32>() {
+                            guids.insert(g);
+                        }
+                        Ok(())
+                    },
+                )?;
+            }
+        }
+        Ok(())
+    }
+    walk(root, root, cancel, progress, &mut assets, &mut guids)?;
+    Ok(json!({"assets":assets,"guids":guids.into_iter().collect::<Vec<_>>()}))
+}
 fn natural_number(path: &Path) -> u64 {
     path.file_stem()
         .unwrap_or_default()
@@ -304,4 +415,22 @@ pub fn index(
     Ok(
         json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets.into_values().collect::<Vec<_>>(),"indexedAt":stamp()}),
     )
+}
+
+/// Decode native game icons, including BC7, to a webview-readable PNG.
+pub fn portrait_png(bytes: &[u8]) -> Result<Vec<u8>> {
+    let rgba = if bytes.starts_with(b"DDS ") {
+        let dds = ddsfile::Dds::read(&mut Cursor::new(bytes)).map_err(err)?;
+        if dds.get_width() > 8192 || dds.get_height() > 8192 {
+            return Err("图标尺寸超过预览限制".into());
+        }
+        image_dds::image_from_dds(&dds, 0).map_err(err)?
+    } else {
+        image::load_from_memory(bytes).map_err(err)?.into_rgba8()
+    };
+    let mut out = Cursor::new(vec![]);
+    image::DynamicImage::ImageRgba8(rgba)
+        .write_to(&mut out, image::ImageFormat::Png)
+        .map_err(err)?;
+    Ok(out.into_inner())
 }

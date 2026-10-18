@@ -14,9 +14,9 @@ export interface Card {
 export interface ResourceFile { path: string; data: string; }
 export interface Asset {
  guid:number; name:string; english:string; template:string; kind:'building'|'product'|'workforce'|'pool'|'portrait'|'ship'|'residence'|'other';
- icon?:string; region?:string; dlc?:string; source?:string; members?:number[]; inputs?:number[]; allocations?:Allocation[]; capabilities?:string[]; raw?:string; poolPath?:string; owner?:string; stage?:string;
+ icon?:string; region?:string; dlc?:string; source?:string; projectId?:string; members?:number[]; inputs?:number[]; allocations?:Allocation[]; capabilities?:string[]; raw?:string; poolPath?:string; owner?:string; stage?:string;
 }
-export interface Catalog { version:string; source:string; fingerprint:string; assets:Asset[]; indexedAt:string; }
+export interface Catalog { version:string; source:string; fingerprint:string; assets:Asset[]; indexedAt:string; scannedModGuids?:number[]; }
 export interface Project {
  schemaVersion:1; projectId:string; name:string; modId:string; folderName:string; zipName:string; version:string;
  guidRange:{start:number;end:number;next:number}; reservedGuids:number[]; cards:Card[]; dependencies:string[]; dlcs:string[];
