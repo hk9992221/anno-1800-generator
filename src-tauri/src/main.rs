@@ -5,6 +5,7 @@ mod native;
 mod rda;
 mod resources;
 mod storage;
+mod xml_encoding;
 #[cfg(windows)]
 fn main() {
     native::run();

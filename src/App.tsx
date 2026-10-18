@@ -44,6 +44,7 @@ import { catalogOf } from './core/catalog.ts';
 import { compileXml, createExportPlan, planToZip } from './core/compiler.ts';
 import { importMod, unzipMod } from './core/importer.ts';
 import { validateProject } from './core/validate.ts';
+import { issuePage } from './core/issues.ts';
 import { isDesktop, native, type ExportPreview } from './native.ts';
 import { useProject } from './state.ts';
 import { CardEditor, TABS, type EditorTab } from './components/CardEditor.tsx';
@@ -256,7 +257,7 @@ export default function App() {
     await indexResources(false);
   }
   function choosePortrait() {
-    if (project.catalog?.indexVersion === 2) setShowPortrait(true);
+    if ((project.catalog?.indexVersion ?? 0) >= 3) setShowPortrait(true);
     else void indexResources();
   }
   async function importFiles(files: Parameters<typeof importMod>[0]) {
@@ -440,7 +441,7 @@ export default function App() {
           </button>
           <div className="sidebar-version">
             <span>WINDOWS EDITION</span>
-            <span>v1.3.0</span>
+            <span>v1.3.1</span>
           </div>
         </div>
       </aside>
@@ -917,11 +918,11 @@ export default function App() {
                   project={project}
                   key={index}
                   onClick={() => {
-                    if (i.cardId) {
-                      choose(i.cardId);
-                      setTab(i.effectId ? 'effects' : 'advanced');
-                      setShowIssues(false);
-                    }
+                    const page = issuePage(i);
+                    if (i.cardId) choose(i.cardId);
+                    if (page === 'settings') setShowSettings(true);
+                    else setTab(page);
+                    setShowIssues(false);
                   }}
                 />
               ))
@@ -1124,7 +1125,7 @@ function IssueRow({
         )}
         {issue.message}
       </span>
-      {issue.cardId && <ArrowRight size={16} />}
+      <ArrowRight size={16} />
     </button>
   );
 }

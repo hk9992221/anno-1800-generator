@@ -47,6 +47,7 @@ jobs:
           if (-not $installer) { throw 'NSIS installer was not generated' }
           Copy-Item $installer.FullName (Join-Path $publishRoot "Anno1800-CardForge-$version-Setup.exe")
           Copy-Item src-tauri/target/release/anno1800-cardforge.exe (Join-Path $portableRoot 'Anno1800-CardForge.exe')
+          Copy-Item LICENSE,THIRD_PARTY_NOTICES.md $portableRoot
           Set-Content (Join-Path $portableRoot 'portable.flag') 'Portable data is stored in CardForgeData next to the application.'
           @'
           Anno 1800 卡牌工坊 · Portable
@@ -87,6 +88,7 @@ jobs:
           - Portable.zip：便携版，解压运行，数据保存在程序旁。
 
           支持生产卡牌、市政厅卡牌、船舶与飞艇卡牌；包含效果积木、批量制作、图片裁剪、Mod 导入和固定名称导出。
+          资源读取兼容 UTF-8、UTF-16 和带声明的常用编码；中文参考、多世界筛选和商人档案以本机游戏数据为准。
           使用方法见仓库首页。具体卡牌效果和获取行为请在自己的游戏环境中验证。
           '@ | Set-Content release-notes.txt -Encoding utf8
           gh release create $tag --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "Anno1800 CardForge $tag" --notes-file release-notes.txt --latest release-output/*-Setup.exe release-output/*-Portable.zip release-output/SHA256SUMS.txt

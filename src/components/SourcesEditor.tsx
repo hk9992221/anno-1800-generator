@@ -9,7 +9,7 @@ import type {
   Source,
 } from '../core/types.ts';
 import { uid } from '../core/types.ts';
-import { assetName, catalogOf } from '../core/catalog.ts';
+import { assetName, catalogOf, worldName } from '../core/catalog.ts';
 import { AssetPicker } from './AssetPicker.tsx';
 import { Field, Empty } from './common.tsx';
 const STAGES: Record<string, string> = {
@@ -46,7 +46,7 @@ export function SourcesEditor({
     filter: (a: Asset) => boolean;
     apply: (ids: number[]) => void;
   } | null>(null);
-  const traders = catalog?.traders ?? [];
+  const traders = catalogOf(catalog).traders ?? [];
   const update = (s: Source, p: Partial<Source>) =>
     onChange({
       sources: card.sources.map((x) => (x.id === s.id ? { ...s, ...p } : x)),
@@ -279,8 +279,10 @@ export function SourcesEditor({
                       {traders.length ? '请选择商人' : '先读取游戏资源以识别商人'}
                     </option>
                     {traders.map((t) => (
-                      <option key={t.guid} value={t.guid}>
+                      <option key={t.guid} value={t.guid} disabled={!t.stages.length}>
                         {t.name}
+                        {t.regions?.length ? ` · ${worldName(t.regions)}` : ''}
+                        {!t.stages.length ? '（未识别卡牌池）' : ''}
                       </option>
                     ))}
                   </select>
@@ -318,6 +320,11 @@ export function SourcesEditor({
                     选择游戏根目录
                   </button>
                 </div>
+              )}
+              {!catalog?.indexedAt && (
+                <p className="muted compact">
+                  当前为内置商人参考，包含老奈特和其他已知商人。读取游戏后以本机交易配置为准；DLC、交易权及存档解锁条件由游戏决定。
+                </p>
               )}
               <div className="resolved-pool">
                 <strong>自动识别的获取池</strong>

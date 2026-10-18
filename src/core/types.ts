@@ -139,6 +139,11 @@ export interface Asset {
     | 'other';
   icon?: string;
   region?: string;
+  outputs?: number[];
+  nameGuid?: number;
+  lineId?: number;
+  trader?: boolean;
+  traderLabel?: string;
   dlc?: string;
   source?: string;
   projectId?: string;
@@ -162,6 +167,8 @@ export interface Asset {
 export interface Trader {
   guid: number;
   name: string;
+  regions?: string[];
+  reference?: boolean;
   stages: { stage: string; poolGuid: number }[];
 }
 export interface Catalog {

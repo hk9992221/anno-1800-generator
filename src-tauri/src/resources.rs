@@ -1,6 +1,7 @@
 use crate::{
     rda,
     storage::{err, stamp, Result},
+    xml_encoding,
 };
 use quick_xml::{events::Event, Reader, Writer};
 use serde::{Deserialize, Serialize};
@@ -66,8 +67,13 @@ pub fn scan_mods(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> 
                 Ok(())
             },
         );
-        if let Err(e) = result {
-            warnings.push(format!("{}：{e}", p.display()));
+        match result {
+            Ok(notes) => warnings.extend(
+                notes
+                    .into_iter()
+                    .map(|note| format!("{}：{note}", p.display())),
+            ),
+            Err(e) => warnings.push(format!("{}：{e}", p.display())),
         }
     }
     let mut assets = vec![];
@@ -117,8 +123,13 @@ pub fn scan_mods(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> 
                 Ok(())
             },
         );
-        if let Err(e) = result {
-            warnings.push(format!("{}：{e}", p.display()));
+        match result {
+            Ok(notes) => warnings.extend(
+                notes
+                    .into_iter()
+                    .map(|note| format!("{}：{note}", p.display())),
+            ),
+            Err(e) => warnings.push(format!("{}：{e}", p.display())),
         }
     }
     Ok(
@@ -227,8 +238,12 @@ fn asset_fragments(
     reader: impl BufRead,
     tag: &[u8],
     mut process: impl FnMut(&str) -> Result<()>,
-) -> Result<()> {
-    let mut reader = Reader::from_reader(reader);
+) -> Result<Vec<String>> {
+    let mut data = Vec::new();
+    let mut reader = reader;
+    reader.read_to_end(&mut data).map_err(err)?;
+    let (xml, warning) = xml_encoding::decode_xml(&data)?;
+    let mut reader = Reader::from_reader(Cursor::new(xml.as_bytes()));
     let mut buf = vec![];
     let mut capture: Option<(usize, Writer<Vec<u8>>)> = None;
     let mut document_depth = 0usize;
@@ -271,7 +286,7 @@ fn asset_fragments(
         }
         buf.clear();
     }
-    Ok(())
+    Ok(warning.into_iter().collect())
 }
 fn text_at<'a>(node: roxmltree::Node<'a, 'a>, path: &str) -> String {
     let mut n = Some(node);
@@ -297,7 +312,17 @@ fn asset_metadata(
     } else {
         english
     };
-    let mut a = json!({"guid":g,"name":texts.get(&g).cloned().unwrap_or(english.clone()),"english":english,"internal":text_at(n,"Values/Standard/Name"),"template":text_at(n,"Template"),"kind":"other","source":source});
+    let text_guid = text_at(n, "Values/Standard/TextGUID")
+        .parse::<u32>()
+        .unwrap_or(g);
+    let line_id = text_at(n, "Values/Text/LineID").parse::<u32>().unwrap_or(g);
+    let name = texts
+        .get(&g)
+        .or_else(|| texts.get(&text_guid))
+        .or_else(|| texts.get(&line_id))
+        .cloned()
+        .unwrap_or(english.clone());
+    let mut a = json!({"guid":g,"nameGuid":text_guid,"lineId":line_id,"name":name,"english":english,"internal":text_at(n,"Values/Standard/Name"),"template":text_at(n,"Template"),"kind":"other","source":source});
     for (key, path) in [
         ("icon", "Values/Standard/IconFilename"),
         ("region", "Values/Building/AssociatedRegions"),
@@ -307,6 +332,18 @@ fn asset_metadata(
         let v = text_at(n, path);
         if !v.is_empty() {
             a[key] = json!(v);
+        }
+    }
+    if a["region"].is_null() {
+        for path in [
+            "Values/PopulationLevel7/AssociatedRegion",
+            "Values/ThirdParty/AllowedRegions",
+        ] {
+            let region = text_at(n, path);
+            if !region.is_empty() {
+                a["region"] = json!(region);
+                break;
+            }
         }
     }
     for (key, path) in [
@@ -330,6 +367,7 @@ fn asset_metadata(
         .collect::<Vec<_>>());
     for (key, container, tag) in [
         ("inputs", "FactoryInputs", "Product"),
+        ("outputs", "FactoryOutputs", "Product"),
         ("needs", "PopulationInputs", "Product"),
     ] {
         if let Some(list) = values
@@ -398,6 +436,66 @@ fn asset_metadata(
     }
     a
 }
+fn normalized_regions(region: &str) -> Vec<String> {
+    let mut regions = std::collections::BTreeSet::new();
+    for token in region.split(|c: char| c.is_whitespace() || ";,，、|".contains(c)) {
+        let value = match token.to_lowercase().as_str() {
+            "" | "meta" | "none" | "0" => continue,
+            "moderate" | "oldworld" | "capetrelawney" | "5000000" => "Moderate",
+            "colony01" | "newworld" | "southamerica" | "5000001" => "Colony01",
+            "arctic" | "160001" => "Arctic",
+            "africa" | "enbesa" | "114327" => "Africa",
+            _ => token,
+        };
+        regions.insert(value.to_string());
+    }
+    regions.into_iter().collect()
+}
+fn reference_assets() -> &'static BTreeMap<u64, Value> {
+    static REFERENCES: std::sync::OnceLock<BTreeMap<u64, Value>> = std::sync::OnceLock::new();
+    REFERENCES.get_or_init(|| {
+        let assets: Vec<Value> =
+            serde_json::from_str(include_str!("../../src/data/starter-assets.json"))
+                .expect("内置资源参考无效");
+        assets
+            .into_iter()
+            .filter_map(|a| Some((a["guid"].as_u64()?, a)))
+            .collect()
+    })
+}
+fn has_chinese(text: &str) -> bool {
+    text.chars().any(|c| ('\u{3400}'..='\u{9fff}').contains(&c))
+}
+fn add_reference_metadata(asset: &mut Value) {
+    if let Some(reference) = asset["guid"]
+        .as_u64()
+        .and_then(|g| reference_assets().get(&g))
+    {
+        if !has_chinese(asset["name"].as_str().unwrap_or(""))
+            && has_chinese(reference["name"].as_str().unwrap_or(""))
+        {
+            asset["name"] = reference["name"].clone();
+        }
+        for key in [
+            "region",
+            "inputs",
+            "outputs",
+            "populationLevel",
+            "needs",
+            "trader",
+        ] {
+            if asset[key].is_null() && !reference[key].is_null() {
+                asset[key] = reference[key].clone();
+            }
+        }
+        if !reference["traderLabel"].is_null() {
+            asset["traderLabel"] = reference["traderLabel"].clone();
+        }
+    }
+    if let Some(region) = asset["region"].as_str() {
+        asset["region"] = json!(normalized_regions(region).join(";"));
+    }
+}
 pub fn complete_catalog(catalog: &mut Value) {
     let raw: BTreeMap<u64, Value> = catalog["assets"]
         .as_array()
@@ -443,6 +541,7 @@ pub fn complete_catalog(catalog: &mut Value) {
             .filter_map(|v| Some((v["stage"].as_str()?, v.clone())))
             .collect();
         a["traderStages"] = json!(stages.into_values().collect::<Vec<_>>());
+        add_reference_metadata(&mut a);
         let t = a["template"].as_str().unwrap_or("");
         let has = |v: &str| caps.contains(v);
         let kind = if has("Item") || t == "Portrait" {
@@ -490,7 +589,11 @@ pub fn complete_catalog(catalog: &mut Value) {
             "event"
         } else if t.starts_with("A7_Quest") {
             "quest"
-        } else if has("Profile") || has("Trader") || has("ConstructionAI") {
+        } else if has("Profile")
+            || has("Trader")
+            || has("ConstructionAI")
+            || t.starts_with("Profile")
+        {
             "profile"
         } else {
             "other"
@@ -503,6 +606,30 @@ pub fn complete_catalog(catalog: &mut Value) {
     let mut done = BTreeMap::new();
     for g in raw.keys() {
         resolve(*g, &raw, &mut done, &mut Default::default());
+    }
+    let mut origins = BTreeMap::<u64, std::collections::BTreeSet<String>>::new();
+    for asset in done.values().filter(|a| a["kind"] == "building") {
+        let regions = normalized_regions(asset["region"].as_str().unwrap_or(""));
+        for guid in asset["outputs"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(|g| g.as_u64())
+        {
+            origins
+                .entry(guid)
+                .or_default()
+                .extend(regions.iter().cloned());
+        }
+    }
+    for asset in done.values_mut().filter(|a| a["kind"] == "product") {
+        if let Some(regions) = asset["guid"]
+            .as_u64()
+            .and_then(|g| origins.get(&g))
+            .filter(|r| !r.is_empty())
+        {
+            asset["region"] = json!(regions.iter().cloned().collect::<Vec<_>>().join(";"));
+        }
     }
     let populations:Vec<_>=done.values().filter(|a|a["kind"]=="population").map(|a| {
         let guid=a["guid"].as_u64().unwrap();let mut homes:std::collections::BTreeSet<u64>=done.values().filter(|r|r["kind"]=="residence"&&r["populationLevel"].as_u64()==Some(guid)).filter_map(|r|r["guid"].as_u64()).collect();if let Some(r)=a["defaultResidence"].as_u64(){homes.insert(r);}
@@ -520,12 +647,12 @@ pub fn complete_catalog(catalog: &mut Value) {
     }
     catalog["traders"] = json!(done
         .values()
-        .filter(|a| a["traderStages"].as_array().is_some_and(|s| !s.is_empty()))
-        .map(|a| json!({"guid":a["guid"],"name":a["name"],"stages":a["traderStages"]}))
+        .filter(|a| a["traderStages"].as_array().is_some_and(|s| !s.is_empty()) || a["trader"] == true)
+        .map(|a| json!({"guid":a["guid"],"name":a.get("traderLabel").unwrap_or(&a["name"]),"stages":a["traderStages"], "regions":normalized_regions(a["region"].as_str().unwrap_or(""))}))
         .collect::<Vec<_>>());
     catalog["populations"] = json!(populations);
     catalog["assets"] = json!(done.into_values().collect::<Vec<_>>());
-    catalog["indexVersion"] = json!(2);
+    catalog["indexVersion"] = json!(3);
 }
 pub fn index(
     map: &Resources,
@@ -534,9 +661,10 @@ pub fn index(
     progress: &impl Fn(&str),
 ) -> Result<Value> {
     let mut texts = BTreeMap::new();
+    let mut warnings = vec![];
     for (path, resource) in map.iter().filter(|(p, _)| p.ends_with("texts_chinese.xml")) {
         progress(&format!("读取中文文本：{path}"));
-        asset_fragments(
+        let notices = asset_fragments(
             BufReader::new(Cursor::new(bytes(resource)?)),
             b"Text",
             |text| {
@@ -547,12 +675,17 @@ pub fn index(
                 }
                 Ok(())
             },
-        )?;
+        )
+        .map_err(|e| format!("读取资源 {path} 失败：{e}"))?;
+        warnings.extend(notices.into_iter().map(|note| format!("{path}：{note}")));
+    }
+    if texts.is_empty() {
+        warnings.push("没有读取到中文文本表：已使用内置中文参考，未收录资源保留原始名称。请确认游戏已安装简体中文语言资源。".into());
     }
     let mut assets = vec![];
     for (path, res) in map.iter().filter(|(p, _)| p.ends_with("assets.xml")) {
         progress(&format!("建立资源索引：{path}"));
-        asset_fragments(BufReader::new(Cursor::new(bytes(res)?)), b"Asset", |xml| {
+        let notices = asset_fragments(BufReader::new(Cursor::new(bytes(res)?)), b"Asset", |xml| {
             if cancel.load(Ordering::Relaxed) {
                 return Err("资源读取已取消".into());
             }
@@ -562,7 +695,9 @@ pub fn index(
                 assets.push(a);
             }
             Ok(())
-        })?;
+        })
+        .map_err(|e| format!("读取资源 {path} 失败：{e}"))?;
+        warnings.extend(notices.into_iter().map(|note| format!("{path}：{note}")));
     }
     if assets.is_empty() {
         return Err("游戏目录中没有识别到 assets.xml，请确认选择的是 Anno 1800 根目录".into());
@@ -583,7 +718,7 @@ pub fn index(
             }
         }
     }
-    let mut c = json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets,"indexedAt":stamp()});
+    let mut c = json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets,"warnings":warnings,"indexedAt":stamp()});
     complete_catalog(&mut c);
     Ok(c)
 }

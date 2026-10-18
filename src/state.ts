@@ -51,7 +51,11 @@ export function useProject(onError: (message: string) => void) {
         if (!live) return;
         for (const guid of registry) reserved.current.add(guid);
         const p = draft ? parseProject(draft) : initialProject([...reserved.current]);
-        if (!p.catalog && catalog) p.catalog = catalog;
+        if (
+          catalog &&
+          (!p.catalog || (p.catalog.indexVersion ?? 0) < (catalog.indexVersion ?? 0))
+        )
+          p.catalog = catalog;
         remember(p);
         current.current = p;
         setProject(p);

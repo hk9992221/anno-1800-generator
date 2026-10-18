@@ -1,4 +1,5 @@
 import type { Card, Catalog, Project, Source } from './types.ts';
+import { catalogOf } from './catalog.ts';
 import { cardSnapshot, uid } from './types.ts';
 export const PRIVATE_START = 2001000000,
   PRIVATE_END = 2001009999;
@@ -186,7 +187,7 @@ export function createSource(p: Project, type: Source['type']): Source {
     scale: 1.5,
   };
   if (type === 'trader') {
-    const t = p.catalog?.traders?.[0],
+    const t = catalogOf(p.catalog).traders?.find((t) => t.stages.length),
       stage = t?.stages[0];
     if (t && stage)
       Object.assign(s, {

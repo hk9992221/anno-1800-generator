@@ -318,7 +318,14 @@ async fn index_resources(app: tauri::AppHandle, path: String) -> Result<Value> {
             .unwrap()
             .extend(scanned["assets"].as_array().into_iter().flatten().cloned());
         catalog["scannedModGuids"] = scanned["guids"].clone();
-        for key in ["warnings", "modCount", "modRoots"] {
+        catalog["warnings"].as_array_mut().unwrap().extend(
+            scanned["warnings"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .cloned(),
+        );
+        for key in ["modCount", "modRoots"] {
             catalog[key] = scanned[key].clone();
         }
         catalog["gameRoot"] = json!(root.to_string_lossy());
@@ -367,7 +374,7 @@ fn cancel_index(state: State<'_, AppState>) {
     state.cancel.store(true, Ordering::Relaxed);
 }
 #[tauri::command]
-fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
+async fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
     let map_path = data_dir(&app)?.join("resource-map.json");
     if let Ok(bytes) = fs::read(map_path) {
         if let Ok(map) = serde_json::from_slice::<resources::Resources>(&bytes) {
@@ -378,7 +385,7 @@ fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
     if !p.exists() {
         return Ok(None);
     }
-    let catalog: Value = serde_json::from_slice(&fs::read(p).map_err(err)?).map_err(err)?;
+    let mut catalog: Value = serde_json::from_slice(&fs::read(p).map_err(err)?).map_err(err)?;
     if let Some(root) = catalog["gameRoot"].as_str() {
         if let Ok(root) = PathBuf::from(root).canonicalize() {
             app.state::<AppState>()
@@ -387,6 +394,24 @@ fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
                 .map_err(err)?
                 .entry(root)
                 .or_insert(false);
+        }
+    }
+    if catalog["indexVersion"].as_u64().unwrap_or(0) < 3 {
+        if let Some(root) = catalog["gameRoot"].as_str().map(str::to_string) {
+            match index_resources(app, root).await {
+                Ok(updated) => return Ok(Some(updated)),
+                Err(error) => {
+                    if !catalog["warnings"].is_array() {
+                        catalog["warnings"] = json!([]);
+                    }
+                    catalog["warnings"]
+                        .as_array_mut()
+                        .unwrap()
+                        .push(json!(format!(
+                            "旧资源缓存升级失败，请在本机资源页重新读取游戏根目录：{error}"
+                        )));
+                }
+            }
         }
     }
     Ok(Some(catalog))

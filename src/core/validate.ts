@@ -1,7 +1,7 @@
 import type { Issue, Project } from './types.ts';
 import { familyOf } from './types.ts';
 import { effectDef, needOutputs } from './effects.ts';
-import { lookupAsset, populationOf } from './catalog.ts';
+import { catalogOf, lookupAsset, populationOf } from './catalog.ts';
 export function validateProject(p: Project): Issue[] {
   const out: Issue[] = [],
     add = (
@@ -259,7 +259,9 @@ export function validateProject(p: Project): Issue[] {
         if (!validGuid(s.poolGuid))
           add('error', 'pool', `请为${s.label}选择正确的获取物品池`, c.id);
         if (s.type === 'trader' && s.traderGuid) {
-          const trader = p.catalog?.traders?.find((t) => t.guid === s.traderGuid),
+          const trader = catalogOf(p.catalog).traders?.find(
+              (t) => t.guid === s.traderGuid,
+            ),
             stage = trader?.stages.find((st) => st.stage === s.stage);
           if (trader && stage?.poolGuid !== s.poolGuid)
             add(

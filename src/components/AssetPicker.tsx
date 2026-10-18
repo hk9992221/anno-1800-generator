@@ -1,7 +1,12 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import { Check, Search, Plus } from 'lucide-react';
 import type { Asset, Catalog } from '../core/types.ts';
-import { catalogOf, expandTargets, worldName } from '../core/catalog.ts';
+import {
+  catalogOf,
+  expandTargets,
+  worldName,
+  normalizeRegions,
+} from '../core/catalog.ts';
 import { Modal, Portrait } from './common.tsx';
 export function AssetPicker({
   catalog,
@@ -36,7 +41,10 @@ export function AssetPicker({
     () =>
       candidates.filter(
         (a) =>
-          (!region || (a.region ?? '').split(/[,;\s]+/).includes(region)) &&
+          (!region ||
+            (region === '__unknown'
+              ? !normalizeRegions(a.region).length
+              : normalizeRegions(a.region).includes(region))) &&
           `${a.name} ${a.english} ${a.guid} ${a.template} ${a.source ?? ''}`
             .toLowerCase()
             .includes(q),
@@ -98,11 +106,10 @@ export function AssetPicker({
           }}
         >
           <option value="">所有世界</option>
+          <option value="__unknown">地区未确认</option>
           {[
             ...new Set(
-              candidates
-                .flatMap((a) => (a.region ?? '').split(/[,;\s]+/))
-                .filter(Boolean),
+              candidates.flatMap((a) => normalizeRegions(a.region)).filter(Boolean),
             ),
           ].map((r) => (
             <option key={r} value={r}>
@@ -111,6 +118,11 @@ export function AssetPicker({
           ))}
         </select>
       </div>
+      {candidates.some((a) => a.kind === 'product') && (
+        <p className="picker-help muted">
+          商品按生产来源筛选；同一商品可能来自多个世界，也可以跨世界运输。
+        </p>
+      )}
       <div className="asset-list">
         {visible.map((a) => (
           <button
@@ -131,6 +143,11 @@ export function AssetPicker({
             <span className="asset-copy">
               <strong>{a.name}</strong>
               <small>
+                {a.kind === 'product'
+                  ? '产地：'
+                  : a.kind === 'building' || a.kind === 'residence'
+                    ? '建造地区：'
+                    : '地区：'}
                 {worldName(a.region)} · {a.english}
                 {a.members?.length ? ` · ${a.members.length} 个成员` : ''}
                 {a.needFor?.length

@@ -1,27 +1,89 @@
 import type { Asset, Catalog, NativeFile, Population } from './types.ts';
 import { at, children, descendants, numberAt, parseXml, value } from './xml.ts';
 import starter from '../data/starter-assets.json' with { type: 'json' };
-export const WORLD_NAMES: Record<string, string> = {
-  Moderate: '旧世界 / 崔老妮海角',
-  Colony01: '新世界',
-  Arctic: '北极',
-  Africa: '安贝沙',
-};
-export const worldName = (r?: string) => WORLD_NAMES[r ?? ''] || r || '未标明地区';
-export const starterCatalog: Catalog = {
+import { normalizeRegions } from './regions.ts';
+export { WORLD_NAMES, worldName, normalizeRegions } from './regions.ts';
+const referenceByGuid = new Map((starter as Asset[]).map((a) => [a.guid, a]));
+const hasChinese = (s?: string) => /[\u3400-\u9fff]/u.test(s ?? '');
+function referenceMetadata(a: Asset): Asset {
+  const ref = referenceByGuid.get(a.guid);
+  const out = { ...a };
+  if (ref) {
+    if (!hasChinese(a.name) && hasChinese(ref.name)) out.name = ref.name;
+    for (const key of [
+      'region',
+      'inputs',
+      'outputs',
+      'populationLevel',
+      'needs',
+      'trader',
+    ] as const)
+      if (out[key] === undefined && ref[key] !== undefined)
+        Object.assign(out, { [key]: ref[key] });
+    if (ref.traderLabel) out.traderLabel = ref.traderLabel;
+  }
+  if (out.region) out.region = normalizeRegions(out.region).join(';');
+  return out;
+}
+const localizedCache = new WeakMap<Catalog, Catalog>();
+function localizedCatalog(catalog: Catalog): Catalog {
+  const cached = localizedCache.get(catalog);
+  if (cached) return cached;
+  const assets = catalog.assets.map(referenceMetadata);
+  const result = {
+    ...catalog,
+    assets,
+    populations: catalog.populations?.map((p) => ({
+      ...p,
+      name: assets.find((a) => a.guid === p.guid)?.name ?? p.name,
+      region: normalizeRegions(p.region).join(';'),
+    })),
+    traders: catalog.traders?.map((t) => {
+      const ref = referenceByGuid.get(t.guid);
+      return {
+        ...t,
+        name: ref?.traderLabel ?? (hasChinese(t.name) ? t.name : (ref?.name ?? t.name)),
+        regions: normalizeRegions(t.regions ?? ref?.region),
+      };
+    }),
+  };
+  localizedCache.set(catalog, result);
+  return result;
+}
+export const starterCatalog: Catalog = completeCatalog({
   version: 'Anno 1800 / Starter references',
   source: '内置资源参考；选择游戏根目录可识别全部本机资源、头像与已安装 Mod',
-  fingerprint: 'starter-v2',
+  fingerprint: 'starter-zh-v3',
   indexedAt: '',
   assets: starter as Asset[],
-};
-export const catalogOf = (catalog?: Catalog) => catalog ?? starterCatalog;
+});
+export const catalogOf = (catalog?: Catalog) =>
+  catalog ? localizedCatalog(catalog) : starterCatalog;
 export const lookupAsset = (catalog: Catalog | undefined, guid: number) =>
   catalogOf(catalog).assets.find((a) => a.guid === guid);
 export const assetName = (catalog: Catalog | undefined, guid: number) =>
   lookupAsset(catalog, guid)?.name || `GUID ${guid || '未选择'}`;
-export const decodeText = (base64: string) =>
-  new TextDecoder().decode(Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)));
+export const decodeText = (base64: string) => {
+  const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+  let encoding = 'utf-8';
+  if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 60 && bytes[1] === 0))
+    encoding = 'utf-16le';
+  else if (
+    (bytes[0] === 0xfe && bytes[1] === 0xff) ||
+    (bytes[0] === 0 && bytes[1] === 60)
+  )
+    encoding = 'utf-16be';
+  else {
+    const prefix = String.fromCharCode(...bytes.subarray(0, 256));
+    const label = prefix.match(/<\?xml[^>]*encoding\s*=\s*["']([^"']+)["']/i)?.[1];
+    if (label) encoding = label;
+  }
+  try {
+    return new TextDecoder(encoding).decode(bytes);
+  } catch {
+    throw new Error(`不支持的文本编码：${encoding}`);
+  }
+};
 export const encodeText = (text: string) => {
   const bytes = new TextEncoder().encode(text);
   let s = '';
@@ -58,6 +120,7 @@ export function completeCatalog(catalog: Catalog): Catalog {
         ).values(),
       ],
     } as Asset;
+    Object.assign(merged, referenceMetadata(merged));
     const t = merged.template ?? '',
       caps = merged.capabilities ?? [],
       has = (n: string) => caps.includes(n);
@@ -88,7 +151,10 @@ export function completeCatalog(catalog: Catalog): Catalog {
                         ? 'event'
                         : /^A7_Quest/.test(t)
                           ? 'quest'
-                          : has('Profile') || has('Trader') || has('ConstructionAI')
+                          : has('Profile') ||
+                              has('Trader') ||
+                              has('ConstructionAI') ||
+                              /^Profile/.test(t)
                             ? 'profile'
                             : 'other';
     visiting.delete(g);
@@ -97,6 +163,15 @@ export function completeCatalog(catalog: Catalog): Catalog {
   };
   for (const a of all.values()) resolve(a.guid);
   const assets = [...done.values()];
+  const origins = new Map<number, Set<string>>();
+  for (const a of assets.filter((a) => a.kind === 'building'))
+    for (const g of a.outputs ?? []) {
+      const set = origins.get(g) ?? new Set<string>();
+      normalizeRegions(a.region).forEach((r) => set.add(r));
+      origins.set(g, set);
+    }
+  for (const a of assets.filter((a) => a.kind === 'product'))
+    if (origins.get(a.guid)?.size) a.region = [...origins.get(a.guid)!].join(';');
   const populations: Population[] = assets
     .filter((a) => a.kind === 'population')
     .map((a) => ({
@@ -124,8 +199,14 @@ export function completeCatalog(catalog: Catalog): Catalog {
     assets,
     populations,
     traders: assets
-      .filter((a) => a.traderStages?.length)
-      .map((a) => ({ guid: a.guid, name: a.name, stages: a.traderStages! })),
+      .filter((a) => a.traderStages?.length || a.trader)
+      .map((a) => ({
+        guid: a.guid,
+        name: a.traderLabel ?? a.name,
+        stages: a.traderStages ?? [],
+        regions: normalizeRegions(a.region),
+        reference: !catalog.indexedAt,
+      })),
   };
 }
 export const populationOf = (catalog?: Catalog) => catalogOf(catalog).populations ?? [];
@@ -186,7 +267,13 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
       assets.push({
         guid,
         internal: value(v, 'Standard/Name'),
-        name: texts.get(guid) || english,
+        name:
+          texts.get(guid) ||
+          texts.get(numberAt(v, 'Standard/TextGUID')) ||
+          texts.get(numberAt(v, 'Text/LineID')) ||
+          english,
+        nameGuid: numberAt(v, 'Standard/TextGUID') || guid,
+        lineId: numberAt(v, 'Text/LineID') || guid,
         english,
         template: value(a, 'Template'),
         kind: 'other',
@@ -195,11 +282,15 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
         region:
           value(v, 'Building/AssociatedRegions') ||
           value(v, 'PopulationLevel7/AssociatedRegion') ||
+          value(v, 'ThirdParty/AllowedRegions') ||
           undefined,
         source,
         capabilities,
         inputs: at(v, 'Factory/FactoryInputs')
           ? getList('Factory/FactoryInputs', 'Product')
+          : undefined,
+        outputs: at(v, 'Factory/FactoryOutputs')
+          ? getList('Factory/FactoryOutputs', 'Product')
           : undefined,
         populationLevel: numberAt(v, 'Residence7/PopulationLevel7') || undefined,
         needs: at(v, 'PopulationLevel7/PopulationInputs')
@@ -209,16 +300,22 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
         traderStages,
         slotRegion: value(v, 'ExpeditionSlot/SlotRegion') || undefined,
         expeditionRegion: value(v, 'Expedition/ExpeditionRegion') || undefined,
-        members: descendants(
-          at(v, 'ItemEffectTargetPool') ??
-            at(v, 'RewardPool') ??
-            at(v, 'AssetPool') ?? { ...f.doc, children: [] },
-          'Item',
-        )
-          .map(
-            (n) => numberAt(n, 'GUID') || numberAt(n, 'ItemLink') || numberAt(n, 'Asset'),
-          )
-          .filter(Boolean),
+        members:
+          at(v, 'ItemEffectTargetPool') || at(v, 'RewardPool') || at(v, 'AssetPool')
+            ? descendants(
+                at(v, 'ItemEffectTargetPool') ??
+                  at(v, 'RewardPool') ??
+                  at(v, 'AssetPool') ?? { ...f.doc, children: [] },
+                'Item',
+              )
+                .map(
+                  (n) =>
+                    numberAt(n, 'GUID') ||
+                    numberAt(n, 'ItemLink') ||
+                    numberAt(n, 'Asset'),
+                )
+                .filter(Boolean)
+            : undefined,
         poolPath: at(v, 'RewardPool')
           ? 'RewardPool/ItemsPool'
           : at(v, 'AssetPool')
@@ -234,7 +331,7 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
     fingerprint: `${assets.length}:${files.reduce((n, f) => n + f.data.length, 0)}`,
     indexedAt: new Date().toISOString(),
     assets,
-    indexVersion: 2,
+    indexVersion: 3,
   });
 }
 export function expandTargets(catalog: Catalog, guids: number[]): number[] {
