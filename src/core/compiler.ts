@@ -23,7 +23,7 @@ export function cardFields(card:Card):Record<string,string> {
  const groups=new Map<string,string[]>();
  for(const e of card.effects.filter(e=>e.enabled)){const d=effectDef(e.type);if(!d)throw new Error(`未知效果 ${e.type}`);const p=e.params;let body='';
   switch(d.encoding){
-   case'upgrade':body=t('Value',Number(p.value)*(d.scale??1))+(d.scale?'':t('Percental',1));break;
+   case'upgrade':body=t('Value',Number(p.value)*(d.scale??1))+(d.scale?'':t('Percental',d.percental===false?0:1));break;
    case'scalar':body=escapeXml(d.params[0]?.kind==='boolean'?(p.value?1:0):(p[d.params[0].key]??0));break;
    case'output':body=el('Item',t('Product',p.product)+t('AdditionalOutputCycle',p.cycles)+t('Amount',p.amount));break;
    case'replace':body=el('Item',t('OldInput',p.old)+t('NewInput',p.new));break;
