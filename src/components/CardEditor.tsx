@@ -1,3 +1,4 @@
+import { NumberInput } from './NumberInput.tsx';
 import { useEffect, useState } from 'react';
 import {
   ArrowDown,
@@ -219,12 +220,11 @@ export function CardEditor({
             </Field>
             <Field label="购买价格" hint="普通游戏货币；金票价格在获取途径中设置。">
               <div className="input-unit">
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
+                <NumberInput
+                  min={0}
+                  step={1}
                   value={card.price}
-                  onChange={(e) => onChange({ price: Number(e.target.value) })}
+                  onValueChange={(value) => onChange({ price: value })}
                 />
                 <span>金币</span>
               </div>
@@ -333,7 +333,7 @@ export function CardEditor({
               </small>
             </div>
           </div>
-          <p className="muted">选择游戏根目录后自动识别头像，并打开缩略图选择窗口。</p>
+          <p className="muted">连接游戏资源后，点击“浏览游戏头像”打开缩略图选择窗口。</p>
         </div>
       )}
       {tab === 'targets' && familyOf(card.allocation) === 'ship' && (
@@ -621,17 +621,16 @@ export function CardEditor({
                           </select>
                         ) : param.kind === 'number' ? (
                           <div className="input-unit">
-                            <input
-                              type="number"
+                            <NumberInput
                               min={param.min}
                               max={param.max}
                               step={param.step ?? 1}
                               value={Number(e.params[param.key])}
-                              onChange={(v) =>
+                              onValueChange={(value) =>
                                 updateEffect(e.id, {
                                   params: {
                                     ...e.params,
-                                    [param.key]: Number(v.target.value),
+                                    [param.key]: value,
                                   },
                                 })
                               }
@@ -735,11 +734,10 @@ export function CardEditor({
               </select>
             </Field>
             <Field label="堆叠数量">
-              <input
-                type="number"
-                min="1"
+              <NumberInput
+                min={1}
                 value={card.stack}
-                onChange={(e) => onChange({ stack: Number(e.target.value) })}
+                onValueChange={(value) => onChange({ stack: value })}
               />
             </Field>
             <Field label="工程备注" wide>

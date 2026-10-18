@@ -1,8 +1,10 @@
+import { NumberInput } from './NumberInput.tsx';
 import { useState } from 'react';
 import { FolderOpen, RefreshCw } from 'lucide-react';
 import type { Project } from '../core/types.ts';
 import { catalogOf } from '../core/catalog.ts';
 import { Field, Modal } from './common.tsx';
+import { ResourceSummary } from './ResourceSummary.tsx';
 export function ProjectSettings({
   project,
   onApply,
@@ -68,8 +70,10 @@ export function ProjectSettings({
         <p className="muted compact">
           自动检查游戏目录和 Windows 文档中的 Anno
           1800/mods；下次使用会记住游戏位置。读取成功后可直接预览头像。未安装的 DLC
-          或未扫描的第三方资源不会被当成已确认数据。
+          或未扫描的第三方资源不会被当成已确认数据。data0.rda、data1.rda
+          等是游戏自带归档，软件会扫描后按更新顺序合并。
         </p>
+        <ResourceSummary catalog={cat} />
         {cat.modRoots?.length ? (
           <details className="advanced-details">
             <summary>已识别的 Mod 目录</summary>
@@ -114,18 +118,10 @@ export function ProjectSettings({
               <input readOnly value={project.zipName} />
             </Field>
             <Field label="GUID 范围起点">
-              <input
-                type="number"
-                value={start}
-                onChange={(e) => setStart(Number(e.target.value))}
-              />
+              <NumberInput value={start} onValueChange={(value) => setStart(value)} />
             </Field>
             <Field label="GUID 范围终点">
-              <input
-                type="number"
-                value={end}
-                onChange={(e) => setEnd(Number(e.target.value))}
-              />
+              <NumberInput value={end} onValueChange={(value) => setEnd(value)} />
             </Field>
             <Field label="来源 Mod 依赖" hint="每行一个准确的 ModID。">
               <textarea rows={3} value={deps} onChange={(e) => setDeps(e.target.value)} />

@@ -142,6 +142,7 @@ export interface Asset {
   outputs?: number[];
   nameGuid?: number;
   lineId?: number;
+  localizedName?: boolean;
   trader?: boolean;
   traderLabel?: string;
   dlc?: string;
@@ -177,6 +178,26 @@ export interface Catalog {
   fingerprint: string;
   assets: Asset[];
   indexedAt: string;
+  scanReport?: {
+    status: 'complete' | 'partial';
+    archiveCount: number;
+    archivesRead: number;
+    archives: {
+      path: string;
+      status: 'read' | 'failed';
+      entries: number;
+      message?: string;
+    }[];
+    files: {
+      path: string;
+      source: string;
+      kind: 'assets' | 'chinese';
+      status: 'read' | 'failed' | 'skipped';
+      count: number;
+      message?: string;
+    }[];
+    chineseTexts: number;
+  };
   scannedModGuids?: number[];
   traders?: Trader[];
   populations?: Population[];

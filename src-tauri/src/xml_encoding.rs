@@ -1,5 +1,5 @@
 use crate::storage::Result;
-use encoding_rs::{Encoding, UTF_16BE, UTF_16LE, UTF_8};
+use encoding_rs::{Encoding, GBK, UTF_16BE, UTF_16LE, UTF_8};
 use std::borrow::Cow;
 
 /// Convert XML bytes before tokenization. Declaration/BOM detection also works for
@@ -71,17 +71,24 @@ pub fn decode_xml(data: &[u8]) -> Result<(Cow<'_, str>, Option<String>)> {
         }
     };
     let (text, malformed) = encoding.decode_without_bom_handling(&data[skip..]);
+    if malformed && encoding == UTF_8 {
+        let (gbk, invalid) = GBK.decode_without_bom_handling(&data[skip..]);
+        if !invalid {
+            return Ok((gbk, Some("UTF-8 读取失败，已自动使用 GBK 读取".into())));
+        }
+        return Err("文本既不是有效 UTF-8，也无法按 GBK 完整读取；请核对文件编码".into());
+    }
     if malformed && (encoding == UTF_16LE || encoding == UTF_16BE) {
         return Err(format!(
             "{} 文本存在截断字符或无效代理对，请核对该资源文件",
             encoding.name()
         ));
     }
-    let warning = malformed.then(|| {
-        format!(
-            "{} 文本含无效字节；已保留可读内容，无法解码的字符显示为 �",
+    if malformed {
+        return Err(format!(
+            "{} 文本含无法解码的字节，未替换或丢弃原文",
             encoding.name()
-        )
-    });
-    Ok((text, warning))
+        ));
+    }
+    Ok((text, None))
 }

@@ -228,7 +228,7 @@ export default function App() {
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   });
-  async function indexResources(changeRoot = false) {
+  async function indexResources(changeRoot = false, portraitAfter = false) {
     await handle(async () => {
       const root =
         (!changeRoot && project.catalog?.gameRoot) ||
@@ -242,11 +242,13 @@ export default function App() {
           p.catalog = catalog;
         });
         setRefresh((v) => v + 1);
-        setShowSettings(false);
-        setShowPortrait(true);
-        setTab('image');
+        if (portraitAfter) {
+          setShowSettings(false);
+          setShowPortrait(true);
+          setTab('image');
+        } else setShowSettings(true);
         notify(
-          `已读取 ${catalog.assets.length.toLocaleString()} 条资源、${catalog.modCount ?? 0} 个 Mod${catalog.warnings?.length ? '；部分 Mod 解析提示见工程设置' : ''}`,
+          `${catalog.scanReport?.status === 'partial' ? '部分资源未读完，请查看读取结果' : '资源扫描完成'}：${catalog.assets.filter((a) => a.kind === 'building').length} 个生产建筑、${catalog.assets.filter((a) => a.kind === 'product').length} 种商品、${catalog.modCount ?? 0} 个 Mod`,
         );
       } finally {
         setBusy(false);
@@ -257,8 +259,8 @@ export default function App() {
     await indexResources(false);
   }
   function choosePortrait() {
-    if ((project.catalog?.indexVersion ?? 0) >= 3) setShowPortrait(true);
-    else void indexResources();
+    if (project.catalog?.indexVersion) setShowPortrait(true);
+    else void indexResources(false, true);
   }
   async function importFiles(files: Parameters<typeof importMod>[0]) {
     await handle(async () => {
@@ -441,7 +443,7 @@ export default function App() {
           </button>
           <div className="sidebar-version">
             <span>WINDOWS EDITION</span>
-            <span>v1.3.1</span>
+            <span>v1.3.2</span>
           </div>
         </div>
       </aside>

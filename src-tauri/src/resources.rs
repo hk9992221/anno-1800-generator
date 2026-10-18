@@ -20,6 +20,11 @@ pub enum Resource {
     Archive(rda::Entry),
 }
 pub type Resources = BTreeMap<String, Resource>;
+pub struct Discovery {
+    pub resources: Resources,
+    pub archives: Vec<Value>,
+    pub warnings: Vec<String>,
+}
 
 /// Index concrete mod assets; arbitrary XPath patches remain outside this catalog.
 pub fn scan_mods(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> Result<Value> {
@@ -147,6 +152,13 @@ fn natural_number(path: &Path) -> u64 {
         .unwrap_or(0)
 }
 pub fn discover(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> Result<Resources> {
+    Ok(discover_detailed(root, cancel, progress)?.resources)
+}
+pub fn discover_detailed(
+    root: &Path,
+    cancel: &AtomicBool,
+    progress: &impl Fn(&str),
+) -> Result<Discovery> {
     let mut archives = vec![];
     let mut disks = vec![];
     fn walk(
@@ -201,9 +213,12 @@ pub fn discover(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> R
                 .to_lowercase()
                 .contains("patch"),
             natural_number(p),
+            p.to_string_lossy().to_lowercase(),
         )
     });
     let mut map = Resources::new();
+    let mut archive_report = vec![];
+    let mut warnings = vec![];
     for (i, a) in archives.iter().enumerate() {
         if cancel.load(Ordering::Relaxed) {
             return Err("资源读取已取消".into());
@@ -214,19 +229,48 @@ pub fn discover(root: &Path, cancel: &AtomicBool, progress: &impl Fn(&str)) -> R
             archives.len(),
             a.file_name().unwrap_or_default().to_string_lossy()
         ));
-        for e in rda::list(a)? {
-            map.insert(e.path.to_lowercase(), Resource::Archive(e));
+        match rda::list(a) {
+            Ok(entries) => {
+                archive_report.push(json!({"path":a,"status":"read","entries":entries.len()}));
+                for e in entries {
+                    map.insert(e.path.to_lowercase(), Resource::Archive(e));
+                }
+            }
+            Err(message) => {
+                warnings.push(format!("读取归档 {} 失败：{message}", a.display()));
+                archive_report
+                    .push(json!({"path":a,"status":"failed","entries":0,"message":message}));
+            }
         }
     }
     for (path, disk) in disks {
-        let rel = if let Some(i) = path.find("data/") {
-            path[i..].to_string()
-        } else {
-            path
-        };
+        let parts: Vec<_> = path.split('/').collect();
+        let rel = parts
+            .iter()
+            .position(|p| p.eq_ignore_ascii_case("data"))
+            .map(|i| parts[i..].join("/"))
+            .unwrap_or(path);
         map.insert(rel.to_lowercase(), Resource::Disk(disk));
     }
-    Ok(map)
+    Ok(Discovery {
+        resources: map,
+        archives: archive_report,
+        warnings,
+    })
+}
+pub fn scenario_path(path: &str) -> bool {
+    path.to_lowercase().replace('\\', "/").split('/').any(|p| {
+        p == "scenario"
+            || p.strip_prefix("scenario").is_some_and(|suffix| {
+                !suffix.is_empty() && suffix.chars().all(|c| c.is_ascii_digit())
+            })
+    })
+}
+fn source_label(resource: &Resource) -> String {
+    match resource {
+        Resource::Disk(path) => path.to_string_lossy().to_string(),
+        Resource::Archive(e) => e.archive.to_string_lossy().to_string(),
+    }
 }
 pub fn bytes(resource: &Resource) -> Result<Vec<u8>> {
     match resource {
@@ -322,7 +366,7 @@ fn asset_metadata(
         .or_else(|| texts.get(&line_id))
         .cloned()
         .unwrap_or(english.clone());
-    let mut a = json!({"guid":g,"nameGuid":text_guid,"lineId":line_id,"name":name,"english":english,"internal":text_at(n,"Values/Standard/Name"),"template":text_at(n,"Template"),"kind":"other","source":source});
+    let mut a = json!({"guid":g,"nameGuid":text_guid,"lineId":line_id,"localizedName":texts.contains_key(&g)||texts.contains_key(&text_guid)||texts.contains_key(&line_id),"name":name,"english":english,"internal":text_at(n,"Values/Standard/Name"),"template":text_at(n,"Template"),"kind":"other","source":source});
     for (key, path) in [
         ("icon", "Values/Standard/IconFilename"),
         ("region", "Values/Building/AssociatedRegions"),
@@ -420,6 +464,7 @@ fn asset_metadata(
         )
         .parse::<u32>()
         .ok()
+        .filter(|guid| *guid > 0)
         .or_else(|| {
             text_at(
                 n,
@@ -427,6 +472,7 @@ fn asset_metadata(
             )
             .parse::<u32>()
             .ok()
+            .filter(|guid| *guid > 0)
         })?;
         Some(json!({"stage":stage,"poolGuid":g}))
     })
@@ -525,6 +571,17 @@ pub fn complete_catalog(catalog: &mut Value) {
                 a[k] = v.clone();
             }
         }
+        if own["localizedName"] == false
+            && own["nameGuid"].as_u64() == Some(g)
+            && own["lineId"].as_u64() == Some(g)
+        {
+            if let Some(parent) = parent
+                .as_ref()
+                .filter(|p| has_chinese(p["name"].as_str().unwrap_or("")))
+            {
+                a["name"] = parent["name"].clone();
+            }
+        }
         let caps: std::collections::BTreeSet<_> = parent
             .as_ref()
             .into_iter()
@@ -538,7 +595,10 @@ pub fn complete_catalog(catalog: &mut Value) {
             .into_iter()
             .chain(std::iter::once(own))
             .flat_map(|v| v["traderStages"].as_array().into_iter().flatten())
-            .filter_map(|v| Some((v["stage"].as_str()?, v.clone())))
+            .filter_map(|v| {
+                (v["poolGuid"].as_u64()? > 0)
+                    .then(|| (v["stage"].as_str().unwrap_or(""), v.clone()))
+            })
             .collect();
         a["traderStages"] = json!(stages.into_values().collect::<Vec<_>>());
         add_reference_metadata(&mut a);
@@ -564,6 +624,8 @@ pub fn complete_catalog(catalog: &mut Value) {
         } else if has("Residence7") || t.contains("Residence") {
             "residence"
         } else if has("Factory")
+            || has("Factory7")
+            || has("FactoryBase")
             || [
                 "Factory",
                 "Farm",
@@ -652,7 +714,7 @@ pub fn complete_catalog(catalog: &mut Value) {
         .collect::<Vec<_>>());
     catalog["populations"] = json!(populations);
     catalog["assets"] = json!(done.into_values().collect::<Vec<_>>());
-    catalog["indexVersion"] = json!(3);
+    catalog["indexVersion"] = json!(4);
 }
 pub fn index(
     map: &Resources,
@@ -662,45 +724,107 @@ pub fn index(
 ) -> Result<Value> {
     let mut texts = BTreeMap::new();
     let mut warnings = vec![];
-    for (path, resource) in map.iter().filter(|(p, _)| p.ends_with("texts_chinese.xml")) {
+    let mut files = vec![];
+    for (path, resource) in map
+        .iter()
+        .filter(|(p, _)| p.ends_with("texts_chinese.xml") && !scenario_path(p))
+    {
         progress(&format!("读取中文文本：{path}"));
-        let notices = asset_fragments(
-            BufReader::new(Cursor::new(bytes(resource)?)),
-            b"Text",
-            |text| {
+        let mut parsed = BTreeMap::new();
+        let result = bytes(resource).and_then(|raw| {
+            asset_fragments(Cursor::new(raw), b"Text", |text| {
+                if cancel.load(Ordering::Relaxed) {
+                    return Err("资源读取已取消".into());
+                }
                 let doc = roxmltree::Document::parse(text).map_err(err)?;
-                let n = doc.root_element();
-                if let Ok(g) = text_at(n, "GUID").parse::<u32>() {
-                    texts.insert(g, text_at(n, "Text"));
+                let node = doc.root_element();
+                if let Ok(guid) = text_at(node, "GUID").parse::<u32>() {
+                    parsed.insert(guid, text_at(node, "Text"));
                 }
                 Ok(())
-            },
-        )
-        .map_err(|e| format!("读取资源 {path} 失败：{e}"))?;
-        warnings.extend(notices.into_iter().map(|note| format!("{path}：{note}")));
+            })
+        });
+        if cancel.load(Ordering::Relaxed) {
+            return Err("资源读取已取消".into());
+        }
+        match result {
+            Ok(notes) => {
+                warnings.extend(
+                    notes
+                        .into_iter()
+                        .map(|note| format!("{} / {path}：{note}", source_label(resource))),
+                );
+                files.push(json!({"path":path,"source":source_label(resource),"kind":"chinese","status":"read","count":parsed.len()}));
+                texts.extend(parsed);
+            }
+            Err(message) => {
+                warnings.push(format!(
+                    "读取中文资源 {} / {path} 失败：{message}",
+                    source_label(resource)
+                ));
+                files.push(json!({"path":path,"source":source_label(resource),"kind":"chinese","status":"failed","count":0,"message":message}));
+            }
+        }
     }
     if texts.is_empty() {
         warnings.push("没有读取到中文文本表：已使用内置中文参考，未收录资源保留原始名称。请确认游戏已安装简体中文语言资源。".into());
     }
     let mut assets = vec![];
-    for (path, res) in map.iter().filter(|(p, _)| p.ends_with("assets.xml")) {
-        progress(&format!("建立资源索引：{path}"));
-        let notices = asset_fragments(BufReader::new(Cursor::new(bytes(res)?)), b"Asset", |xml| {
-            if cancel.load(Ordering::Relaxed) {
-                return Err("资源读取已取消".into());
+    for (path, resource) in map.iter().filter(|(p, _)| p.ends_with("assets.xml")) {
+        if scenario_path(path) {
+            files.push(json!({"path":path,"source":source_label(resource),"kind":"assets","status":"skipped","count":0,"message":"独立场景配置，未合并到主游戏，避免覆盖同 GUID 资产"}));
+            continue;
+        }
+        progress(&format!("建立主游戏资源索引：{path}"));
+        let mut parsed = vec![];
+        let result = bytes(resource).and_then(|raw| {
+            asset_fragments(Cursor::new(raw), b"Asset", |xml| {
+                if cancel.load(Ordering::Relaxed) {
+                    return Err("资源读取已取消".into());
+                }
+                let doc = roxmltree::Document::parse(xml).map_err(err)?;
+                let asset = asset_metadata(
+                    doc.root_element(),
+                    &texts,
+                    &format!("本机游戏资源 / {path}"),
+                );
+                if asset["guid"].as_u64().unwrap_or(0) > 0 {
+                    parsed.push(asset);
+                }
+                Ok(())
+            })
+        });
+        if cancel.load(Ordering::Relaxed) {
+            return Err("资源读取已取消".into());
+        }
+        match result {
+            Ok(notes) => {
+                warnings.extend(
+                    notes
+                        .into_iter()
+                        .map(|note| format!("{} / {path}：{note}", source_label(resource))),
+                );
+                files.push(json!({"path":path,"source":source_label(resource),"kind":"assets","status":"read","count":parsed.len()}));
+                assets.extend(parsed);
             }
-            let doc = roxmltree::Document::parse(xml).map_err(err)?;
-            let a = asset_metadata(doc.root_element(), &texts, "本机游戏资源");
-            if a["guid"].as_u64().unwrap_or(0) > 0 {
-                assets.push(a);
+            Err(message) => {
+                warnings.push(format!(
+                    "读取资源 {} / {path} 失败：{message}",
+                    source_label(resource)
+                ));
+                files.push(json!({"path":path,"source":source_label(resource),"kind":"assets","status":"failed","count":0,"message":message}));
             }
-            Ok(())
-        })
-        .map_err(|e| format!("读取资源 {path} 失败：{e}"))?;
-        warnings.extend(notices.into_iter().map(|note| format!("{path}：{note}")));
+        }
     }
     if assets.is_empty() {
-        return Err("游戏目录中没有识别到 assets.xml，请确认选择的是 Anno 1800 根目录".into());
+        return Err(format!(
+            "没有读取到主游戏资产，未替换原有缓存。{}",
+            if warnings.is_empty() {
+                "请确认选择的是 Anno 1800 游戏根目录。".into()
+            } else {
+                warnings.join("；")
+            }
+        ));
     }
     let mut h = Sha256::new();
     for (p, r) in map {
@@ -718,7 +842,8 @@ pub fn index(
             }
         }
     }
-    let mut c = json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets,"warnings":warnings,"indexedAt":stamp()});
+    let partial = texts.is_empty() || files.iter().any(|f| f["status"] == "failed");
+    let mut c = json!({"version":"Anno 1800 / Local assets","source":root.to_string_lossy(),"fingerprint":format!("{:x}",h.finalize()),"assets":assets,"warnings":warnings,"indexedAt":stamp(),"scanReport":{"status":if partial {"partial"} else {"complete"},"archiveCount":0,"archivesRead":0,"archives":[],"files":files,"chineseTexts":texts.len()}});
     complete_catalog(&mut c);
     Ok(c)
 }

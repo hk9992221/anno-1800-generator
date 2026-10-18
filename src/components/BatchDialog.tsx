@@ -1,3 +1,4 @@
+import { NumberInput } from './NumberInput.tsx';
 import { useState } from 'react';
 import type { Card, Project } from '../core/types.ts';
 import { RARITIES, familyOf } from '../core/types.ts';
@@ -71,14 +72,10 @@ export function BatchDialog({
               </select>
             </Field>
             <Field label="起始值">
-              <input
-                type="number"
-                value={start}
-                onChange={(e) => setStart(Number(e.target.value))}
-              />
+              <NumberInput value={start} onValueChange={(value) => setStart(value)} />
             </Field>
             <Field label="每张增量">
-              <input type="number" value={step} onChange={(e) => setStep(Number(e.target.value))} />
+              <NumberInput value={step} onValueChange={(value) => setStep(value)} />
             </Field>
           </div>
         )}
@@ -105,7 +102,8 @@ export function BatchDialog({
           className="button primary"
           onClick={() => {
             try {
-              if (!list.length || list.length > 200) throw new Error('请填写 1–200 个卡牌名称');
+              if (!list.length || list.length > 200)
+                throw new Error('请填写 1–200 个卡牌名称');
               const p = structuredClone(project);
               for (const [i, name] of list.entries()) {
                 const c = cloneCard(p, card, name);
@@ -181,7 +179,10 @@ export function BatchEditDialog({
           统一稀有度
         </label>
         {setRarity && (
-          <select value={rarity} onChange={(e) => setRarityValue(e.target.value as Card['rarity'])}>
+          <select
+            value={rarity}
+            onChange={(e) => setRarityValue(e.target.value as Card['rarity'])}
+          >
             {Object.entries(RARITIES).map(([v, t]) => (
               <option key={v} value={v}>
                 {t}
@@ -222,11 +223,10 @@ export function BatchEditDialog({
                 </option>
               ))}
             </select>
-            <input
+            <NumberInput
               aria-label="批量效果数值"
-              type="number"
               value={value}
-              onChange={(e) => setValue(Number(e.target.value))}
+              onValueChange={(value) => setValue(value)}
             />
           </div>
         )}

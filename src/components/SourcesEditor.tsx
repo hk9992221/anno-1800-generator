@@ -1,3 +1,4 @@
+import { NumberInput } from './NumberInput.tsx';
 import { useState } from 'react';
 import { Plus, Trash2, Search } from 'lucide-react';
 import type {
@@ -44,6 +45,7 @@ export function SourcesEditor({
     title: string;
     selected: number[];
     filter: (a: Asset) => boolean;
+    allowPools?: boolean;
     apply: (ids: number[]) => void;
   } | null>(null);
   const traders = catalogOf(catalog).traders ?? [];
@@ -59,6 +61,7 @@ export function SourcesEditor({
     guid: number,
     filter: (a: Asset) => boolean,
     apply: (id: number) => void,
+    allowPools = false,
   ) => (
     <button
       className="resource-button"
@@ -67,6 +70,7 @@ export function SourcesEditor({
           title: label,
           selected: guid ? [guid] : [],
           filter,
+          allowPools,
           apply: (ids) => apply(ids[0] ?? 0),
         })
       }
@@ -126,15 +130,14 @@ export function SourcesEditor({
                 }),
             )}
           {r.type !== 'unlocked' && (
-            <input
-              type="number"
+            <NumberInput
               min={0}
               aria-label="条件数量"
               value={r.amount}
-              onChange={(ev) =>
+              onValueChange={(value) =>
                 auto(s, {
                   conditions: a.conditions.map((x) =>
-                    x.id === r.id ? { ...r, amount: Number(ev.target.value) } : x,
+                    x.id === r.id ? { ...r, amount: value } : x,
                   ),
                 })
               }
@@ -228,29 +231,26 @@ export function SourcesEditor({
               <p className="muted compact">金票购买后通过单人游戏的帕洛玛领取。</p>
               <div className="form-grid">
                 <Field label="金票价格">
-                  <input
-                    type="number"
+                  <NumberInput
                     min={1}
                     value={s.tickets}
-                    onChange={(e) => update(s, { tickets: Number(e.target.value) })}
+                    onValueChange={(value) => update(s, { tickets: value })}
                   />
                 </Field>
                 <Field label="购买次数上限">
-                  <input
-                    type="number"
+                  <NumberInput
                     min={1}
                     max={99}
                     value={s.maxCount}
-                    onChange={(e) => update(s, { maxCount: Number(e.target.value) })}
+                    onValueChange={(value) => update(s, { maxCount: value })}
                   />
                 </Field>
                 <Field label="后续价格倍率">
-                  <input
-                    type="number"
+                  <NumberInput
                     min={1}
                     step={0.1}
                     value={s.scale}
-                    onChange={(e) => update(s, { scale: Number(e.target.value) })}
+                    onValueChange={(value) => update(s, { scale: value })}
                   />
                 </Field>
               </div>
@@ -327,13 +327,13 @@ export function SourcesEditor({
                 </p>
               )}
               <div className="resolved-pool">
-                <strong>自动识别的获取池</strong>
+                <strong>卡牌出售配置</strong>
                 <p>
                   {s.poolGuid
-                    ? `${assetName(catalog, s.poolGuid)} · ${s.poolGuid}`
+                    ? `${s.label} · ${STAGES[s.stage ?? ''] ?? '已设置'}上架`
                     : '选择商人和阶段后自动填写'}
                 </p>
-                <small>部分商人或阶段共用同一池；此时显示相同池属于游戏配置。</small>
+                <small>出售列表由游戏配置自动匹配，无需手动选择内部物品池。</small>
               </div>
               <Weight source={s} update={(p) => update(s, p)} />
               <details className="advanced-details">
@@ -348,6 +348,7 @@ export function SourcesEditor({
                       traderGuid: undefined,
                       stage: undefined,
                     }),
+                  true,
                 )}
               </details>
             </>
@@ -383,14 +384,11 @@ export function SourcesEditor({
                       />
                     </Field>
                     <Field label="奖励本卡数量">
-                      <input
-                        type="number"
+                      <NumberInput
                         min={1}
                         max={99}
                         value={a.rewardAmount}
-                        onChange={(e) =>
-                          auto(s, { rewardAmount: Number(e.target.value) })
-                        }
+                        onValueChange={(value) => auto(s, { rewardAmount: value })}
                       />
                     </Field>
                   </div>
@@ -414,22 +412,20 @@ export function SourcesEditor({
                           )}
                         </Field>
                         <Field label="完成次数上限">
-                          <input
-                            type="number"
+                          <NumberInput
                             min={1}
                             value={a.maxRuns}
-                            onChange={(e) => auto(s, { maxRuns: Number(e.target.value) })}
+                            onValueChange={(value) => auto(s, { maxRuns: value })}
                           />
                         </Field>
                         <Field label="再次发布间隔（分钟）">
-                          <input
-                            type="number"
+                          <NumberInput
                             min={0}
                             max={1440}
                             value={a.cooldownMinutes}
-                            onChange={(e) =>
+                            onValueChange={(value) =>
                               auto(s, {
-                                cooldownMinutes: Number(e.target.value),
+                                cooldownMinutes: value,
                               })
                             }
                           />
@@ -470,22 +466,20 @@ export function SourcesEditor({
                               )}
                             </Field>
                             <Field label="达到数量">
-                              <input
-                                type="number"
+                              <NumberInput
                                 min={1}
                                 value={o.amount}
-                                onChange={(e) => obj({ amount: Number(e.target.value) })}
+                                onValueChange={(value) => obj({ amount: value })}
                               />
                             </Field>
                           </>
                         )}
                         <Field label="连续保持秒数">
-                          <input
-                            type="number"
+                          <NumberInput
                             min={1}
                             max={86400}
                             value={o.seconds}
-                            onChange={(e) => obj({ seconds: Number(e.target.value) })}
+                            onValueChange={(value) => obj({ seconds: value })}
                           />
                         </Field>
                       </div>
@@ -638,13 +632,10 @@ export function SourcesEditor({
                             )}
                           </Field>
                           <Field label="消耗数量">
-                            <input
-                              type="number"
+                            <NumberInput
                               min={1}
                               value={x.requiredAmount}
-                              onChange={(e) =>
-                                exp({ requiredAmount: Number(e.target.value) })
-                              }
+                              onValueChange={(value) => exp({ requiredAmount: value })}
                             />
                           </Field>
                         </div>
@@ -671,6 +662,7 @@ export function SourcesEditor({
                 s.poolGuid,
                 (a) => !!a.poolPath,
                 (poolGuid) => update(s, { poolGuid }),
+                true,
               )}
               <Weight source={s} update={(p) => update(s, p)} />
               <p className="muted compact">
@@ -716,12 +708,11 @@ function Weight({
       label="池内相对权重"
       hint="本编辑器范围：1–1,000,000 的整数。权重越高，同一池内越容易被抽中。例如只有权重 100 和 200 两项时，单次抽取约为 1/3 和 2/3；多层池、解锁条件和多次抽取会影响最终概率。"
     >
-      <input
-        type="number"
+      <NumberInput
         min={1}
         max={1000000}
         value={s.weight}
-        onChange={(e) => update({ weight: Number(e.target.value) })}
+        onValueChange={(value) => update({ weight: value })}
       />
     </Field>
   );

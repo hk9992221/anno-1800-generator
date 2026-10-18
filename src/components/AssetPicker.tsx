@@ -8,6 +8,11 @@ import {
   normalizeRegions,
 } from '../core/catalog.ts';
 import { Modal, Portrait } from './common.tsx';
+import {
+  displayAssetName,
+  isInternalPool,
+  isScenarioAsset,
+} from '../core/assetDisplay.ts';
 export function AssetPicker({
   catalog,
   title,
@@ -18,6 +23,7 @@ export function AssetPicker({
   multi = false,
   expand = false,
   onSetup,
+  allowPools = false,
 }: {
   catalog?: Catalog;
   title: string;
@@ -28,15 +34,28 @@ export function AssetPicker({
   multi?: boolean;
   expand?: boolean;
   onSetup?: () => void;
+  allowPools?: boolean;
 }) {
   const [query, setQuery] = useState(''),
     [checked, setChecked] = useState(new Set(selected)),
     [region, setRegion] = useState(''),
     [manual, setManual] = useState(''),
-    [page, setPage] = useState(0);
+    [page, setPage] = useState(0),
+    [showPools, setShowPools] = useState(allowPools),
+    [showScenarios, setShowScenarios] = useState(false),
+    [error, setError] = useState('');
   const q = useDeferredValue(query.toLowerCase()),
-    assets = catalogOf(catalog).assets;
-  const candidates = useMemo(() => assets.filter(filter), [assets, filter]);
+    resolvedCatalog = catalogOf(catalog),
+    assets = resolvedCatalog.assets;
+  const eligible = useMemo(() => assets.filter(filter), [assets, filter]);
+  const candidates = useMemo(
+    () =>
+      eligible.filter(
+        (a) =>
+          (showPools || !isInternalPool(a)) && (showScenarios || !isScenarioAsset(a)),
+      ),
+    [eligible, showPools, showScenarios],
+  );
   const matches = useMemo(
     () =>
       candidates.filter(
@@ -45,7 +64,7 @@ export function AssetPicker({
             (region === '__unknown'
               ? !normalizeRegions(a.region).length
               : normalizeRegions(a.region).includes(region))) &&
-          `${a.name} ${a.english} ${a.guid} ${a.template} ${a.source ?? ''}`
+          `${a.name} ${a.english} ${a.internal} ${a.guid} ${a.template} ${a.source ?? ''}`
             .toLowerCase()
             .includes(q),
       ),
@@ -118,6 +137,47 @@ export function AssetPicker({
           ))}
         </select>
       </div>
+      {(expand || eligible.some(isScenarioAsset)) && (
+        <details className="advanced-details">
+          <summary>更多资源范围</summary>
+          {expand && (
+            <label className="inline-check">
+              <input
+                type="checkbox"
+                checked={showPools}
+                onChange={(event) => {
+                  setShowPools(event.target.checked);
+                  setPage(0);
+                }}
+              />
+              显示建筑组合（高级）
+            </label>
+          )}
+          {eligible.some(isScenarioAsset) && (
+            <label className="inline-check">
+              <input
+                type="checkbox"
+                checked={showScenarios}
+                onChange={(event) => {
+                  setShowScenarios(event.target.checked);
+                  setPage(0);
+                }}
+              />
+              显示场景专用内容
+            </label>
+          )}
+        </details>
+      )}
+      {allowPools && (
+        <p className="notice">
+          这是高级资源组合。普通制卡请直接选择商人、任务或远征，无需填写内部物品池。
+        </p>
+      )}
+      {error && (
+        <p className="notice" role="alert">
+          {error}
+        </p>
+      )}
       {candidates.some((a) => a.kind === 'product') && (
         <p className="picker-help muted">
           商品按生产来源筛选；同一商品可能来自多个世界，也可以跨世界运输。
@@ -141,14 +201,18 @@ export function AssetPicker({
               />
             )}
             <span className="asset-copy">
-              <strong>{a.name}</strong>
+              <strong>{displayAssetName(a, resolvedCatalog)}</strong>
               <small>
                 {a.kind === 'product'
                   ? '产地：'
                   : a.kind === 'building' || a.kind === 'residence'
                     ? '建造地区：'
                     : '地区：'}
-                {worldName(a.region)} · {a.english}
+                {worldName(a.region)}
+                {!isInternalPool(a) && a.english && !/[_]/.test(a.english)
+                  ? ` · ${a.english}`
+                  : ''}
+                {isScenarioAsset(a) ? ' · 场景专用' : ''}
                 {a.members?.length ? ` · ${a.members.length} 个成员` : ''}
                 {a.needFor?.length
                   ? ` · 适用：${a.needFor.map((g) => assets.find((p) => p.guid === g)?.name ?? g).join('、')}`
@@ -157,6 +221,7 @@ export function AssetPicker({
             </span>
             <span className="asset-meta">
               <code>{a.guid}</code>
+              {allowPools && <small>{a.internal ?? a.name}</small>}
             </span>
           </button>
         ))}
@@ -234,9 +299,22 @@ export function AssetPicker({
         <button
           className="button primary"
           onClick={() => {
-            const ids = [...checked];
-            onApply(expand ? expandTargets(catalogOf(catalog), ids) : ids);
-            onClose();
+            try {
+              const ids = [...checked];
+              const selected = expand ? expandTargets(resolvedCatalog, ids) : ids;
+              if (
+                expand &&
+                selected.some((g) => {
+                  const a = assets.find((a) => a.guid === g);
+                  return a && (isInternalPool(a) || !filter(a));
+                })
+              )
+                throw new Error('所选组合包含不适用的资源，请改选具体建筑。');
+              onApply(selected);
+              onClose();
+            } catch (e) {
+              setError(String(e));
+            }
           }}
         >
           应用选择

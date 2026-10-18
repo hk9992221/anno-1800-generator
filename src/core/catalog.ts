@@ -2,6 +2,10 @@ import type { Asset, Catalog, NativeFile, Population } from './types.ts';
 import { at, children, descendants, numberAt, parseXml, value } from './xml.ts';
 import starter from '../data/starter-assets.json' with { type: 'json' };
 import { normalizeRegions } from './regions.ts';
+import { decodeXmlBytes } from './textEncoding.ts';
+import { displayAssetName } from './assetDisplay.ts';
+export const isScenarioPath = (path: string) =>
+  /(?:^|[\\/])scenario\d*(?:[\\/]|$)/i.test(path);
 export { WORLD_NAMES, worldName, normalizeRegions } from './regions.ts';
 const referenceByGuid = new Map((starter as Asset[]).map((a) => [a.guid, a]));
 const hasChinese = (s?: string) => /[\u3400-\u9fff]/u.test(s ?? '');
@@ -62,27 +66,14 @@ export const catalogOf = (catalog?: Catalog) =>
 export const lookupAsset = (catalog: Catalog | undefined, guid: number) =>
   catalogOf(catalog).assets.find((a) => a.guid === guid);
 export const assetName = (catalog: Catalog | undefined, guid: number) =>
-  lookupAsset(catalog, guid)?.name || `GUID ${guid || '未选择'}`;
+  (() => {
+    const c = catalogOf(catalog),
+      a = c.assets.find((a) => a.guid === guid);
+    return a ? displayAssetName(a, c) : `GUID ${guid || '未选择'}`;
+  })();
 export const decodeText = (base64: string) => {
   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-  let encoding = 'utf-8';
-  if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 60 && bytes[1] === 0))
-    encoding = 'utf-16le';
-  else if (
-    (bytes[0] === 0xfe && bytes[1] === 0xff) ||
-    (bytes[0] === 0 && bytes[1] === 60)
-  )
-    encoding = 'utf-16be';
-  else {
-    const prefix = String.fromCharCode(...bytes.subarray(0, 256));
-    const label = prefix.match(/<\?xml[^>]*encoding\s*=\s*["']([^"']+)["']/i)?.[1];
-    if (label) encoding = label;
-  }
-  try {
-    return new TextDecoder(encoding).decode(bytes);
-  } catch {
-    throw new Error(`不支持的文本编码：${encoding}`);
-  }
+  return decodeXmlBytes(bytes).text;
 };
 export const encodeText = (text: string) => {
   const bytes = new TextEncoder().encode(text);
@@ -113,13 +104,20 @@ export function completeCatalog(catalog: Catalog): Catalog {
       ],
       traderStages: [
         ...new Map(
-          [...(parent?.traderStages ?? []), ...(a.traderStages ?? [])].map((s) => [
-            s.stage,
-            s,
-          ]),
+          [...(parent?.traderStages ?? []), ...(a.traderStages ?? [])]
+            .filter((s) => s.poolGuid > 0)
+            .map((s) => [s.stage, s]),
         ).values(),
       ],
     } as Asset;
+    if (
+      a.localizedName === false &&
+      !a.lineId &&
+      !a.nameGuid &&
+      parent?.name &&
+      /[\u3400-\u9fff]/u.test(parent.name)
+    )
+      merged.name = parent.name;
     Object.assign(merged, referenceMetadata(merged));
     const t = merged.template ?? '',
       caps = merged.capabilities ?? [],
@@ -136,6 +134,8 @@ export function completeCatalog(catalog: Catalog): Catalog {
             : has('Residence7') || /Residence/.test(t)
               ? 'residence'
               : has('Factory') ||
+                  has('Factory7') ||
+                  has('FactoryBase') ||
                   /Factory|Farm|Mine|Fishery|Multifactory|ProductionBuilding/.test(t)
                 ? 'building'
                 : /Ship|Airship|AirShip/.test(t)
@@ -227,7 +227,7 @@ export const needsForLevels = (catalog: Catalog | undefined, levels: number[]) =
 export function indexFiles(files: NativeFile[], source = '本机资源'): Catalog {
   const texts = new Map<number, string>();
   const docs = files
-    .filter((f) => /\.xml$/i.test(f.path))
+    .filter((f) => /\.xml$/i.test(f.path) && !isScenarioPath(f.path))
     .map((f) => ({
       path: normalizePath(f.path),
       doc: parseXml(decodeText(f.data)),
@@ -245,8 +245,9 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
       if (!guid) continue;
       const english = value(v, 'Text/LocaText/English/Text') || value(v, 'Standard/Name');
       const capabilities = (v?.children ?? []).map((n) => n.name);
-      const getList = (path: string, key: string) =>
-        children(at(v, path), 'Item')
+      const nested = (container: string) => (v ? descendants(v, container) : []);
+      const getList = (container: string, key: string) =>
+        children(nested(container)[0], 'Item')
           .map((n) => numberAt(n, key))
           .filter(Boolean);
       const traderStages = [
@@ -272,8 +273,12 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
           texts.get(numberAt(v, 'Standard/TextGUID')) ||
           texts.get(numberAt(v, 'Text/LineID')) ||
           english,
-        nameGuid: numberAt(v, 'Standard/TextGUID') || guid,
-        lineId: numberAt(v, 'Text/LineID') || guid,
+        localizedName:
+          texts.has(guid) ||
+          texts.has(numberAt(v, 'Standard/TextGUID')) ||
+          texts.has(numberAt(v, 'Text/LineID')),
+        nameGuid: numberAt(v, 'Standard/TextGUID') || undefined,
+        lineId: numberAt(v, 'Text/LineID') || undefined,
         english,
         template: value(a, 'Template'),
         kind: 'other',
@@ -286,15 +291,15 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
           undefined,
         source,
         capabilities,
-        inputs: at(v, 'Factory/FactoryInputs')
-          ? getList('Factory/FactoryInputs', 'Product')
+        inputs: nested('FactoryInputs').length
+          ? getList('FactoryInputs', 'Product')
           : undefined,
-        outputs: at(v, 'Factory/FactoryOutputs')
-          ? getList('Factory/FactoryOutputs', 'Product')
+        outputs: nested('FactoryOutputs').length
+          ? getList('FactoryOutputs', 'Product')
           : undefined,
         populationLevel: numberAt(v, 'Residence7/PopulationLevel7') || undefined,
         needs: at(v, 'PopulationLevel7/PopulationInputs')
-          ? getList('PopulationLevel7/PopulationInputs', 'Product')
+          ? getList('PopulationInputs', 'Product')
           : undefined,
         defaultResidence: numberAt(v, 'PopulationLevel7/DefaultResidence') || undefined,
         traderStages,
@@ -331,7 +336,7 @@ export function indexFiles(files: NativeFile[], source = '本机资源'): Catalo
     fingerprint: `${assets.length}:${files.reduce((n, f) => n + f.data.length, 0)}`,
     indexedAt: new Date().toISOString(),
     assets,
-    indexVersion: 3,
+    indexVersion: 4,
   });
 }
 export function expandTargets(catalog: Catalog, guids: number[]): number[] {

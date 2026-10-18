@@ -309,8 +309,30 @@ async fn index_resources(app: tauri::AppHandle, path: String) -> Result<Value> {
             let _ = a.emit("resource-progress", message);
         };
         let root = game::resolve_root(&root)?;
-        let mut map = resources::discover(&root, &state.cancel, &progress)?;
-        let mut catalog = resources::index(&map, &root, &state.cancel, &progress)?;
+        let discovered = resources::discover_detailed(&root, &state.cancel, &progress)?;
+        let mut map = discovered.resources;
+        let mut catalog =
+            resources::index(&map, &root, &state.cancel, &progress).map_err(|message| {
+                if discovered.warnings.is_empty() {
+                    message
+                } else {
+                    format!("{message}；{}", discovered.warnings.join("；"))
+                }
+            })?;
+        catalog["scanReport"]["archiveCount"] = json!(discovered.archives.len());
+        catalog["scanReport"]["archivesRead"] = json!(discovered
+            .archives
+            .iter()
+            .filter(|a| a["status"] == "read")
+            .count());
+        if !discovered.warnings.is_empty() {
+            catalog["scanReport"]["status"] = json!("partial");
+        }
+        catalog["scanReport"]["archives"] = json!(discovered.archives);
+        catalog["warnings"]
+            .as_array_mut()
+            .unwrap()
+            .extend(discovered.warnings.into_iter().map(Value::String));
         let documents = a.path().document_dir().ok();
         let scanned = game::scan_installed(&root, documents.as_deref(), &state.cancel, &progress)?;
         catalog["assets"]
@@ -396,7 +418,7 @@ async fn load_catalog(app: tauri::AppHandle) -> Result<Option<Value>> {
                 .or_insert(false);
         }
     }
-    if catalog["indexVersion"].as_u64().unwrap_or(0) < 3 {
+    if catalog["indexVersion"].as_u64().unwrap_or(0) < 4 {
         if let Some(root) = catalog["gameRoot"].as_str().map(str::to_string) {
             match index_resources(app, root).await {
                 Ok(updated) => return Ok(Some(updated)),
